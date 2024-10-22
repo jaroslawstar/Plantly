@@ -1,4 +1,4 @@
-C++ apliocation that allows users to easily take care of their plants, and more.
+C++ aplication that allows users to easily take care of their plants, and more.
 
 The app Plantly is developed by Jarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski. This is NOT the final look or the final platform. This look was only created to present the idea and show what it is about.
 
