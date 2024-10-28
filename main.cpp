@@ -5,16 +5,18 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
+#include "Header.h"
+
 using namespace std;
 
 int main() {
     // Tworzenie okna
-    sf::RenderWindow window(sf::VideoMode(1280, 780), "SFML Window");
+    sf::RenderWindow window(sf::VideoMode(1280, 780), "SFML Window", sf::Style::Titlebar | sf::Style::Close);
 
     // Ustawienia tekstu
-    /*
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("Resorses/Fonts/arial.ttf")) {
+        cout << "Failed to load font";
         return -1; // Zakończ program, jeśli nie uda się załadować czcionki
     }
 
@@ -24,8 +26,8 @@ int main() {
     text.setCharacterSize(50);
     text.setFillColor(sf::Color::White);
     text.setPosition(200, 250); // Pozycja tekstu
-    */
-    // Główna pętla gry
+    
+    // Główna pętla
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -35,7 +37,9 @@ int main() {
 
         // Czyszczenie okna i rysowanie tekstu
         window.clear();
-       // window.draw(text);
+        
+        draw_main_screen(window);
+        draw_logo(window);
         window.display();
     }
 
