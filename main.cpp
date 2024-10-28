@@ -11,8 +11,8 @@ using namespace std;
 
 int main() {
     // Tworzenie okna
-    sf::RenderWindow window(sf::VideoMode(1280, 780), "SFML Window", sf::Style::Titlebar | sf::Style::Close);
-
+    sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
+    /*
     // Ustawienia tekstu
     sf::Font font;
     if (!font.loadFromFile("Resorses/Fonts/arial.ttf")) {
@@ -26,7 +26,7 @@ int main() {
     text.setCharacterSize(50);
     text.setFillColor(sf::Color::White);
     text.setPosition(200, 250); // Pozycja tekstu
-    
+    */
     // Główna pętla
     while (window.isOpen()) {
         sf::Event event;
@@ -38,8 +38,10 @@ int main() {
         // Czyszczenie okna i rysowanie tekstu
         window.clear();
         
-        draw_main_screen(window);
-        draw_logo(window);
+        //draw_main_screen(window);
+        //draw_logo(window);
+        //draw_menu(window);
+        draw_buttons(window, 0);
         window.display();
     }
 

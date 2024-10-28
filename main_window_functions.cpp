@@ -1,5 +1,5 @@
 /*
-Wa?ne parametry: 
+Wazne parametry: 
  Okno 1280x780
 	sf::Vector2u windowSize = window.getSize(); //Pob?r rozmiaru okna
  Czcionki:
@@ -20,14 +20,15 @@ Wa?ne parametry:
 #include "Header.h"
 using namespace std;
 
+
 void draw_main_screen(sf::RenderWindow& window){
 
 	// Tworzenie prostok?ta
-	sf::RectangleShape rectangle_main(sf::Vector2f(1280.0f, 780.0f)); // Rozmiar prostok?ta na ca?e okno
+	sf::RectangleShape rectangle_main(sf::Vector2f(1280.0f, 780.0f)); // Rozmiar prostokata na cale okno
 	rectangle_main.setFillColor(sf::Color(0xF7F7F7FF));
 	window.draw(rectangle_main);
 	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
-	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostok?ta (Cornflower Blue)
+	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
 	window.draw(rectangle_green);
 	sf::RectangleShape rectangle_white(sf::Vector2f(1160.0f, 70.0f)); 
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
@@ -38,7 +39,7 @@ void draw_main_screen(sf::RenderWindow& window){
 void draw_logo(sf::RenderWindow& window) {
 	// Ustawienia tekstu
 	sf::Font logo_font;
-	if (!logo_font.loadFromFile("Resorses/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
+	if (!logo_font.loadFromFile("Resources/Fonts/League_Script/LeagueScript-Regular.ttf")) {
 		cout << "Failed to load font";
 	}
 	sf::Text logo;
@@ -47,17 +48,101 @@ void draw_logo(sf::RenderWindow& window) {
 	logo.setCharacterSize(50);
 	logo.setFillColor(sf::Color::Black);
 	logo.setPosition(640, 0); // Pozycja tekstu
-
 	window.draw(logo);
 }
 
-int buttons(sf::RenderWindow& window){
-	// Tworzenie ko?a
-	sf::CircleShape circle(100.0f); // Promie? ko?a
-	circle.setFillColor(sf::Color(255, 165, 0)); // Kolor ko?a (Pomara?czowy)
-	circle.setPosition(350.0f, 200.0f); // Pozycja ko?a
-	window.draw(circle);
-	return 1;
+void draw_menu(sf::RenderWindow& window) {
+	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
+	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
+	rectangle_white.setPosition(120, 70);
+
+	// Ustawienia tekstu
+	sf::Font text_font;
+	if (!text_font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
+		cout << "Failed to load font";
+	}
+	sf::Text name;
+	name.setFont(text_font);
+	name.setString("Name \nSurname");
+	name.setCharacterSize(20);
+	name.setFillColor(sf::Color::Black);
+	name.setPosition(140, 100); // Pozycja tekstu
+
+	sf::Text Preferences;
+	Preferences.setFont(text_font);
+	Preferences.setString("Preferences");
+	Preferences.setCharacterSize(20);
+	Preferences.setFillColor(sf::Color::Black);
+	Preferences.setPosition(140, 160);
+
+	sf::Text AS;
+	AS.setFont(text_font);
+	AS.setString("Account settings");
+	AS.setCharacterSize(20);
+	AS.setFillColor(sf::Color::Black);
+	AS.setPosition(140, 190);
+
+	sf::Text RP;
+	RP.setFont(text_font);
+	RP.setString("Restore purchases");
+	RP.setCharacterSize(20);
+	RP.setFillColor(sf::Color::Black);
+	RP.setPosition(140, 220);
+
+	window.draw(rectangle_white);
+	window.draw(name);
+	window.draw(Preferences);
+	window.draw(AS);
+	window.draw(RP);
+}
+
+void draw_buttons(sf::RenderWindow& window, int rotation){
+
+	sf::Texture Home;
+	sf::Texture Menu;
+	sf::Texture AP;
+	sf::Texture Feed;
+	sf::Texture QM;
+	if (!Home.loadFromFile("Resources/images/Home.png") || !Menu.loadFromFile("Resources/images/Menu.png") || !AP.loadFromFile("Resources/images/AP.png") || !Feed.loadFromFile("Resources/images/Feed.png") || !QM.loadFromFile("Resources/images/QM.png")) {
+		cout << "Failed to load image!" << endl;
+		return;
+	}
+
+	sf::Sprite HomeButton;
+	HomeButton.setTexture(Home);
+	HomeButton.setPosition(40.0f, 40.0f);
+	HomeButton.setScale(40.0f, 40.0f);
+	HomeButton.setRotation(rotation);
+
+	sf::Sprite MenuButton;
+	MenuButton.setTexture(Menu);
+	MenuButton.setPosition(40.0f, 115.0f);
+	MenuButton.setScale(40.0f, 40.0f);
+	MenuButton.setRotation(rotation);
+
+	sf::Sprite APButton;
+	APButton.setTexture(AP);
+	APButton.setPosition(40.0f, 190.0f);
+	APButton.setScale(40.0f, 40.0f);
+	APButton.setRotation(rotation);
+
+	sf::Sprite FeedButton;
+	FeedButton.setTexture(Feed);
+	FeedButton.setPosition(40.0f, 265.0f);
+	FeedButton.setScale(40.0f, 40.0f);
+	FeedButton.setRotation(rotation);
+
+	sf::Sprite QMButton;
+	QMButton.setTexture(QM);
+	QMButton.setPosition(40.0f, 340.0f);
+	QMButton.setScale(40.0f, 40.0f);
+	QMButton.setRotation(rotation);
+
+	window.draw(HomeButton);
+	window.draw(MenuButton);
+	window.draw(APButton);
+	window.draw(FeedButton);
+	window.draw(QMButton);
 }
 
 
