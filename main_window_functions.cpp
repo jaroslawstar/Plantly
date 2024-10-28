@@ -111,31 +111,31 @@ void draw_buttons(sf::RenderWindow& window, int rotation){
 	sf::Sprite HomeButton;
 	HomeButton.setTexture(Home);
 	HomeButton.setPosition(40.0f, 40.0f);
-	HomeButton.setScale(40.0f, 40.0f);
+	HomeButton.setScale(0.1f, 0.1f);
 	HomeButton.setRotation(rotation);
 
 	sf::Sprite MenuButton;
 	MenuButton.setTexture(Menu);
-	MenuButton.setPosition(40.0f, 115.0f);
-	MenuButton.setScale(40.0f, 40.0f);
+	MenuButton.setPosition(45.0f, 115.0f);
+	MenuButton.setScale(0.08f, 0.08f);
 	MenuButton.setRotation(rotation);
 
 	sf::Sprite APButton;
 	APButton.setTexture(AP);
-	APButton.setPosition(40.0f, 190.0f);
-	APButton.setScale(40.0f, 40.0f);
+	APButton.setPosition(35.0f, 200.0f);
+	APButton.setScale(0.12f, 0.12f);
 	APButton.setRotation(rotation);
 
 	sf::Sprite FeedButton;
 	FeedButton.setTexture(Feed);
-	FeedButton.setPosition(40.0f, 265.0f);
-	FeedButton.setScale(40.0f, 40.0f);
+	FeedButton.setPosition(45.0f, 300.0f);
+	FeedButton.setScale(0.08f, 0.08f);
 	FeedButton.setRotation(rotation);
 
 	sf::Sprite QMButton;
 	QMButton.setTexture(QM);
-	QMButton.setPosition(40.0f, 340.0f);
-	QMButton.setScale(40.0f, 40.0f);
+	QMButton.setPosition(50.0f, 400.0f);
+	QMButton.setScale(0.05f, 0.05f);
 	QMButton.setRotation(rotation);
 
 	window.draw(HomeButton);

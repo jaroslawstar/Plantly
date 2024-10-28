@@ -38,9 +38,9 @@ int main() {
         // Czyszczenie okna i rysowanie tekstu
         window.clear();
         
-        //draw_main_screen(window);
-        //draw_logo(window);
-        //draw_menu(window);
+        draw_main_screen(window);
+        draw_logo(window);
+        draw_menu(window);
         draw_buttons(window, 0);
         window.display();
     }
