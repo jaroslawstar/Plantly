@@ -56,6 +56,10 @@ void draw_menu(sf::RenderWindow& window) {
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 70);
 
+	sf::RectangleShape rectangle_shadow(sf::Vector2f(250.0f, 780.0f));
+	rectangle_shadow.setFillColor(sf::Color(0, 0, 0, 50));
+	rectangle_shadow.setPosition(125, 75);
+
 	// Ustawienia tekstu
 	sf::Font text_font;
 	if (!text_font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
@@ -90,6 +94,7 @@ void draw_menu(sf::RenderWindow& window) {
 	RP.setPosition(140, 220);
 
 	window.draw(rectangle_white);
+	window.draw(rectangle_shadow);
 	window.draw(name);
 	window.draw(Preferences);
 	window.draw(AS);
@@ -111,38 +116,35 @@ void draw_buttons(sf::RenderWindow& window, int rotation){
 	sf::Sprite HomeButton;
 	HomeButton.setTexture(Home);
 	HomeButton.setPosition(40.0f, 40.0f);
-	HomeButton.setScale(40.0f, 40.0f);
-	HomeButton.setRotation(rotation);
+	HomeButton.setScale(0.1f, 0.1f);
 
 	sf::Sprite MenuButton;
 	MenuButton.setTexture(Menu);
-	MenuButton.setPosition(40.0f, 115.0f);
-	MenuButton.setScale(40.0f, 40.0f);
-	MenuButton.setRotation(rotation);
+	MenuButton.setPosition(45.0f, 115.0f);
+	MenuButton.setScale(0.08f, 0.08f);
 
 	sf::Sprite APButton;
 	APButton.setTexture(AP);
-	APButton.setPosition(40.0f, 190.0f);
-	APButton.setScale(40.0f, 40.0f);
+	APButton.setPosition(35.0f, 200.0f);
+	APButton.setScale(0.12f, 0.12f);
 	APButton.setRotation(rotation);
 
 	sf::Sprite FeedButton;
 	FeedButton.setTexture(Feed);
-	FeedButton.setPosition(40.0f, 265.0f);
-	FeedButton.setScale(40.0f, 40.0f);
-	FeedButton.setRotation(rotation);
+	FeedButton.setPosition(45.0f, 300.0f);
+	FeedButton.setScale(0.08f, 0.08f);
 
 	sf::Sprite QMButton;
 	QMButton.setTexture(QM);
-	QMButton.setPosition(40.0f, 340.0f);
-	QMButton.setScale(40.0f, 40.0f);
-	QMButton.setRotation(rotation);
+	QMButton.setPosition(50.0f, 400.0f);
+	QMButton.setScale(0.05f, 0.05f);
 
 	window.draw(HomeButton);
 	window.draw(MenuButton);
 	window.draw(APButton);
 	window.draw(FeedButton);
 	window.draw(QMButton);
+	window.display();
 }
 
 
