@@ -21,7 +21,9 @@ Wazne parametry:
 using namespace std;
 
 
-void draw_main_screen(sf::RenderWindow& window){
+int draw_main_screen(sf::RenderWindow& window){
+
+	int Click_Value = 0;
 
 	// Tworzenie prostok?ta
 	sf::RectangleShape rectangle_main(sf::Vector2f(1280.0f, 780.0f)); // Rozmiar prostokata na cale okno
@@ -34,6 +36,8 @@ void draw_main_screen(sf::RenderWindow& window){
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 0);
 	window.draw(rectangle_white);
+
+	return Click_Value;
 }
 
 void draw_logo(sf::RenderWindow& window) {
@@ -49,6 +53,7 @@ void draw_logo(sf::RenderWindow& window) {
 	logo.setFillColor(sf::Color::Black);
 	logo.setPosition(640, 0); // Pozycja tekstu
 	window.draw(logo);
+	//window.display();
 }
 
 void draw_menu(sf::RenderWindow& window) {
@@ -65,6 +70,13 @@ void draw_menu(sf::RenderWindow& window) {
 	if (!text_font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
 		cout << "Failed to load font";
 	}
+
+	sf::Texture PFP;
+	if (!PFP.loadFromFile("Resources/images/Home.png")) {
+		cout << "Failed to load profile picture!" << endl;
+		return;
+	}
+
 	sf::Text name;
 	name.setFont(text_font);
 	name.setString("Name \nSurname");
@@ -93,12 +105,19 @@ void draw_menu(sf::RenderWindow& window) {
 	RP.setFillColor(sf::Color::Black);
 	RP.setPosition(140, 220);
 
-	window.draw(rectangle_white);
+	sf::Sprite PFPb;
+	PFPb.setTexture(PFP);
+	PFPb.setPosition(300, 110);
+	PFPb.setScale(0.07f, 0.07f);
+
 	window.draw(rectangle_shadow);
+	window.draw(rectangle_white);
 	window.draw(name);
+	window.draw(PFPb);
 	window.draw(Preferences);
 	window.draw(AS);
 	window.draw(RP);
+	//window.display();
 }
 
 void draw_buttons(sf::RenderWindow& window, int rotation){
@@ -144,7 +163,7 @@ void draw_buttons(sf::RenderWindow& window, int rotation){
 	window.draw(APButton);
 	window.draw(FeedButton);
 	window.draw(QMButton);
-	window.display();
+	//window.display();
 }
 
 

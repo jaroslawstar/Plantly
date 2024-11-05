@@ -23,16 +23,16 @@ int main() {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close(); // Zamykanie okna
-        }
 
         // Czyszczenie okna i rysowanie tekstu
         window.clear();
         
         draw_main_screen(window);
+        draw_buttons(window, APRotation);
         draw_logo(window);
         draw_menu(window);
-        draw_buttons(window, APRotation);
         window.display();
+        }
     }
 
     return 0;
