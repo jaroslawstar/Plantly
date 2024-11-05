@@ -29,9 +29,9 @@ int main() {
         
         }
         draw_main_screen(window);
-        draw_buttons(window, APRotation);
+        draw_buttons(window, event, APRotation);
         draw_logo(window);
-        draw_menu(window);
+        //open_menu(window, draw_buttons(window, event, APRotation));
         window.display();
     }
 
