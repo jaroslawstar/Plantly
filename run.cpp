@@ -1,5 +1,4 @@
-﻿#define WIN32_LEAN_AND_MEAN
-#include <iostream>
+﻿#include <iostream>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -8,15 +7,17 @@
 
 #include "Header.h"
 
-#ifdef _WIN32
-	
-	#include <windows.h>
-	#include <string>
-#endif
+
+#include <stdio.h>
+#include <string.h>
+#include <fstream>
 
 using namespace std;
 
 void buttons_engine(sf::RenderWindow& window, sf::Event event) {
+	char url[1000] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
+	std::string op = std::string("start ").append(url);
+
 	switch (Click_Value){
 	case 1:
 		std::cout << "Click at 'Home' button SSSSS" << std::endl;
@@ -33,7 +34,10 @@ void buttons_engine(sf::RenderWindow& window, sf::Event event) {
 
 		break;
 	case 5:
-		openURL("https://github.com/jaroslawstar/Plantly/blob/master/README.md");
+		//ShellExecute(0, 0, L"", 0, 0, SW_SHOW);
+		
+		system(op.c_str());
+		Click_Value = 0;
 		break;
 	default:
 		break;
@@ -42,14 +46,6 @@ void buttons_engine(sf::RenderWindow& window, sf::Event event) {
 
 
 }
-
-void openURL(const std::string& url) {
-#ifdef _WIN32
-	std::wstring wide_url = std::wstring(url.begin(), url.end());
-	ShellExecute(0, 0, wide_url.c_str(), 0, 0, SW_SHOW);
-#endif
-}
-
 
 
 /*

@@ -18,6 +18,7 @@ Wazne parametry:
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include "Header.h"
+
 /*
 #ifdef _WIN32
     #include <windows.h>

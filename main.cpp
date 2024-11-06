@@ -1,5 +1,4 @@
-﻿#define WIN32_LEAN_AND_MEAN
-#include <iostream>
+﻿#include <iostream>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -8,11 +7,7 @@
 
 #include "Header.h"
 
-#ifdef _WIN32
 
-#include <windows.h>
-#include <string>
-#endif
 
 using namespace std;
 
@@ -35,6 +30,7 @@ int main() {
         // Czyszczenie okna i rysowanie tekstu
         window.clear();
         
+
         }
         draw_main_screen(window);
         //draw_buttons(window, event, APRotation);
