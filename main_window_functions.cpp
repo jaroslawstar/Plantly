@@ -30,7 +30,7 @@ int draw_main_screen(sf::RenderWindow& window){
 	rectangle_main.setFillColor(sf::Color(0xF7F7F7FF));
 	window.draw(rectangle_main);
 	sf::RectangleShape rectangle_white(sf::Vector2f(1160.0f, 70.0f)); 
-	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
+	rectangle_white.setFillColor(sf::Color::White);
 	rectangle_white.setPosition(120, 0);
 	window.draw(rectangle_white);
 
@@ -69,7 +69,7 @@ void draw_menu(sf::RenderWindow& window) {
 	}
 
 	sf::Texture PFP;
-	if (!PFP.loadFromFile("Resources/images/Home.png")) {
+	if (!PFP.loadFromFile("Resources/images/pfp.png")) {
 		cout << "Failed to load profile picture!" << endl;
 		return;
 	}
@@ -104,8 +104,8 @@ void draw_menu(sf::RenderWindow& window) {
 
 	sf::Sprite PFPb;
 	PFPb.setTexture(PFP);
-	PFPb.setPosition(300, 110);
-	PFPb.setScale(0.07f, 0.07f);
+	PFPb.setPosition(300, 100);
+	PFPb.setScale(0.15f, 0.15f);
 
 	window.draw(rectangle_shadow);
 	window.draw(rectangle_white);
@@ -117,9 +117,10 @@ void draw_menu(sf::RenderWindow& window) {
 	//window.display();
 }
 
-int draw_buttons(sf::RenderWindow& window, sf::Event event, int rotation){
+int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 
-	int Click_Value = 0;
+	int Click_Value;
+
 	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
 	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
 
@@ -130,7 +131,6 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, int rotation){
 	sf::Texture QM;
 	if (!Home.loadFromFile("Resources/images/Home.png") || !Menu.loadFromFile("Resources/images/Menu.png") || !AP.loadFromFile("Resources/images/AP.png") || !Feed.loadFromFile("Resources/images/Feed.png") || !QM.loadFromFile("Resources/images/QM.png")) {
 		cout << "Failed to load image!" << endl;
-		return 0;
 	}
 
 	sf::Sprite HomeButton;
@@ -147,7 +147,8 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, int rotation){
 	APButton.setTexture(AP);
 	APButton.setPosition(35.0f, 200.0f);
 	APButton.setScale(0.12f, 0.12f);
-	APButton.setRotation(rotation);
+	if (rotation)
+		APButton.setRotation(45);
 
 	sf::Sprite FeedButton;
 	FeedButton.setTexture(Feed);
@@ -168,34 +169,40 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, int rotation){
 	//window.display();
 
 	
-	while (window.pollEvent(event)) {
+	//while (window.pollEvent(event)) {
+		//if (event.type == sf::Event::Closed)
+			//window.close(); // Zamykanie okna
 		if (event.type == sf::Event::MouseButtonPressed) {
 			if (event.mouseButton.button == sf::Mouse::Left) { // Sprawdzanie, czy kliknięto lewym przyciskiem
 				sf::Vector2i mousePosition = sf::Mouse::getPosition(window); // Pobranie pozycji kursora w oknie
 				// Sprawdzanie, czy kliknięcie miało miejsce w obszarze prostokąta
-				if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+				if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != ) {
 					std::cout << "Click at 'Home' button" << std::endl;
-					return Click_Value = 1; // Zmiana wartosci zmiennej a po kliknięciu
+					Click_Value = 1; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
 					std::cout << "Click at 'Menu' button" << std::endl;
-					return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
+					draw_menu(window);
+					Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
 					std::cout << "Click at 'Add Plant' button" << std::endl;
-					return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
+					Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
 					std::cout << "Click at 'Feed' button" << std::endl;
-					return Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
+					Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
 					std::cout << "Click at 'Question Mark' button" << std::endl;
-					return Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
+					Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
 				}
+				else
+					return Click_Value = 0;
 			}
+			
 		}
-	}
+	//}
 	
 }
 

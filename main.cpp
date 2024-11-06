@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int APRotation = 0;
+bool APRotation = false;
 
 int main() {
     // Tworzenie okna
@@ -25,13 +25,14 @@ int main() {
                 window.close(); // Zamykanie okna
 
         // Czyszczenie okna i rysowanie tekstu
-        //window.clear();
+        window.clear();
         
         }
         draw_main_screen(window);
-        draw_buttons(window, event, APRotation);
-        draw_logo(window);
-        //open_menu(window, draw_buttons(window, event, APRotation));
+        //draw_buttons(window, event, APRotation);
+        //draw_logo(window);
+        //open_menu(window, event, draw_buttons(window, event, APRotation));
+        buttons_engine(window, event, draw_buttons(window, event, APRotation));
         window.display();
     }
 
