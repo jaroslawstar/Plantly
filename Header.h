@@ -6,6 +6,7 @@ int draw_main_screen(sf::RenderWindow& window);
 void draw_logo(sf::RenderWindow& window);
 void draw_menu(sf::RenderWindow& window);
 int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation);
+void draw_plants();
 
 
 

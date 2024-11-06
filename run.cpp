@@ -12,12 +12,13 @@ void buttons_engine(sf::RenderWindow& window, sf::Event event, int Click_Value) 
 	switch (Click_Value){
 	case 1:
 		std::cout << "Click at 'Home' button SSSSS" << std::endl;
+		draw_plants();
 		break;
 	case 2:
 		draw_menu(window);
 		break;
 	case 3:
-		APRotation = true;
+		
 		break;
 	default:
 		break;
