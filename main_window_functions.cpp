@@ -18,6 +18,13 @@ Wazne parametry:
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include "Header.h"
+/*
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <cstdlib> // dla system()
+#endif
+*/
 using namespace std;
 
 
@@ -53,7 +60,7 @@ void draw_logo(sf::RenderWindow& window) {
 	//window.display();
 }
 
-void draw_menu(sf::RenderWindow& window) {
+void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 70);
@@ -107,19 +114,33 @@ void draw_menu(sf::RenderWindow& window) {
 	PFPb.setPosition(300, 100);
 	PFPb.setScale(0.15f, 0.15f);
 
-	window.draw(rectangle_shadow);
-	window.draw(rectangle_white);
-	window.draw(name);
-	window.draw(PFPb);
-	window.draw(Preferences);
-	window.draw(AS);
-	window.draw(RP);
+	
+
+	if (show == true) {
+		window.draw(rectangle_shadow);
+		window.draw(rectangle_white);
+		window.draw(name);
+		window.draw(PFPb);
+		window.draw(Preferences);
+		window.draw(AS);
+		window.draw(RP);
+		//draw_menu(window, event, true);
+	}
+	else if (show == false) {
+		rectangle_white.setPosition(2000, 2000);
+		rectangle_shadow.setPosition(2000, 2000);
+		name.setPosition(2000, 2000); // Pozycja tekstu
+		Preferences.setPosition(2000, 2000);
+		AS.setPosition(2000, 2000);
+		RP.setPosition(2000, 2000);
+		PFPb.setPosition(2000, 2000);
+	}
 	//window.display();
 }
 
 int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 
-	int Click_Value = 0;
+	//int Click_Value = 0;
 
 	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
 	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
@@ -190,26 +211,44 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 					Click_Value = 0;
 					//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 2) {
 					std::cout << "Click at 'Menu' button" << std::endl;
+					Click_Value = 2;
+					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
+				}
+				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 2) {
+					std::cout << "UnClick at 'Menu' button" << std::endl;
+					Click_Value = 0;
 					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 3) {
 					std::cout << "Click at 'Add Plant' button" << std::endl;
 					APRotation = true;
+					Click_Value = 3;
 					//return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3) {
 					std::cout << "UnClick at 'Add Plant' button" << std::endl;
 					APRotation = false;
+					Click_Value = 0;
 					//return Click_Value = 0; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 4) {
 					std::cout << "Click at 'Feed' button" << std::endl;
+					Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
+				}
+				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 4) {
+					std::cout << "UnClick at 'Feed' button" << std::endl;
+					Click_Value = 0;
 					//return Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 5) {
 					std::cout << "Click at 'Question Mark' button" << std::endl;
+					Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
+				}
+				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 5) {
+					std::cout << "UnClick at 'Question Mark' button" << std::endl;
+					Click_Value = 0;
 					//return Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
 				}
 				//else

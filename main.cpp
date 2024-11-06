@@ -1,4 +1,5 @@
-﻿#include <iostream>
+﻿#define WIN32_LEAN_AND_MEAN
+#include <iostream>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -7,9 +8,16 @@
 
 #include "Header.h"
 
+#ifdef _WIN32
+
+#include <windows.h>
+#include <string>
+#endif
+
 using namespace std;
 
 bool APRotation = false;
+int Click_Value = 0;
 
 int main() {
     // Tworzenie okna
@@ -32,7 +40,8 @@ int main() {
         //draw_buttons(window, event, APRotation);
         //draw_logo(window);
         //open_menu(window, event, draw_buttons(window, event, APRotation));
-        buttons_engine(window, event, draw_buttons(window, event, APRotation));
+        draw_buttons(window, event, APRotation);
+        buttons_engine(window, event);
         window.display();
     }
 
