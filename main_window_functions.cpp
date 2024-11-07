@@ -29,22 +29,31 @@ Wazne parametry:
 using namespace std;
 
 
-int draw_main_screen(sf::RenderWindow& window){
-
-	int Click_Value = 0;
-
-	// Tworzenie prostok?ta
-	sf::RectangleShape rectangle_main(sf::Vector2f(1280.0f, 780.0f)); // Rozmiar prostokata na cale okno
+void draw_main_screen(sf::RenderWindow& window){
+	/* // Tworzenie prostok?ta
+	sf::RectangleShape rectangle_main(sf::Vector2f(1160.0f, 780.0f)); // Rozmiar prostokata na cale okno
 	rectangle_main.setFillColor(sf::Color(0xF7F7F7FF));
+	rectangle_main.setPosition(120, 0);
 	window.draw(rectangle_main);
 	sf::RectangleShape rectangle_white(sf::Vector2f(1160.0f, 70.0f)); 
 	rectangle_white.setFillColor(sf::Color::White);
 	rectangle_white.setPosition(120, 0);
 	window.draw(rectangle_white);
 
-	return Click_Value;
-}
+	//return Click_Value;
+	*/
+	sf::Texture MainScreen;
+	if (!MainScreen.loadFromFile("Resources/images/Plantly_Main_Screen.png")) {
+		cout << "Failed to load profile picture!" << endl;
+		return;
+	}
+	sf::Sprite MainScreenP;
+	MainScreenP.setTexture(MainScreen);
+	MainScreenP.setPosition(120, 0);
+	window.draw(MainScreenP);
 
+}
+/*
 void draw_logo(sf::RenderWindow& window) {
 	// Ustawienia tekstu
 	sf::Font logo_font;
@@ -60,6 +69,7 @@ void draw_logo(sf::RenderWindow& window) {
 	window.draw(logo);
 	//window.display();
 }
+*/
 
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));

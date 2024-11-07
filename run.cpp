@@ -25,17 +25,14 @@ void buttons_engine(sf::RenderWindow& window, sf::Event event) {
 		draw_menu(window, event, false);
 		break;
 	case 2:
+		//draw_main_screen(window);
 		draw_menu(window, event, true);
 		break;
 	case 3:
-		
 		break;
 	case 4:
-
 		break;
 	case 5:
-		//ShellExecute(0, 0, L"", 0, 0, SW_SHOW);
-		
 		system(op.c_str());
 		Click_Value = 0;
 		break;
