@@ -13,6 +13,6 @@ void draw_plants();
 
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 void buttons_engine(sf::RenderWindow& window, sf::Event event);
-
+void draw_text(sf::RenderWindow& window); //, bool show
 //void openURL(const std::string& url);
 #endif 

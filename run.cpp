@@ -15,22 +15,24 @@
 using namespace std;
 
 void buttons_engine(sf::RenderWindow& window, sf::Event event) {
-	char url[1000] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
+	char url[70] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
 	std::string op = std::string("start ").append(url);
 
 	switch (Click_Value){
 	case 1:
 		std::cout << "Click at 'Home' button SSSSS" << std::endl;
 		draw_plants();
-		draw_menu(window, event, false);
+		//draw_menu(window, event, false);
 		break;
 	case 2:
 		//draw_main_screen(window);
 		draw_menu(window, event, true);
 		break;
 	case 3:
+		//draw_text(window, false);
 		break;
 	case 4:
+		draw_text(window);
 		break;
 	case 5:
 		system(op.c_str());

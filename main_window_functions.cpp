@@ -19,6 +19,10 @@ Wazne parametry:
 #include <SFML/Network.hpp>
 #include "Header.h"
 
+#include <stdio.h>
+#include <string.h>
+#include <fstream>
+
 /*
 #ifdef _WIN32
     #include <windows.h>
@@ -70,6 +74,27 @@ void draw_logo(sf::RenderWindow& window) {
 	//window.display();
 }
 */
+
+void draw_text(sf::RenderWindow& window) { //, bool show
+	// Ustawienia tekstu
+	sf::Font text_font;
+	if (!text_font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
+		cout << "Failed to load font";
+	}
+	sf::Text text;
+	text.setFont(text_font);
+	text.setString("The app Plantly is developed by\nJarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski.\nThis is NOT the final look or the final platform.\nThis look was only created to present the idea and show what it is about.\n\nThe app is going to be developed for Windowsand MacOS, using programming language C++,\nwith small design changes (to make it usable on horizontal screens).\n\nIt is NO estimated date for final developed version for smartphones, yet.");
+	text.setCharacterSize(20);
+	text.setFillColor(sf::Color::Black);
+	text.setPosition(200, 160);
+	window.draw(text);
+	/*
+	if (show == true)
+	else if(show == false)
+		text.setPosition(2000, 2000);*/
+}
+
+
 
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
@@ -211,13 +236,14 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 		if (event.type == sf::Event::MouseButtonPressed) {
 			if (event.mouseButton.button == sf::Mouse::Left) { // Sprawdzanie, czy kliknięto lewym przyciskiem
 				sf::Vector2i mousePosition = sf::Mouse::getPosition(window); // Pobranie pozycji kursora w oknie
+				if (event.type == sf::Event::MouseButtonReleased) {}
 				// Sprawdzanie, czy kliknięcie miało miejsce w obszarze prostokąta
-				if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 1) {
+				if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 1 ) {
 					std::cout << "Click at 'Home' button" << std::endl;
 					Click_Value = 1;
 					//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 1) {
+				else if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
 					std::cout << "UnClick at 'Home' button" << std::endl;
 					Click_Value = 0;
 					//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
@@ -227,7 +253,7 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 					Click_Value = 2;
 					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 2) {
+				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
 					std::cout << "UnClick at 'Menu' button" << std::endl;
 					Click_Value = 0;
 					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
@@ -238,7 +264,7 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 					Click_Value = 3;
 					//return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
 				}
-				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3) {
+				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3 && event.type == sf::Event::MouseButtonReleased) {
 					std::cout << "UnClick at 'Add Plant' button" << std::endl;
 					APRotation = false;
 					Click_Value = 0;
@@ -264,7 +290,7 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 				}
 				//else
 					//return Click_Value;
-				return Click_Value;
+				//return Click_Value;
 			}
 			
 		}
