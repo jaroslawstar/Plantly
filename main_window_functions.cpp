@@ -1,7 +1,7 @@
 ﻿/*
-Wazne parametry: 
+Wazne parametry:
  Okno 1280x780
-	sf::Vector2u windowSize = window.getSize(); //Pob?r rozmiaru okna
+	sf::Vector2u windowSize = window.getSize(); //Pobor rozmiaru okna
  Czcionki:
 	arial.ttf <Testing>
 	Inria_Serif/InriaSerif-LightItalic.ttf <Text - glam>
@@ -17,29 +17,33 @@ Wazne parametry:
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-#include "Header.h"
 
-#include <stdio.h>
-#include <string.h>
+//#include <openssl/sha.h>
+#include <iomanip>
+#include <sstream>
+#include <string>
+
+#include "Header.h"
+//#include <sqlite3.h>
 #include <fstream>
 
 /*
 #ifdef _WIN32
-    #include <windows.h>
+	#include <windows.h>
 #else
-    #include <cstdlib> // dla system()
+	#include <cstdlib> // dla system()
 #endif
 */
 using namespace std;
 
 
-void draw_main_screen(sf::RenderWindow& window){
+void draw_main_screen(sf::RenderWindow& window) {
 	/* // Tworzenie prostok?ta
 	sf::RectangleShape rectangle_main(sf::Vector2f(1160.0f, 780.0f)); // Rozmiar prostokata na cale okno
 	rectangle_main.setFillColor(sf::Color(0xF7F7F7FF));
 	rectangle_main.setPosition(120, 0);
 	window.draw(rectangle_main);
-	sf::RectangleShape rectangle_white(sf::Vector2f(1160.0f, 70.0f)); 
+	sf::RectangleShape rectangle_white(sf::Vector2f(1160.0f, 70.0f));
 	rectangle_white.setFillColor(sf::Color::White);
 	rectangle_white.setPosition(120, 0);
 	window.draw(rectangle_white);
@@ -57,6 +61,8 @@ void draw_main_screen(sf::RenderWindow& window){
 	window.draw(MainScreenP);
 
 }
+
+
 /*
 void draw_logo(sf::RenderWindow& window) {
 	// Ustawienia tekstu
@@ -150,7 +156,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	PFPb.setPosition(300, 100);
 	PFPb.setScale(0.15f, 0.15f);
 
-	
+
 
 	if (show == true) {
 		window.draw(rectangle_shadow);
@@ -174,7 +180,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	//window.display();
 }
 
-int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
+void draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation) {
 
 	//int Click_Value = 0;
 
@@ -208,7 +214,8 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 		APButton.setPosition(63.0f, 186.0f);
 	}
 	else if (!rotation) {
-	APButton.setPosition(35.0f, 200.0f);
+		APButton.setPosition(35.0f, 200.0f);
+		APButton.setRotation(0);
 	}
 
 	sf::Sprite FeedButton;
@@ -220,7 +227,7 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 	QMButton.setTexture(QM);
 	QMButton.setPosition(50.0f, 400.0f);
 	QMButton.setScale(0.05f, 0.05f);
-	
+
 	window.draw(rectangle_green);
 	window.draw(HomeButton);
 	window.draw(MenuButton);
@@ -229,76 +236,131 @@ int draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation){
 	window.draw(QMButton);
 	//window.display();
 
-	
-	//while (window.pollEvent(event)) {
-		//if (event.type == sf::Event::Closed)
-			//window.close(); // Zamykanie okna
-		if (event.type == sf::Event::MouseButtonPressed) {
-			if (event.mouseButton.button == sf::Mouse::Left) { // Sprawdzanie, czy kliknięto lewym przyciskiem
-				sf::Vector2i mousePosition = sf::Mouse::getPosition(window); // Pobranie pozycji kursora w oknie
-				if (event.type == sf::Event::MouseButtonReleased) {}
-				// Sprawdzanie, czy kliknięcie miało miejsce w obszarze prostokąta
-				if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 1 ) {
-					std::cout << "Click at 'Home' button" << std::endl;
-					Click_Value = 1;
-					//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
-					std::cout << "UnClick at 'Home' button" << std::endl;
-					Click_Value = 0;
-					//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 2) {
-					std::cout << "Click at 'Menu' button" << std::endl;
-					Click_Value = 2;
-					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
-					std::cout << "UnClick at 'Menu' button" << std::endl;
-					Click_Value = 0;
-					//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 3) {
-					std::cout << "Click at 'Add Plant' button" << std::endl;
-					APRotation = true;
-					Click_Value = 3;
-					//return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3 && event.type == sf::Event::MouseButtonReleased) {
-					std::cout << "UnClick at 'Add Plant' button" << std::endl;
-					APRotation = false;
-					Click_Value = 0;
-					//return Click_Value = 0; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 4) {
-					std::cout << "Click at 'Feed' button" << std::endl;
-					Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 4) {
-					std::cout << "UnClick at 'Feed' button" << std::endl;
-					Click_Value = 0;
-					//return Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 5) {
-					std::cout << "Click at 'Question Mark' button" << std::endl;
-					Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 5) {
-					std::cout << "UnClick at 'Question Mark' button" << std::endl;
-					Click_Value = 0;
-					//return Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
-				}
-				//else
-					//return Click_Value;
-				//return Click_Value;
-			}
-			
+
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) { // Sprawdzanie, czy kliknięto lewym przyciskiem
+
+		sf::Vector2i mousePosition = sf::Mouse::getPosition(window); // Pobranie pozycji kursora w oknie
+		if (event.type == sf::Event::MouseButtonReleased) {}
+		// Sprawdzanie, czy kliknięcie miało miejsce w obszarze prostokąta
+		if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 1) {
+			std::cout << "Click at 'Home' button" << std::endl;
+			Click_Value = 1;
+			draw_plants(window);
+			//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
 		}
-	//}
-	
+		else if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
+			std::cout << "UnClick at 'Home' button" << std::endl;
+			Click_Value = 0;
+			//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 2) {
+			std::cout << "Click at 'Menu' button" << std::endl;
+			Click_Value = 2;
+			draw_menu(window, event, true);
+			//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
+			std::cout << "UnClick at 'Menu' button" << std::endl;
+			Click_Value = 0;
+			//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 3) {
+			std::cout << "Click at 'Add Plant' button" << std::endl;
+			APRotation = true;
+			Click_Value = 3;
+			//return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3 && event.type == sf::Event::MouseButtonReleased) {
+			std::cout << "UnClick at 'Add Plant' button" << std::endl;
+			APRotation = false;
+			Click_Value = 0;
+			//return Click_Value = 0; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 4) {
+			std::cout << "Click at 'Feed' button" << std::endl;
+			Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 4) {
+			std::cout << "UnClick at 'Feed' button" << std::endl;
+			Click_Value = 0;
+			//return Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 5) {
+			std::cout << "Click at 'Question Mark' button" << std::endl;
+			Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 5) {
+			std::cout << "UnClick at 'Question Mark' button" << std::endl;
+			Click_Value = 0;
+			//return Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
+		}
+		//else
+			//return Click_Value;
+		//return Click_Value;
+	}
 }
 
-void draw_plants() {
 
+
+void draw_plants(sf::RenderWindow& window) {
+	sf::Texture PlantBlock;
+	if (!PlantBlock.loadFromFile("Resources/images/AddFirstPlant.png")) {
+		cout << "Failed to load Sign up screen!" << endl;
+		return;
+	}
+	sf::Sprite PlantBlockP(PlantBlock);
+	PlantBlockP.setPosition(200, 160);
+	window.draw(PlantBlockP);
+	window.display();
 }
 
+//git stash komenda do chomikowania
+/*
+//loged in user class
+//Function to initialize data base for Plants
+void open_plants_db() {
+	sqlite3* db;
+	int exit = sqlite3_open("plants.db", &db);
+
+	if (exit) {
+		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
+	}
+	else {
+		std::cout << "Opened database successfully!" << std::endl;
+	}
+}
+*/
+
+
+//--------------------------------------------------DB Files--------------------------------------------------
+// 
+// Function to read a file and return its content as a byte vector
+std::vector<unsigned char> readFile(const std::string& filePath) {
+	std::ifstream file(filePath, std::ios::binary | std::ios::ate);
+	if (!file.is_open()) {
+		throw std::runtime_error("Could not open file: " + filePath);
+	}
+
+	std::streamsize size = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	std::vector<unsigned char> buffer(size);
+	if (!file.read(reinterpret_cast<char*>(buffer.data()), size)) {
+		throw std::runtime_error("Error reading file: " + filePath);
+	}
+
+	return buffer;
+}
+
+// Function to write binary data to a file (if needed)
+void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::string& fileName) {
+	std::ofstream outFile(fileName, std::ios::binary);
+	if (!outFile) {
+		std::cerr << "Error: Could not write blob to file: " << fileName << std::endl;
+		return;
+	}
+
+	outFile.write(reinterpret_cast<const char*>(blobData.data()), blobData.size());
+	outFile.close();
+	std::cout << "Picture saved to file: " << fileName << std::endl;
+}

@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LogInPageFunctions.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_window_functions.cpp" />
     <ClCompile Include="run.cpp" />

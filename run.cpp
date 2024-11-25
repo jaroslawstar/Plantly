@@ -17,11 +17,15 @@ using namespace std;
 void buttons_engine(sf::RenderWindow& window, sf::Event event) {
 	char url[70] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
 	std::string op = std::string("start ").append(url);
-
+	/*
 	switch (Click_Value){
+	case 0:
+		draw_menu(window, event, false);
+		break;
 	case 1:
+		draw_menu(window, event, false);
 		std::cout << "Click at 'Home' button SSSSS" << std::endl;
-		draw_plants();
+		//draw_plants(window);
 		//draw_menu(window, event, false);
 		break;
 	case 2:
@@ -41,6 +45,7 @@ void buttons_engine(sf::RenderWindow& window, sf::Event event) {
 	default:
 		break;
 	}
+	*/
 
 
 
@@ -58,8 +63,8 @@ void open_menu(sf::RenderWindow& window, sf::Event event,  int Click_Value) {
 	//else{
 	//	draw_menu(window);
 	//}
-	
-	
+
+
 }
 
 */
