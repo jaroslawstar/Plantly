@@ -24,7 +24,7 @@ Wazne parametry:
 #include <string>
 
 #include "Header.h"
-//#include <sqlite3.h>
+#include "SQLite/sqlite3.h"
 #include <fstream>
 
 /*
@@ -315,7 +315,7 @@ void draw_plants(sf::RenderWindow& window) {
 }
 
 //git stash komenda do chomikowania
-/*
+
 //loged in user class
 //Function to initialize data base for Plants
 void open_plants_db() {
@@ -329,7 +329,7 @@ void open_plants_db() {
 		std::cout << "Opened database successfully!" << std::endl;
 	}
 }
-*/
+
 
 
 //--------------------------------------------------DB Files--------------------------------------------------

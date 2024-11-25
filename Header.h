@@ -17,7 +17,7 @@ void draw_plants(sf::RenderWindow& window);
 
 std::vector<unsigned char> readFile(const std::string& filePath);
 void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::string& fileName);
-//void open_plants_db();
+void open_plants_db();
 
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 void buttons_engine(sf::RenderWindow& window, sf::Event event);

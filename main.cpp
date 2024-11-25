@@ -50,7 +50,7 @@ int main() {
 
 
     draw_clear_screen(window);
-
+    open_plants_db();
     // Główna pętla
     while (window.isOpen()) {
         sf::Event event;
