@@ -20,10 +20,30 @@ void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::strin
 void open_plants_db();
 
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
-void buttons_engine(sf::RenderWindow& window, sf::Event event);
+//void buttons_engine(sf::RenderWindow& window, sf::Event event);
 void draw_text(sf::RenderWindow& window); //, bool show
 //void openURL(const std::string& url);
 void check_user();
+
+void handleTextInput(sf::Event& event, std::string& text, sf::Text& textDisplay);
+
+class UserData {
+public:
+    std::string name;
+    std::string age;
+    std::string email;
+
+    void saveToDatabase(); // Function declaration
+};
+
+class Plant {
+public:
+    std::string name;
+    int amount;
+    std::string color;
+
+    void getInput();
+};
 
 
 #endif 

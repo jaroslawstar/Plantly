@@ -21,7 +21,7 @@
     <ClCompile Include="main_window_functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="run.cpp">
+    <ClCompile Include="trash.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LogInPageFunctions.cpp">

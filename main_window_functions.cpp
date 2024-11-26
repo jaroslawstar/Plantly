@@ -235,69 +235,6 @@ void draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation) {
 	window.draw(FeedButton);
 	window.draw(QMButton);
 	//window.display();
-
-
-	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) { // Sprawdzanie, czy kliknięto lewym przyciskiem
-
-		sf::Vector2i mousePosition = sf::Mouse::getPosition(window); // Pobranie pozycji kursora w oknie
-		if (event.type == sf::Event::MouseButtonReleased) {}
-		// Sprawdzanie, czy kliknięcie miało miejsce w obszarze prostokąta
-		if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 1) {
-			std::cout << "Click at 'Home' button" << std::endl;
-			Click_Value = 1;
-			draw_plants(window);
-			//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (HomeButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
-			std::cout << "UnClick at 'Home' button" << std::endl;
-			Click_Value = 0;
-			//return Click_Value; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 2) {
-			std::cout << "Click at 'Menu' button" << std::endl;
-			Click_Value = 2;
-			draw_menu(window, event, true);
-			//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (MenuButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && event.type == sf::Event::MouseButtonReleased) {
-			std::cout << "UnClick at 'Menu' button" << std::endl;
-			Click_Value = 0;
-			//return Click_Value = 2; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 3) {
-			std::cout << "Click at 'Add Plant' button" << std::endl;
-			APRotation = true;
-			Click_Value = 3;
-			//return Click_Value = 3; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (APButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 3 && event.type == sf::Event::MouseButtonReleased) {
-			std::cout << "UnClick at 'Add Plant' button" << std::endl;
-			APRotation = false;
-			Click_Value = 0;
-			//return Click_Value = 0; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 4) {
-			std::cout << "Click at 'Feed' button" << std::endl;
-			Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (FeedButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 4) {
-			std::cout << "UnClick at 'Feed' button" << std::endl;
-			Click_Value = 0;
-			//return Click_Value = 4; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value != 5) {
-			std::cout << "Click at 'Question Mark' button" << std::endl;
-			Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		else if (QMButton.getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition)) && Click_Value == 5) {
-			std::cout << "UnClick at 'Question Mark' button" << std::endl;
-			Click_Value = 0;
-			//return Click_Value = 5; // Zmiana wartosci zmiennej a po kliknięciu
-		}
-		//else
-			//return Click_Value;
-		//return Click_Value;
-	}
 }
 
 
@@ -311,7 +248,7 @@ void draw_plants(sf::RenderWindow& window) {
 	sf::Sprite PlantBlockP(PlantBlock);
 	PlantBlockP.setPosition(200, 160);
 	window.draw(PlantBlockP);
-	window.display();
+	//window.display();
 }
 
 //git stash komenda do chomikowania
@@ -363,4 +300,53 @@ void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::strin
 	outFile.write(reinterpret_cast<const char*>(blobData.data()), blobData.size());
 	outFile.close();
 	std::cout << "Picture saved to file: " << fileName << std::endl;
+}
+
+// Helper function to handle text input
+void handleTextInput(sf::Event& event, std::string& text, sf::Text& textDisplay) {
+	if (event.text.unicode == '\b' && !text.empty()) { // Handle backspace
+		text.pop_back();
+	}
+	else if (event.text.unicode < 128 && event.text.unicode > 31) { // Handle valid input
+		text += static_cast<char>(event.text.unicode);
+	}
+	textDisplay.setString(text);
+}
+
+void UserData::saveToDatabase() {
+	sqlite3* db;
+	char* errorMessage = nullptr;
+
+	// Open SQLite database
+	if (sqlite3_open("user_data.db", &db)) {
+		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	// Create table if it doesn't exist
+	std::string createTableSQL = "CREATE TABLE IF NOT EXISTS Users ("
+		"ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+		"Name TEXT, "
+		"Age TEXT, "
+		"Email TEXT);";
+	if (sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error creating table: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+		sqlite3_close(db);
+		return;
+	}
+
+	// Insert data
+	std::string insertSQL = "INSERT INTO Users (Name, Age, Email) VALUES ('" +
+		name + "', '" + age + "', '" + email + "');";
+	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error inserting data: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+	}
+	else {
+		std::cout << "Data saved successfully!\n";
+	}
+
+	// Close database
+	sqlite3_close(db);
 }

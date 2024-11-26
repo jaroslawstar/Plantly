@@ -24,7 +24,7 @@ Wazne parametry:
 #include <string>
 
 #include "Header.h"
-//#include <sqlite3.h>
+#include <SQLite/sqlite3.h>
 #include <fstream>
 
 using namespace std;
