@@ -145,4 +145,50 @@ if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == s
         //return Click_Value;
     //return Click_Value;
 }
+
+
+
+
+
+
+
+_____________________________________________________________________________________
+
+
+ while (UserSighned == false && window.pollEvent(event)) {
+
+               ///*
+            //}
+            window.clear();
+            draw_main_screen(window);
+
+
+            //while (UserSighned == true && window.pollEvent(event)) {//Main Window after login
+                ///*
+
+                window.clear();
+                draw_buttons(window, APRotation);
+
+
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                    
+                }
+                //draw_signup_screen(window);
+
+                //draw_logo(window);
+                //open_menu(window, event, draw_buttons(window, event, APRotation));
+                //draw_buttons(window, event, APRotation);
+                //buttons_engine(window, event);
+        window.display();
+
+/*
+* /
+
+
+_____________________________________________________________________________________
+
 */
+
+
+

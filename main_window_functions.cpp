@@ -51,7 +51,7 @@ void draw_main_screen(sf::RenderWindow& window) {
 	//return Click_Value;
 	*/
 	sf::Texture MainScreen;
-	if (!MainScreen.loadFromFile("Resources/images/Plantly_Main_Screen.png")) {
+ 	if (!MainScreen.loadFromFile("Resources/images/Plantly_Main_Screen.png")) {
 		cout << "Failed to load profile picture!" << endl;
 		return;
 	}
@@ -81,28 +81,135 @@ void draw_logo(sf::RenderWindow& window) {
 }
 */
 
-void draw_text(sf::RenderWindow& window) { //, bool show
-	// Ustawienia tekstu
-	sf::Font text_font;
-	if (!text_font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
-		cout << "Failed to load font";
+
+
+
+void draw_plants(sf::RenderWindow& window, bool show) {
+	sf::Texture PlantBlock;
+	if (!PlantBlock.loadFromFile("Resources/images/AddFirstPlant.png")) {
+		cout << "Failed to load Sign up screen!" << endl;
+		return;
 	}
-	sf::Text text;
-	text.setFont(text_font);
-	text.setString("The app Plantly is developed by\nJarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski.\nThis is NOT the final look or the final platform.\nThis look was only created to present the idea and show what it is about.\n\nThe app is going to be developed for Windowsand MacOS, using programming language C++,\nwith small design changes (to make it usable on horizontal screens).\n\nIt is NO estimated date for final developed version for smartphones, yet.");
-	text.setCharacterSize(20);
-	text.setFillColor(sf::Color::Black);
-	text.setPosition(200, 160);
-	window.draw(text);
-	/*
-	if (show == true)
-	else if(show == false)
-		text.setPosition(2000, 2000);*/
+	sf::Sprite PlantBlockP(PlantBlock);
+	PlantBlockP.setPosition(200, 160);
+
+	if (show == true) {
+		window.draw(PlantBlockP);
+		
+		window.display();
+	}
+	else if (show == false) {
+		PlantBlockP.setPosition(2000, 2000);
+	}
 }
 
+void draw_buttons(sf::RenderWindow& window, bool rotation) {
 
+	//int Click_Value = 0;
 
-void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
+	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
+	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
+
+	sf::Texture Home;
+	sf::Texture Menu;
+	sf::Texture AP;
+	sf::Texture Feed;
+	sf::Texture QM;
+	if (!Home.loadFromFile("Resources/images/Home.png") || !Menu.loadFromFile("Resources/images/Menu.png") || !AP.loadFromFile("Resources/images/AP.png") || !Feed.loadFromFile("Resources/images/Feed.png") || !QM.loadFromFile("Resources/images/QM.png")) {
+		cout << "Failed to load image!" << endl;
+	}
+
+	sf::Sprite HomeButton;
+	HomeButton.setTexture(Home);
+	HomeButton.setPosition(40.0f, 40.0f);
+	HomeButton.setScale(0.1f, 0.1f);
+
+	sf::Sprite MenuButton;
+	MenuButton.setTexture(Menu);
+	MenuButton.setPosition(45.0f, 115.0f);
+	MenuButton.setScale(0.08f, 0.08f);
+
+	sf::Sprite APButton;
+	APButton.setTexture(AP);
+	APButton.setScale(0.12f, 0.12f);
+	if (rotation) {
+		APButton.setRotation(45);
+		APButton.setPosition(63.0f, 186.0f);
+	}
+	else if (!rotation) {
+		APButton.setPosition(35.0f, 200.0f);
+		APButton.setRotation(0);
+	}
+
+	sf::Sprite FeedButton;
+	FeedButton.setTexture(Feed);
+	FeedButton.setPosition(45.0f, 300.0f);
+	FeedButton.setScale(0.08f, 0.08f);
+
+	sf::Sprite QMButton;
+	QMButton.setTexture(QM);
+	QMButton.setPosition(50.0f, 400.0f);
+	QMButton.setScale(0.05f, 0.05f);
+
+	window.draw(rectangle_green);
+	window.draw(HomeButton);
+	window.draw(MenuButton);
+	window.draw(APButton);
+	window.draw(FeedButton);
+	window.draw(QMButton);
+	//window.display();
+}
+
+void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB) {
+	sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+	std::cout << "Mouse clicked at: ("
+		<< mousePosition.x << ", "
+		<< mousePosition.y << ")" << std::endl;
+	// Check if click is in targetL
+	if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Home' button" << std::endl;
+		buttonClick = ButtonClick::Home;
+		//return ButtonClick::Home;
+
+	}
+	if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Menu' button" << std::endl;
+		//draw_menu(window, true);
+		//if (buttonClick != ButtonClick::Menu) {
+			buttonClick = ButtonClick::Menu;
+			//return ButtonClick::Menu;
+		//}
+		//else if (buttonClick == ButtonClick::Menu) {
+		//	buttonClick = ButtonClick::undefined;
+		//}
+		//else
+		//	buttonClick = ButtonClick::undefined;
+	}
+	if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Add Plant' button" << std::endl;
+		if (!APRotation)
+			APRotation = true;
+		else if (APRotation) {
+			APRotation = false;
+		}
+		buttonClick = ButtonClick::AP;
+		//return ButtonClick::AP;
+
+	}
+	if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Feed' button" << std::endl;
+		buttonClick = ButtonClick::Feed;
+		//return ButtonClick::Feed;
+	}
+	if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Question Mark' button" << std::endl;
+		buttonClick = ButtonClick::QM;
+		//return ButtonClick::QM;
+
+	}
+}
+
+void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 70);
@@ -166,6 +273,8 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		window.draw(Preferences);
 		window.draw(AS);
 		window.draw(RP);
+
+		window.display();
 		//draw_menu(window, event, true);
 	}
 	else if (show == false) {
@@ -180,75 +289,26 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	//window.display();
 }
 
-void draw_buttons(sf::RenderWindow& window, sf::Event event, bool rotation) {
-
-	//int Click_Value = 0;
-
-	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
-	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
-
-	sf::Texture Home;
-	sf::Texture Menu;
-	sf::Texture AP;
-	sf::Texture Feed;
-	sf::Texture QM;
-	if (!Home.loadFromFile("Resources/images/Home.png") || !Menu.loadFromFile("Resources/images/Menu.png") || !AP.loadFromFile("Resources/images/AP.png") || !Feed.loadFromFile("Resources/images/Feed.png") || !QM.loadFromFile("Resources/images/QM.png")) {
-		cout << "Failed to load image!" << endl;
+void draw_text(sf::RenderWindow& window, bool show) { //, bool show
+	// Ustawienia tekstu
+	sf::Font text_font;
+	if (!text_font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
+		cout << "Failed to load font";
 	}
+	sf::Text text;
+	text.setFont(text_font);
+	text.setString("The app Plantly is developed by\nJarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski.\nThis is NOT the final look or the final platform.\nThis look was only created to present the idea and show what it is about.\n\nThe app is going to be developed for Windowsand MacOS, using programming language C++,\nwith small design changes (to make it usable on horizontal screens).\n\nIt is NO estimated date for final developed version for smartphones, yet.");
+	text.setCharacterSize(20);
+	text.setFillColor(sf::Color::Black);
+	text.setPosition(200, 160);
+	if (show == true) {
+		window.draw(text);
 
-	sf::Sprite HomeButton;
-	HomeButton.setTexture(Home);
-	HomeButton.setPosition(40.0f, 40.0f);
-	HomeButton.setScale(0.1f, 0.1f);
-
-	sf::Sprite MenuButton;
-	MenuButton.setTexture(Menu);
-	MenuButton.setPosition(45.0f, 115.0f);
-	MenuButton.setScale(0.08f, 0.08f);
-
-	sf::Sprite APButton;
-	APButton.setTexture(AP);
-	APButton.setScale(0.12f, 0.12f);
-	if (rotation) {
-		APButton.setRotation(45);
-		APButton.setPosition(63.0f, 186.0f);
+		window.display();
 	}
-	else if (!rotation) {
-		APButton.setPosition(35.0f, 200.0f);
-		APButton.setRotation(0);
+	else if (show == false) {
+		text.setPosition(2000, 2000);
 	}
-
-	sf::Sprite FeedButton;
-	FeedButton.setTexture(Feed);
-	FeedButton.setPosition(45.0f, 300.0f);
-	FeedButton.setScale(0.08f, 0.08f);
-
-	sf::Sprite QMButton;
-	QMButton.setTexture(QM);
-	QMButton.setPosition(50.0f, 400.0f);
-	QMButton.setScale(0.05f, 0.05f);
-
-	window.draw(rectangle_green);
-	window.draw(HomeButton);
-	window.draw(MenuButton);
-	window.draw(APButton);
-	window.draw(FeedButton);
-	window.draw(QMButton);
-	//window.display();
-}
-
-
-
-void draw_plants(sf::RenderWindow& window) {
-	sf::Texture PlantBlock;
-	if (!PlantBlock.loadFromFile("Resources/images/AddFirstPlant.png")) {
-		cout << "Failed to load Sign up screen!" << endl;
-		return;
-	}
-	sf::Sprite PlantBlockP(PlantBlock);
-	PlantBlockP.setPosition(200, 160);
-	window.draw(PlantBlockP);
-	//window.display();
 }
 
 //git stash komenda do chomikowania

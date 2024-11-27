@@ -69,10 +69,12 @@ void draw_login_screen(sf::RenderWindow& window) {
 	window.display();
 
 }
+/*
 void check_user() {
 	if ("true!" == "true")
 		UserSighned = true;
 	else
 		UserSighned = false;
 }
+*/
 
