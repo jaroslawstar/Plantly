@@ -23,9 +23,11 @@ ButtonClick buttonClick = ButtonClick::undefined;
 
 bool UserSighned = 0;
 bool PremiumUser = false;
+
+Plant usersPlants[];
 /*
 class Plant {
-public:
+public:111
     std::string name;
     int amount;
     std::string color;
@@ -78,19 +80,19 @@ int main() {
 
     //Open database (check)
     open_plants_db();
-    draw_clear_screen(window);
+    
     //Main loop
-    //draw_clear_screen(window);
+    
     while (window.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-
-            // Check for mouse button click
-            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                //----------Logged_OUT_Buttons----------
-                if (appState == AppState::LOGGED_OUT) {
+        draw_clear_screen(window);
+        while (appState == AppState::LOGGED_OUT) {  //Log out window loop (window.display() is unneseccary when defined in draw window functions)
+            //draw_clear_screen(window);
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    //----------Logged_OUT_Buttons----------
                     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
                     std::cout << "Mouse clicked at: ("
                         << mousePosition.x << ", "
@@ -98,77 +100,132 @@ int main() {
                     // Check if click is in targetL
                     if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'LogIn' button" << std::endl;
+                        //window.clear();
                         draw_login_screen(window); // Call functionL
                     }
-                    if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                    else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'SignUp' button" << std::endl;
+                        //
                         draw_signup_screen(window); // Call functionS
                     }
-                    if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                    else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Next' button" << std::endl;
+                        window.clear();
                         appState = AppState::LOGGED_IN;
                     }
-                }
-                //----------Logged_IN_Buttons----------
-                if (appState == AppState::LOGGED_IN) {
-                    buttonsEngine(window, targetHB, targetMB, targetAPB, targetFB, targetQMB);
+
                 }
             }
+           // window.display();
         }
-        window.clear();
-
-        if (appState == AppState::LOGGED_OUT) {
-            draw_clear_screen(window);
-        }
-        else if (appState == AppState::LOGGED_IN) {
-            draw_main_screen(window);
-            draw_buttons(window, APRotation);
-            //draw_plants(window, true);
-            //if (buttonClick == ButtonClick::Menu) {
-            //   draw_menu(window, true);
-            //    std::cout << "draw_menu(window, true);" << std::endl;
-            //}
-            //else {
-            //    draw_menu(window, false);
-            //    std::cout << "draw_menu(window, FALSE);" << std::endl;
-            //}
-
-            switch (buttonClick) {
-            case ButtonClick::Home:
-                draw_plants(window, true);
-                draw_menu(window, false);
-                draw_text(window, false);
-                window.display();
-                break;
-            case ButtonClick::Menu:
-                draw_plants(window, false);
-                draw_menu(window, true);
-                draw_text(window, false);
-                window.display();
-                break;
-            case ButtonClick::AP:
-                draw_plants(window, false);
-                draw_menu(window, false);
-                draw_text(window, false);
-                window.display();
-                break;
-            case ButtonClick::Feed:
-                draw_plants(window, false);
-                draw_menu(window, false);
-                draw_text(window, true);
-                window.display();
-                break;
-            case ButtonClick::QM:
-                system(op.c_str());
-                buttonClick = ButtonClick::undefined;
-                break;
-            default:
-                break;
-            }
-        }
-
         window.display();
+        window.clear();
+        draw_main_screen(window);
+        draw_buttons(window, APRotation);
+        while (appState == AppState::LOGGED_IN) {   //Log in window loop
+            while (window.pollEvent(event)) {
+                if (event.type == sf::Event::Closed)
+                    window.close();
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    //----------Logged_IN_Buttons----------
+                    buttonsEngine(window, targetHB, targetMB, targetAPB, targetFB, targetQMB);
+
+                    switch (buttonClick) {
+                    case ButtonClick::Home:
+                        draw_plants(window, event, true);
+                        draw_menu(window, false);
+                        draw_AP_screen(window, false);
+                        draw_text(window, false);
+                        window.display();
+                        break;
+                    case ButtonClick::Menu:
+                        draw_plants(window, event, false);
+                        draw_menu(window, true);
+                        draw_AP_screen(window, false);
+                        draw_text(window, false);
+                        window.display();
+                        break;
+                    case ButtonClick::AP:
+                        draw_plants(window, event, false);
+                        draw_menu(window, false);
+                        draw_AP_screen(window, true);
+                        draw_text(window, false);
+                        window.display();
+                        break;
+                    case ButtonClick::Feed:
+                        draw_plants(window, event, false);
+                        draw_menu(window, false);
+                        draw_AP_screen(window, false);
+                        draw_text(window, true);
+                        window.display();
+                        break;
+                    case ButtonClick::QM:
+                        system(op.c_str());
+                        buttonClick = ButtonClick::undefined;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     return 0;
 }
+/*
+            if (appState == AppState::LOGGED_OUT) {
+                draw_clear_screen(window);
+            }
+            else if (appState == AppState::LOGGED_IN) {
+                draw_main_screen(window);
+                draw_buttons(window, APRotation);
+                //draw_plants(window, true);
+                //if (buttonClick == ButtonClick::Menu) {
+                //   draw_menu(window, true);
+                //    std::cout << "draw_menu(window, true);" << std::endl;
+                //}
+                //else {
+                //    draw_menu(window, false);
+                //    std::cout << "draw_menu(window, FALSE);" << std::endl;
+                //}
+
+                switch (buttonClick) {
+                case ButtonClick::Home:
+                    draw_plants(window, event, true);
+                    draw_menu(window, false);
+                    draw_AP_screen(window, false);
+                    draw_text(window, false);
+                    window.display();
+                    break;
+                case ButtonClick::Menu:
+                    draw_plants(window, event, false);
+                    draw_menu(window, true);
+                    draw_AP_screen(window, false);
+                    draw_text(window, false);
+                    window.display();
+                    break;
+                case ButtonClick::AP:
+                    draw_plants(window, event, false);
+                    draw_menu(window, false);
+                    draw_AP_screen(window, true);
+                    draw_text(window, false);
+                    window.display();
+                    break;
+                case ButtonClick::Feed:
+                    draw_plants(window, event, false);
+                    draw_menu(window, false);
+                    draw_AP_screen(window, false);
+                    draw_text(window, true);
+                    window.display();
+                    break;
+                case ButtonClick::QM:
+                    system(op.c_str());
+                    buttonClick = ButtonClick::undefined;
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            */

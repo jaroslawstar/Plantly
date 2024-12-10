@@ -59,48 +59,7 @@ void draw_main_screen(sf::RenderWindow& window) {
 	MainScreenP.setTexture(MainScreen);
 	MainScreenP.setPosition(120, 0);
 	window.draw(MainScreenP);
-
-}
-
-
-/*
-void draw_logo(sf::RenderWindow& window) {
-	// Ustawienia tekstu
-	sf::Font logo_font;
-	if (!logo_font.loadFromFile("Resources/Fonts/League_Script/LeagueScript-Regular.ttf")) {
-		cout << "Failed to load font";
-	}
-	sf::Text logo;
-	logo.setFont(logo_font);
-	logo.setString("PLANTLY");
-	logo.setCharacterSize(50);
-	logo.setFillColor(sf::Color::Black);
-	logo.setPosition(640, 0); // Pozycja tekstu
-	window.draw(logo);
-	//window.display();
-}
-*/
-
-
-
-
-void draw_plants(sf::RenderWindow& window, bool show) {
-	sf::Texture PlantBlock;
-	if (!PlantBlock.loadFromFile("Resources/images/AddFirstPlant.png")) {
-		cout << "Failed to load Sign up screen!" << endl;
-		return;
-	}
-	sf::Sprite PlantBlockP(PlantBlock);
-	PlantBlockP.setPosition(200, 160);
-
-	if (show == true) {
-		window.draw(PlantBlockP);
-		
-		window.display();
-	}
-	else if (show == false) {
-		PlantBlockP.setPosition(2000, 2000);
-	}
+	window.display();
 }
 
 void draw_buttons(sf::RenderWindow& window, bool rotation) {
@@ -157,7 +116,60 @@ void draw_buttons(sf::RenderWindow& window, bool rotation) {
 	window.draw(APButton);
 	window.draw(FeedButton);
 	window.draw(QMButton);
+	window.display();
+}
+
+/*
+void draw_logo(sf::RenderWindow& window) {
+	// Ustawienia tekstu
+	sf::Font logo_font;
+	if (!logo_font.loadFromFile("Resources/Fonts/League_Script/LeagueScript-Regular.ttf")) {
+		cout << "Failed to load font";
+	}
+	sf::Text logo;
+	logo.setFont(logo_font);
+	logo.setString("PLANTLY");
+	logo.setCharacterSize(50);
+	logo.setFillColor(sf::Color::Black);
+	logo.setPosition(640, 0); // Pozycja tekstu
+	window.draw(logo);
 	//window.display();
+}
+*/
+
+
+
+
+void draw_plants(sf::RenderWindow& window, sf::Event event, bool show) {
+	sf::Texture PlantBlock;
+	if (!PlantBlock.loadFromFile("Resources/images/AddFirstPlant.png")) {
+		cout << "Failed to load Sign up screen!" << endl;
+		return;
+	}
+	sf::Sprite PlantBlockP(PlantBlock);
+	PlantBlockP.setPosition(200, 160);
+
+	if (show == true) {
+		window.draw(PlantBlockP);
+		draw_AP_screen(window, true);
+		window.display();
+	}
+	else if (show == false) {
+		PlantBlockP.setPosition(2000, 2000);
+	}
+
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+		std::cout << "Mouse clicked at: ("
+			<< mousePosition.x << ", "
+			<< mousePosition.y << ")" << std::endl;
+		// Check if click is in targetL
+		if (PlantBlockP.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+			std::cout << "Click at 'Add Plant Block' button" << std::endl;
+			ButtonClick::AP;
+		}
+	}
+	window.display();
 }
 
 void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB) {
@@ -169,6 +181,7 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 	if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Home' button" << std::endl;
 		buttonClick = ButtonClick::Home;
+		APRotation = false;
 		//return ButtonClick::Home;
 
 	}
@@ -176,7 +189,8 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 		std::cout << "Click at 'Menu' button" << std::endl;
 		//draw_menu(window, true);
 		//if (buttonClick != ButtonClick::Menu) {
-			buttonClick = ButtonClick::Menu;
+		buttonClick = ButtonClick::Menu;
+		APRotation = false;
 			//return ButtonClick::Menu;
 		//}
 		//else if (buttonClick == ButtonClick::Menu) {
@@ -187,23 +201,29 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 	}
 	if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Add Plant' button" << std::endl;
-		if (!APRotation)
+		if (!APRotation){
+			buttonClick = ButtonClick::AP; 
 			APRotation = true;
-		else if (APRotation) {
-			APRotation = false;
 		}
-		buttonClick = ButtonClick::AP;
+		else {
+			APRotation = false;
+			ButtonClick::Home;
+		}
+
+			
 		//return ButtonClick::AP;
 
 	}
 	if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Feed' button" << std::endl;
 		buttonClick = ButtonClick::Feed;
+		APRotation = false;
 		//return ButtonClick::Feed;
 	}
 	if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Question Mark' button" << std::endl;
 		buttonClick = ButtonClick::QM;
+		APRotation = false;
 		//return ButtonClick::QM;
 
 	}
@@ -274,7 +294,7 @@ void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
 		window.draw(AS);
 		window.draw(RP);
 
-		window.display();
+		//window.display();
 		//draw_menu(window, event, true);
 	}
 	else if (show == false) {
@@ -286,7 +306,7 @@ void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
 		RP.setPosition(2000, 2000);
 		PFPb.setPosition(2000, 2000);
 	}
-	//window.display();
+	window.display();
 }
 
 void draw_text(sf::RenderWindow& window, bool show) { //, bool show
@@ -302,15 +322,47 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 	text.setFillColor(sf::Color::Black);
 	text.setPosition(200, 160);
 	if (show == true) {
-		window.draw(text);
-
-		window.display();
+		window.draw(text);	
 	}
 	else if (show == false) {
 		text.setPosition(2000, 2000);
 	}
+	window.display();
 }
 
+void draw_AP_screen(sf::RenderWindow& window, bool show) {
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
+		cout << "Failed to load font";
+	}
+
+	sf::Text nameText("Nazwa:", font, 20);
+	sf::Text nameInput("", font, 20);
+	sf::Text daysText("Ilosc dni:", font, 20);
+	sf::Text daysInput("", font, 20);
+	sf::Text filePathText("Plik:", font, 20);
+	sf::Text filePathInput("", font, 20);
+	sf::Text saveText("Zapisz [Enter]", font, 20);
+	if (show) {
+		nameText.setPosition(100, 100);
+		nameInput.setPosition(150, 100);
+		daysText.setPosition(100, 200);
+		daysInput.setPosition(150, 200);
+		filePathText.setPosition(100, 300);
+		filePathInput.setPosition(150, 300);
+		saveText.setPosition(100, 450);
+	}
+	else if (!show) {
+		nameText.setPosition(2000, 2000);
+		nameInput.setPosition(2000, 2000);
+		daysText.setPosition(2000, 2000);
+		daysInput.setPosition(2000, 2000);
+		filePathText.setPosition(2000, 2000);
+		filePathInput.setPosition(2000, 2000);
+		saveText.setPosition(2000, 2000);
+	}
+	window.display();
+}
 //git stash komenda do chomikowania
 
 //loged in user class
@@ -410,3 +462,4 @@ void UserData::saveToDatabase() {
 	// Close database
 	sqlite3_close(db);
 }
+
