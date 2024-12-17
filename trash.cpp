@@ -192,3 +192,87 @@ ________________________________________________________________________________
 
 
 
+/*
+                    switch (button) {
+                    case ButtonClick::Home:
+
+                        window.display();
+                        break;
+                    case ButtonClick::Menu:
+
+                        window.display();
+                        break;
+                    case ButtonClick::AP:
+
+                        window.display();
+                        break;
+                    case ButtonClick::Feed:
+
+                        window.display();
+                        break;
+                    case ButtonClick::QM:
+
+                        break;
+                    default:
+                        draw_main_screen(window);
+                        draw_buttons(window, APRotation);
+                        break;
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    draw_main_screen(window);
+                        draw_plants(window, event, true);
+                        draw_menu(window, false);
+                        draw_AP_screen(window, false);
+                        draw_text(window, false);
+
+                        draw_main_screen(window);
+                        draw_plants(window, event, false);
+                        draw_menu(window, true);
+                        draw_AP_screen(window, false);
+                        draw_text(window, false);
+
+
+                        draw_main_screen(window);
+                        if (buttonClick == ButtonClick::AP) {
+                            APRotation = false;
+                            buttonClick = ButtonClick::undefined;
+                        }
+                        else {
+                            APRotation = true;
+                            buttonClick = ButtonClick::AP;
+                        }
+
+
+
+
+                         draw_main_screen(window);
+                        if (buttonClick == ButtonClick::Feed) {
+                            buttonClick = ButtonClick::undefined;
+                        }
+                        else {
+                            buttonClick = ButtonClick::Feed;
+                        }
+
+
+
+                        draw_main_screen(window);
+                        if (buttonClick == ButtonClick::QM) {
+                            buttonClick = ButtonClick::undefined;
+                        }
+                        else {
+                            buttonClick = ButtonClick::QM;
+                        }
+                    */

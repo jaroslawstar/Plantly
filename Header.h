@@ -17,7 +17,7 @@ enum class ButtonClick {
     Menu,
     AP,
     Feed,
-    QM,
+    QM
 };
 extern ButtonClick buttonClick;
 
@@ -37,13 +37,13 @@ std::vector<unsigned char> readFile(const std::string& filePath);
 void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::string& fileName);
 void open_plants_db();
 
-void draw_AP_screen(sf::RenderWindow& window, bool show);
+void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show);
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 //void buttons_engine(sf::RenderWindow& window, sf::Event event);
 //void openURL(const std::string& url);
 //void check_user();
 
-void handleTextInput(sf::Event& event, std::string& text, sf::Text& textDisplay);
+void handleTextInput(sf::Text& text, sf::Event& event, std::string& input);
 
 
 class UserData {
@@ -52,16 +52,16 @@ public:
     std::string age;
     std::string email;
 
-    void saveToDatabase(); // Function declaration
+    void saveToDatabase(const std::string& dbFile); // Function declaration
 };
 
 class Plant {
 public:
     std::string name;
-    int amount;
-    std::string color;
+    int days;
+    std::string filePath;
 
-    void getInput();
+    void saveToDatabase(const std::string& dbFile);
 
     
 };

@@ -57,7 +57,7 @@ void draw_main_screen(sf::RenderWindow& window) {
 	}
 	sf::Sprite MainScreenP;
 	MainScreenP.setTexture(MainScreen);
-	MainScreenP.setPosition(120, 0);
+	MainScreenP.setPosition(0, 0);
 	window.draw(MainScreenP);
 	window.display();
 }
@@ -66,8 +66,8 @@ void draw_buttons(sf::RenderWindow& window, bool rotation) {
 
 	//int Click_Value = 0;
 
-	sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
-	rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
+	//sf::RectangleShape rectangle_green(sf::Vector2f(120.0f, 780.0f));
+	//rectangle_green.setFillColor(sf::Color(0xC4F7B7FF)); // Kolor prostokata (Cornflower Blue)
 
 	sf::Texture Home;
 	sf::Texture Menu;
@@ -110,13 +110,13 @@ void draw_buttons(sf::RenderWindow& window, bool rotation) {
 	QMButton.setPosition(50.0f, 400.0f);
 	QMButton.setScale(0.05f, 0.05f);
 
-	window.draw(rectangle_green);
+	//window.draw(rectangle_green);
 	window.draw(HomeButton);
 	window.draw(MenuButton);
 	window.draw(APButton);
 	window.draw(FeedButton);
 	window.draw(QMButton);
-	window.display();
+	//window.display();
 }
 
 /*
@@ -151,7 +151,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show) {
 
 	if (show == true) {
 		window.draw(PlantBlockP);
-		draw_AP_screen(window, true);
+		draw_AP_screen(window, event, true);
 		window.display();
 	}
 	else if (show == false) {
@@ -180,52 +180,69 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 	// Check if click is in targetL
 	if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Home' button" << std::endl;
-		buttonClick = ButtonClick::Home;
 		APRotation = false;
-		//return ButtonClick::Home;
-
-	}
-	if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-		std::cout << "Click at 'Menu' button" << std::endl;
-		//draw_menu(window, true);
-		//if (buttonClick != ButtonClick::Menu) {
-		buttonClick = ButtonClick::Menu;
-		APRotation = false;
-			//return ButtonClick::Menu;
-		//}
-		//else if (buttonClick == ButtonClick::Menu) {
-		//	buttonClick = ButtonClick::undefined;
-		//}
-		//else
-		//	buttonClick = ButtonClick::undefined;
-	}
-	if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-		std::cout << "Click at 'Add Plant' button" << std::endl;
-		if (!APRotation){
-			buttonClick = ButtonClick::AP; 
-			APRotation = true;
+		
+		if (buttonClick == ButtonClick::Home) {
+			buttonClick = ButtonClick::undefined;
 		}
 		else {
-			APRotation = false;
-			ButtonClick::Home;
+			buttonClick = ButtonClick::Home;
 		}
-
-			
-		//return ButtonClick::AP;
-
+		
+		//return ButtonClick::Home;
 	}
-	if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-		std::cout << "Click at 'Feed' button" << std::endl;
-		buttonClick = ButtonClick::Feed;
+	else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Menu' button" << std::endl;
 		APRotation = false;
+		
+		if (buttonClick == ButtonClick::Menu) {
+			buttonClick = ButtonClick::undefined;
+		}
+		else {
+			buttonClick = ButtonClick::Menu;
+		}
+		
+		//return ButtonClick::Menu;
+	}
+	else if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Add Plant' button" << std::endl;
+		
+		if (buttonClick == ButtonClick::AP) {
+			APRotation = false;
+			buttonClick = ButtonClick::undefined;
+		}
+		else {
+			APRotation = true;
+			buttonClick = ButtonClick::AP;
+		}
+		
+		//return ButtonClick::AP;
+	}
+	else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+		std::cout << "Click at 'Feed' button" << std::endl;
+		APRotation = false;
+		
+		if (buttonClick == ButtonClick::Feed) {
+			buttonClick = ButtonClick::undefined;
+		}
+		else {
+			buttonClick = ButtonClick::Feed;
+		}
+		
 		//return ButtonClick::Feed;
 	}
-	if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+	else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 		std::cout << "Click at 'Question Mark' button" << std::endl;
-		buttonClick = ButtonClick::QM;
 		APRotation = false;
+		
+		if (buttonClick == ButtonClick::QM) {
+			buttonClick = ButtonClick::undefined;
+		}
+		else {
+			buttonClick = ButtonClick::QM;
+		}
+		
 		//return ButtonClick::QM;
-
 	}
 }
 
@@ -330,43 +347,77 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 	window.display();
 }
 
-void draw_AP_screen(sf::RenderWindow& window, bool show) {
+void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
+	bool added_plant = false;
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
 		cout << "Failed to load font";
 	}
-
-	sf::Text nameText("Nazwa:", font, 20);
+	
+	sf::Text nameText("Name:", font, 20);
 	sf::Text nameInput("", font, 20);
-	sf::Text daysText("Ilosc dni:", font, 20);
+	sf::Text daysText("Days:", font, 20);
 	sf::Text daysInput("", font, 20);
-	sf::Text filePathText("Plik:", font, 20);
+	sf::Text filePathText("File:", font, 20);
 	sf::Text filePathInput("", font, 20);
-	sf::Text saveText("Zapisz [Enter]", font, 20);
+	sf::Text saveText("Save", font, 20);
+	
 	if (show) {
-		nameText.setPosition(100, 100);
-		nameInput.setPosition(150, 100);
-		daysText.setPosition(100, 200);
-		daysInput.setPosition(150, 200);
-		filePathText.setPosition(100, 300);
-		filePathInput.setPosition(150, 300);
-		saveText.setPosition(100, 450);
-	}
-	else if (!show) {
-		nameText.setPosition(2000, 2000);
-		nameInput.setPosition(2000, 2000);
-		daysText.setPosition(2000, 2000);
-		daysInput.setPosition(2000, 2000);
-		filePathText.setPosition(2000, 2000);
-		filePathInput.setPosition(2000, 2000);
-		saveText.setPosition(2000, 2000);
+		while (!added_plant) {
+			nameText.setPosition(100, 100);
+			nameInput.setPosition(150, 100);
+			daysText.setPosition(100, 200);
+			daysInput.setPosition(150, 200);
+			filePathText.setPosition(100, 300);
+			filePathInput.setPosition(150, 300);
+			saveText.setPosition(100, 450);
+
+			std::string nameBuffer, daysBuffer, filePathBuffer;
+			Plant entry;
+			bool enteringFilePath = false;
+
+			if (event.type == sf::Event::TextEntered) {
+				if (enteringFilePath) {
+					handleTextInput(filePathInput, event, filePathBuffer);
+				}
+				else if (nameInput.getString().isEmpty() || nameInput.getString() == nameBuffer) {
+					handleTextInput(nameInput, event, nameBuffer);
+				}
+				else {
+					handleTextInput(daysInput, event, daysBuffer);
+				}
+			}
+
+			if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Tab) {
+					enteringFilePath = !enteringFilePath;
+				}
+				else if (event.key.code == sf::Keyboard::Enter) {
+					try {
+						entry.name = nameBuffer;
+						entry.days = std::stoi(daysBuffer);
+						entry.filePath = filePathBuffer;
+						entry.saveToDatabase("data.db");
+						std::cout << "Data saved!" << std::endl;
+						added_plant = true;
+					}
+					catch (...) {
+						std::cerr << "Invalid input!" << std::endl;
+					}
+				}
+			}
+
+			if (added_plant == true)
+				break;
+			//window.display();
+		}
 	}
 	window.display();
 }
 //git stash komenda do chomikowania
 
 //loged in user class
-//Function to initialize data base for Plants
+//Function to data base for Plants
 void open_plants_db() {
 	sqlite3* db;
 	int exit = sqlite3_open("plants.db", &db);
@@ -415,22 +466,24 @@ void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::strin
 }
 
 // Helper function to handle text input
-void handleTextInput(sf::Event& event, std::string& text, sf::Text& textDisplay) {
-	if (event.text.unicode == '\b' && !text.empty()) { // Handle backspace
-		text.pop_back();
-	}
-	else if (event.text.unicode < 128 && event.text.unicode > 31) { // Handle valid input
-		text += static_cast<char>(event.text.unicode);
-	}
-	textDisplay.setString(text);
-}
 
-void UserData::saveToDatabase() {
+void handleTextInput(sf::Text& text, sf::Event& event, std::string& input) {
+	if (event.text.unicode < 128) {
+		if (event.text.unicode == '\b' && !input.empty()) { // Backspace
+			input.pop_back();
+		}
+		else if (event.text.unicode != '\b') {
+			input += static_cast<char>(event.text.unicode);
+		}
+		text.setString(input);
+	}
+}
+void UserData::saveToDatabase(const std::string& dbFile) {
 	sqlite3* db;
 	char* errorMessage = nullptr;
 
 	// Open SQLite database
-	if (sqlite3_open("user_data.db", &db)) {
+	if (sqlite3_open(dbFile.c_str(), &db)) {
 		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
 		return;
 	}
@@ -463,3 +516,38 @@ void UserData::saveToDatabase() {
 	sqlite3_close(db);
 }
 
+void Plant::saveToDatabase(const std::string& dbFile) {
+	sqlite3* db;
+	char* errorMessage = nullptr;
+
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	const char* createTableQuery = R"(
+            CREATE TABLE IF NOT EXISTS entries (
+                ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                NAME TEXT NOT NULL,
+                DAYS INTEGER NOT NULL,
+                FILEPATH TEXT NOT NULL
+            );
+        )";
+
+	if (sqlite3_exec(db, createTableQuery, nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error creating table: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+		sqlite3_close(db);
+		return;
+	}
+
+	std::string insertQuery = "INSERT INTO entries (NAME, DAYS, FILEPATH) VALUES ('" +
+		name + "', " + std::to_string(days) + ", '" + filePath + "');";
+
+	if (sqlite3_exec(db, insertQuery.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error inserting data: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+	}
+
+	sqlite3_close(db);
+}
