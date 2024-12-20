@@ -487,7 +487,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		sf::RectangleShape targetXB(sf::Vector2f(49, 49));
 		targetXB.setPosition(849, 116);
 		
-		//window.draw(targetXB);
+		///window.draw(targetXB);
 		window.draw(nameText);
 		window.draw(nameInput);
 		window.draw(daysText);
