@@ -28,7 +28,7 @@ void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
 //void draw_buttons(sf::RenderWindow& window);
 void draw_X(sf::RenderWindow& window);
-void draw_menu(sf::RenderWindow& window, bool show);
+void draw_menu(sf::RenderWindow& window, sf::Event event, bool show);
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
 void draw_text(sf::RenderWindow& window, bool show); //, bool show
 
@@ -42,7 +42,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show);
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 //void buttons_engine(sf::RenderWindow& window, sf::Event event);
 //void openURL(const std::string& url);
-//void check_user();
+void check_user();
 
 void handleTextInput(sf::Text& text, sf::Event& event, std::string& input);
 

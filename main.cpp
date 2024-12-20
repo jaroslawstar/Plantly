@@ -20,6 +20,7 @@ bool APRotation = false;
 bool show = false;
 
 ButtonClick buttonClick = ButtonClick::undefined;
+AppState appState = AppState::LOGGED_OUT;
 
 bool UserSighned = 0;
 bool PremiumUser = false;
@@ -52,7 +53,7 @@ int main() {
     //Window creation
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
     UserData User_Data;
-    AppState appState = AppState::LOGGED_OUT;
+    
     
     //----------Link_for_QM----------
     char url[70] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
@@ -139,19 +140,22 @@ int main() {
                         << mousePosition.y << ")" << std::endl;
                     if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Home' button" << std::endl;
-                        draw_plants(window, event, show, "plants.db");
+                        draw_menu(window, event, false);
+                        draw_plants(window, event, true, "plants.db");
                         //return ButtonClick::Home;
                     }
                     else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Menu' button" << std::endl;
-                        buttonClick = ButtonClick::Menu;
+                        
+                        draw_menu(window, event, true);
 
                         //return ButtonClick::Menu;
                     }
                     else if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Add Plant' button" << std::endl;
                         //buttonClick = ButtonClick::AP;
-                        draw_main_screen(window);
+                        draw_menu(window, event, false);
+                        //draw_main_screen(window);
                         draw_AP_screen(window, event, true);
                         //return ButtonClick::AP;
                     }

@@ -341,7 +341,7 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 	}
 }
 
-void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
+void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 70);
@@ -362,54 +362,20 @@ void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
 		return;
 	}
 
-	sf::Text name;
-	name.setFont(text_font);
-	name.setString("Name \nSurname");
-	name.setCharacterSize(20);
-	name.setFillColor(sf::Color::Black);
-	name.setPosition(140, 100); // Pozycja tekstu
-
-	sf::Text Preferences;
-	Preferences.setFont(text_font);
-	Preferences.setString("Preferences");
-	Preferences.setCharacterSize(20);
-	Preferences.setFillColor(sf::Color::Black);
-	Preferences.setPosition(140, 160);
-
-	sf::Text AS;
-	AS.setFont(text_font);
-	AS.setString("Account settings");
-	AS.setCharacterSize(20);
-	AS.setFillColor(sf::Color::Black);
-	AS.setPosition(140, 190);
-
-	sf::Text RP;
-	RP.setFont(text_font);
-	RP.setString("Restore purchases");
-	RP.setCharacterSize(20);
-	RP.setFillColor(sf::Color::Black);
-	RP.setPosition(140, 220);
-
+	sf::Text name("Name \nSurname", text_font, 20);
+	sf::Text Preferences("Preferences", text_font, 20);
+	sf::Text AS("Account settings", text_font, 20);
+	sf::Text RP("Restore purchases", text_font, 20);
+	sf::Text LogoutB("Logout", text_font, 20);
 	sf::Sprite PFPb;
 	PFPb.setTexture(PFP);
-	PFPb.setPosition(300, 100);
 	PFPb.setScale(0.15f, 0.15f);
 
 
+	
 
-	if (show == true) {
-		window.draw(rectangle_shadow);
-		window.draw(rectangle_white);
-		window.draw(name);
-		window.draw(PFPb);
-		window.draw(Preferences);
-		window.draw(AS);
-		window.draw(RP);
 
-		//window.display();
-		//draw_menu(window, event, true);
-	}
-	else if (show == false) {
+	if (!show) {
 		rectangle_white.setPosition(2000, 2000);
 		rectangle_shadow.setPosition(2000, 2000);
 		name.setPosition(2000, 2000); // Pozycja tekstu
@@ -418,7 +384,64 @@ void draw_menu(sf::RenderWindow& window, bool show) { //, int Click_Value_m
 		RP.setPosition(2000, 2000);
 		PFPb.setPosition(2000, 2000);
 	}
-	window.display();
+	else if (show) {
+		name.setPosition(140, 100); // Pozycja tekstu
+		Preferences.setPosition(140, 160);
+		AS.setPosition(140, 190);
+		RP.setPosition(140, 220);
+		LogoutB.setPosition(140, 220);
+		PFPb.setPosition(300, 100);
+
+		name.setFillColor(sf::Color::Black);
+		Preferences.setFillColor(sf::Color::Black);
+		AS.setFillColor(sf::Color::Black);
+		RP.setFillColor(sf::Color::Black);
+		LogoutB.setFillColor(sf::Color::Black);
+
+		sf::RectangleShape targetLogoutB(sf::Vector2f(49, 20));
+		targetLogoutB.setPosition(849, 116);
+
+		sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
+		targetMainBs.setPosition(40, 40);
+
+		bool MainBs = false;
+
+
+		window.draw(rectangle_shadow);
+		window.draw(rectangle_white);
+		window.draw(name);
+		window.draw(PFPb);
+		window.draw(Preferences);
+		window.draw(AS);
+		window.draw(RP);
+		window.draw(LogoutB);
+		window.display();
+		while (!MainBs) {
+			while (window.pollEvent(event)) {
+				if (event.type == sf::Event::Closed)
+					window.close();
+				//Close button service
+				if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+					//----------Logged_OUT_Buttons----------
+					sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+					std::cout << "Mouse clicked at: ("
+						<< mousePosition.x << ", "
+						<< mousePosition.y << ")" << std::endl;
+					if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+						std::cout << "Click at 'X' button" << std::endl;
+						MainBs = true;
+					}
+					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+						std::cout << "Click at 'X' button" << std::endl;
+						UserSighned = false;
+					}
+				}
+			}
+		}
+		window.display();
+		//draw_menu(window, event, true);
+	}
+	
 }
 
 void draw_text(sf::RenderWindow& window, bool show) { //, bool show
