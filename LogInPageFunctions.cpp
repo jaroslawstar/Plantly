@@ -30,15 +30,12 @@ Wazne parametry:
 using namespace std;
 
 void draw_clear_screen(sf::RenderWindow& window) {
-	//window.clear();
 	sf::Texture ClearScreen;
 	if (!ClearScreen.loadFromFile("Resources/images/Clear_MainPage.png")) {
 		cout << "Failed to load Clear screen!" << endl;
 		return;
 	}
 	sf::Sprite ClearScreenP(ClearScreen);
-	//ClearScreenP.setTexture(ClearScreen);
-	//LogINScreenP.setPosition(0, 0);
 	window.draw(ClearScreenP);
 	window.display();
 

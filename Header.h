@@ -1,16 +1,16 @@
 #pragma once
 #ifndef Header
 #define Header
-extern bool APRotation;
-extern bool show;
+//extern bool APRotation;
+//extern bool show;
+//extern bool PremiumUser;
 extern bool UserSighned;
-extern bool PremiumUser;
 
 enum class AppState {
     LOGGED_OUT,
     LOGGED_IN,
 };
-
+/*
 enum class ButtonClick {
     undefined,
     Home,
@@ -19,7 +19,9 @@ enum class ButtonClick {
     Feed,
     QM
 };
-extern ButtonClick buttonClick;
+*/
+
+//extern ButtonClick buttonClick;
 extern AppState appState;
 
 void draw_signup_screen(sf::RenderWindow& window);
@@ -28,13 +30,13 @@ void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
 //void draw_buttons(sf::RenderWindow& window);
-void draw_X(sf::RenderWindow& window);
+void draw_X(sf::RenderWindow& window, int x, int y);
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show);
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
 void draw_text(sf::RenderWindow& window, bool show); //, bool show
 
 
-void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB);
+//id buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB);
 std::vector<unsigned char> readFile(const std::string& filePath);
 void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::string& fileName);
 void open_plants_db();

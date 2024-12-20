@@ -115,7 +115,7 @@ void draw_buttons(sf::RenderWindow& window) {
 }
 */
 
-void draw_X(sf::RenderWindow& window) {
+void draw_X(sf::RenderWindow& window, int x, int y) {
 	sf::Texture XT;
 	if (!XT.loadFromFile("Resources/images/AP.png"))
 		cout << "Failed to load image!" << endl;
@@ -123,7 +123,7 @@ void draw_X(sf::RenderWindow& window) {
 	sf::Sprite X;
 	X.setTexture(XT);
 	X.setScale(0.12f, 0.12f);
-	X.setPosition(870, 100);
+	X.setPosition(x, y);
 	X.setRotation(45);
 	window.draw(X);
 	//window.display();
@@ -266,7 +266,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	}*/
 	window.display();
 }
-
+/*
 void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB) {
 	sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 	std::cout << "Mouse clicked at: ("
@@ -340,6 +340,7 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 		//return ButtonClick::QM;
 	}
 }
+*/
 
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
@@ -521,7 +522,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(filePathInput);
 		window.draw(saveText);
 
-		draw_X(window);
+		draw_X(window, 870, 100);
 		window.display();
 		bool added_plant = false;
 		std::string nameBuffer, daysBuffer, filePathBuffer;
