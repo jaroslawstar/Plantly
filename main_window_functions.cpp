@@ -389,7 +389,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		Preferences.setPosition(140, 160);
 		AS.setPosition(140, 190);
 		RP.setPosition(140, 220);
-		LogoutB.setPosition(140, 220);
+		LogoutB.setPosition(140, 250);
 		PFPb.setPosition(300, 100);
 
 		name.setFillColor(sf::Color::Black);
@@ -399,7 +399,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		LogoutB.setFillColor(sf::Color::Black);
 
 		sf::RectangleShape targetLogoutB(sf::Vector2f(49, 20));
-		targetLogoutB.setPosition(849, 116);
+		targetLogoutB.setPosition(140, 250);
 
 		sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
 		targetMainBs.setPosition(40, 40);
@@ -416,6 +416,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		window.draw(RP);
 		window.draw(LogoutB);
 		window.display();
+
 		while (!MainBs) {
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed)
@@ -432,8 +433,9 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 						MainBs = true;
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-						std::cout << "Click at 'X' button" << std::endl;
-						UserSighned = false;
+						std::cout << "Click at 'Logout' button" << std::endl;
+						appState = AppState::LOGGED_OUT;
+						MainBs = true;
 					}
 				}
 			}

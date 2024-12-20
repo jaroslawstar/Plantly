@@ -20,6 +20,7 @@ enum class ButtonClick {
     QM
 };
 extern ButtonClick buttonClick;
+extern AppState appState;
 
 void draw_signup_screen(sf::RenderWindow& window);
 void draw_login_screen(sf::RenderWindow& window);
