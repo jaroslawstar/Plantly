@@ -18,7 +18,7 @@ Wazne parametry:
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
-//#include <openssl/sha.h>
+#include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
 #include <string>
