@@ -52,7 +52,7 @@ int main() {
     //Window creation
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
     UserData User_Data;
-    AppState appState = AppState::LOGGED_IN;
+    AppState appState = AppState::LOGGED_OUT;
     
     //----------Link_for_QM----------
     char url[70] = "https://github.com/jaroslawstar/Plantly/blob/master/README.md";
@@ -120,18 +120,16 @@ int main() {
            // window.display();
         }
         window.display();
-        window.clear();
-        
+        //window.clear();
         //window.display();
+        
         while (appState == AppState::LOGGED_IN) {   //Log in window loop
-            //draw_main_screen(window);
-            //draw_buttons(window, APRotation);
-            
+            draw_main_screen(window);
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     window.close();
-                draw_main_screen(window);
-                draw_buttons(window, APRotation);
+                
+                //draw_buttons(window, APRotation);
                 if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
                     //----------Logged_IN_Buttons----------
                     //buttonsEngine(window, targetHB, targetMB, targetAPB, targetFB, targetQMB);
@@ -141,67 +139,69 @@ int main() {
                         << mousePosition.y << ")" << std::endl;
                     if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Home' button" << std::endl;
-                        APRotation = false;
-                        buttonClick = ButtonClick::Home;
+                        draw_plants(window, event, show, "plants.db");
                         //return ButtonClick::Home;
                     }
                     else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Menu' button" << std::endl;
-                        APRotation = false;
                         buttonClick = ButtonClick::Menu;
 
                         //return ButtonClick::Menu;
                     }
                     else if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Add Plant' button" << std::endl;
-                        APRotation = true;
-                        buttonClick = ButtonClick::AP;
-
+                        //buttonClick = ButtonClick::AP;
+                        draw_main_screen(window);
+                        draw_AP_screen(window, event, true);
                         //return ButtonClick::AP;
                     }
                     else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Feed' button" << std::endl;
-                        APRotation = false;
                         buttonClick = ButtonClick::Feed;
+                        draw_text(window, true);
 
                         //return ButtonClick::Feed;
                     }
                     else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Question Mark' button" << std::endl;
-                        APRotation = false;
                         buttonClick = ButtonClick::QM;
 
                         //return ButtonClick::QM;
                     }
+                }
+            }
+            /*
+            
+            switch (buttonClick) {
+            case ButtonClick::Home:
+                draw_plants(window, event, true, "plants.db");
+                window.display();
+                break;
+            case ButtonClick::Menu:
 
-                    switch (buttonClick) {
-                    case ButtonClick::Home:
+                window.display();
+                break;
+            case ButtonClick::AP:
+                //draw_buttons(window, APRotation);
 
-                        window.display();
-                        break;
-                    case ButtonClick::Menu:
+                
+                //window.display();
+                break;
+            case ButtonClick::Feed:
+                //window.clear();
+                //draw_main_screen(window);
+                
+                //draw_buttons(window);
 
-                        window.display();
-                        break;
-                    case ButtonClick::AP:
-                        //draw_buttons(window, APRotation);
-                        window.clear(sf::Color::White);
-                        window.display();
-                        draw_AP_screen(window, event, true);
-                        //window.display();
-                        break;
-                    case ButtonClick::Feed:
-
-                        window.display();
-                        break;
-                    case ButtonClick::QM:
-
-                        break;
-                    default:
-                        draw_main_screen(window);
-                        draw_buttons(window, APRotation);
-                        break;
-                    }
+                break;
+            case ButtonClick::QM:
+                
+                break;
+            default:
+                //draw_main_screen(window);
+                //draw_buttons(window);
+                break;
+            }*/
 
                     /*
                     
@@ -241,10 +241,10 @@ int main() {
                         }
                     }*/
                     //window.display();
-                }
+                
 
-            }
-            window.display();
+            
+            //window.display();
         }
     }
     

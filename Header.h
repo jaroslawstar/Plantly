@@ -26,9 +26,10 @@ void draw_login_screen(sf::RenderWindow& window);
 void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
-void draw_buttons(sf::RenderWindow& window, bool rotation);
+//void draw_buttons(sf::RenderWindow& window);
+void draw_X(sf::RenderWindow& window);
 void draw_menu(sf::RenderWindow& window, bool show);
-void draw_plants(sf::RenderWindow& window, sf::Event event, bool show);
+void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
 void draw_text(sf::RenderWindow& window, bool show); //, bool show
 
 
