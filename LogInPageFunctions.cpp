@@ -17,16 +17,14 @@ Wazne parametry:
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
 #include <string>
-
 #include "Header.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
-
+//#include "windows.h"
 using namespace std;
 
 void draw_clear_screen(sf::RenderWindow& window) {
@@ -48,8 +46,205 @@ void draw_signup_screen(sf::RenderWindow& window) {
 		cout << "Failed to load Sign up screen!" << endl;
 		return;
 	}
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
+		cout << "Failed to load font";
+
 	sf::Sprite SignUPScreenP(SignUPScreen);
 	window.draw(SignUPScreenP);
+	window.display();
+
+}
+
+void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
+	//window.clear();
+	sf::Texture LogINScreen;
+	if (!LogINScreen.loadFromFile("Resources/images/LogIn_MainPage.png")) {
+		cout << "Failed to load Log in screen!" << endl;
+		return;
+	}
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
+		cout << "Failed to load font";
+
+	sf::Sprite LogINScreenP(LogINScreen);
+	window.draw(LogINScreenP);
+
+	sf::RectangleShape targetFieldEmail(sf::Vector2f(200, 17));
+	sf::RectangleShape targetFieldPass(sf::Vector2f(200, 17));
+	sf::RectangleShape targetS(sf::Vector2f(105, 36));
+	sf::RectangleShape targetN(sf::Vector2f(105, 36));
+	targetFieldEmail.setPosition(578, 286);
+	targetFieldPass.setPosition(578, 327);
+	targetS.setPosition(655, 212);
+	targetN.setPosition(585, 467);
+
+	//window.draw(targetFieldPass);
+	std::string passStars = "";
+	std::string emailInput = "";
+	std::string passInput;
+	sf::Text emailText(emailInput, font, 15);
+	sf::Text passText(passStars, font, 15);
+	emailText.setPosition(578, 286);
+	passText.setPosition(578, 327);
+	emailText.setFillColor(sf::Color::Black);
+	passText.setFillColor(sf::Color::Black);
+	window.display();
+
+	//std::string
+
+	bool userDataEntered = false;
+
+	bool inPassField = false;
+	bool inEmailField = false;
+
+	while (!userDataEntered) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+			//Close button service
+			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+				//----------Logged_OUT_Buttons----------
+				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+				std::cout << "Mouse clicked at: ("
+					<< mousePosition.x << ", "
+					<< mousePosition.y << ")" << std::endl;
+				if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+					std::cout << "Click at 'SignUp' button" << std::endl;
+					targetFieldEmail.setPosition(2000, 2000);
+					targetFieldPass.setPosition(2000, 2000);
+					draw_signup_screen(window);
+					userDataEntered = true;
+					break;
+
+				}
+				else if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inEmailField == true) {
+					std::cout << "Click at 'E-mail' field" << std::endl;
+					inEmailField = true;
+					while (inEmailField) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !emailInput.empty()) { // Handle backspace
+									emailInput.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									emailInput += static_cast<char>(event.text.unicode);
+								}
+								emailText.setString(emailInput);
+								std::cout << emailInput << std::endl;
+								User.email = emailInput;
+								//window.draw(emailText);
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldPass.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inPassField = true;
+									inEmailField = false;
+									break;
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inPassField = false;
+									inEmailField = true;
+									if (!check_user_L(emailInput, passInput, "plants.db")) {
+										userDataEntered = false;
+
+									}
+									userDataEntered = true;
+									break;
+								}
+								else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'SignUp' button" << std::endl;
+									if (!check_user_L(emailInput, passInput, "plants.db")) {
+										emailText.setFillColor(sf::Color::Red);
+										passText.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										inEmailField = true;
+									}
+								}
+							}
+							window.clear();
+							window.draw(LogINScreenP);
+							window.draw(emailText);
+							window.draw(passText);
+							window.display();
+						}
+					}
+				}
+				else if (targetFieldPass.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inPassField == true) {
+					std::cout << "Click at 'Password' field" << std::endl;
+					inPassField = true;
+					while (inPassField) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !passInput.empty()) { // Handle backspace
+									passInput.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									passInput += static_cast<char>(event.text.unicode);
+								}
+								passText.setString(passInput);
+								std::cout << passInput << std::endl;
+								User.password = passInput;
+								//window.draw(emailText);
+
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inPassField = false;
+									inEmailField = true;
+									break;
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inPassField = false;
+									if (!check_user_L(User.email, User.password, "plants.db")) {
+										emailText.setFillColor(sf::Color::Red);
+										passText.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+									}
+									break;
+								}
+								else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'SignUp' button" << std::endl;
+									inPassField = false;
+									inEmailField = false;
+									userDataEntered = true;
+									draw_signup_screen(window);
+									break;
+
+								}
+							}
+							window.clear();
+							window.draw(LogINScreenP);
+							window.draw(emailText);
+							window.draw(passText);
+							window.display();
+						}
+					}
+				}
+			}
+			if (userDataEntered == true)
+				break;
+		}
+		//window.draw(emailText);
+		//window.draw(passText);
+		
+	}
+	draw_clear_screen(window);
+	
+	//window.clear();
+	//appState = AppState::LOGGED_IN;
+	//window.draw(emailText);
 	window.display();
 
 }
@@ -61,16 +256,67 @@ void draw_login_screen(sf::RenderWindow& window) {
 		cout << "Failed to load Log in screen!" << endl;
 		return;
 	}
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
+		cout << "Failed to load font";
+
 	sf::Sprite LogINScreenP(LogINScreen);
 	window.draw(LogINScreenP);
 	window.display();
 
 }
 
-void check_user() {
-	if ("true!" == "true")
-		UserSighned = true;
-	else
-		UserSighned = false;
+bool check_user_L(std::string email, std::string password, const std::string& dbFile) {
+	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
+		std::cerr << "Error, email must contain only eligible characters\n";
+		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
+		return false;
+	}else if (email.find_first_of("@") == std::string::npos) {
+		std::cerr << "Error, not an email\n";
+		showErrorDialog("Email address typo", "Error, not an email");
+		return false;
+	}
+	else if (password == "") {
+		showErrorDialog("Passsword typo", "Error, password field is empty");
+		return false;
+	}
+
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	bool exists = false;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+		return false;
+	}
+	// Construct the SQL query
+	std::string query = "SELECT 1 FROM users WHERE email = ? AND password = ? LIMIT 1;";
+
+	// Prepare the query
+	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return false;
+	}
+
+	// Bind values to the query
+	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, password.c_str(), -1, SQLITE_STATIC);
+
+	
+	
+	// Execute the query
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		exists = true;  // A record was found
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	return exists;
 }
 

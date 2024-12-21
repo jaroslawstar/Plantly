@@ -4,18 +4,18 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
-//#include <openssl/sha.h>
+#include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
 #include <string>
-
 #include "Header.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
 
 
 AppState appState = AppState::LOGGED_OUT;
+
+UserData User;
 
 bool UserSighned = 0;
 
@@ -95,16 +95,11 @@ int main() {
                     // Check if click is in targetL
                     if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'LogIn' button" << std::endl;
-                        draw_login_screen(window);
+                        draw_login_screen(window, event);
                     }
                     else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'SignUp' button" << std::endl;
                         draw_signup_screen(window);
-                    }
-                    else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Next' button" << std::endl;
-                        window.clear();
-                        appState = AppState::LOGGED_IN;
                     }
 
                 }
@@ -127,7 +122,7 @@ int main() {
                         << mousePosition.y << ")" << std::endl;
                     if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Home' button" << std::endl;
-                        draw_menu(window, event, false);
+                        //draw_menu(window, event, false);
                         draw_plants(window, event, true, "plants.db");
                     }
                     else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {

@@ -17,12 +17,10 @@ Wazne parametry:
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
-//#include <openssl/sha.h>
+#include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
 #include <string>
-
 #include "Header.h"
 #include "SQLite/sqlite3.h"
 #include <fstream>
@@ -471,7 +469,7 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	
 	sf::Font font;
-	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-Regular.ttf"))
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
 		cout << "Failed to load font";
 	
 	sf::Text nameText("Name:", font, 20);
@@ -528,7 +526,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		std::string nameBuffer, daysBuffer, filePathBuffer;
 		Plant entry;
 		bool enteringFilePath = false;
-
+		
 		while (!added_plant) {
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed)
@@ -562,13 +560,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 				if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Tab) {
 						enteringFilePath = !enteringFilePath;
+						std::cout << "Tab pressed" << std::endl;
 					}
 					else if (event.key.code == sf::Keyboard::Enter) {
+						std::cout << "Enter pressed" << std::endl;
 						try {
 							entry.name = nameBuffer;
 							entry.days = std::stoi(daysBuffer);
 							entry.filePath = filePathBuffer;
-							entry.saveToDatabase("data.db");
+							entry.saveToDatabase("plants.db");
 							std::cout << "Data saved!" << std::endl;
 							added_plant = true;
 						}
@@ -585,7 +585,6 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.display();
 	}
 }
-//git stash komenda do chomikowania
 
 //loged in user class
 //Function to data base for Plants
@@ -655,7 +654,7 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 
 	// Open SQLite database
 	if (sqlite3_open(dbFile.c_str(), &db)) {
-		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
 		return;
 	}
 
@@ -666,7 +665,7 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 		"Age TEXT, "
 		"Email TEXT);";
 	if (sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
-		std::cerr << "Error creating table: " << errorMessage << std::endl;
+		std::cerr << "Error creating table for Users: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
 		sqlite3_close(db);
 		return;
@@ -676,7 +675,7 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	std::string insertSQL = "INSERT INTO Users (Name, Age, Email) VALUES ('" +
 		name + "', '" + age + "', '" + email + "');";
 	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
-		std::cerr << "Error inserting data: " << errorMessage << std::endl;
+		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
 	}
 	else {
@@ -692,21 +691,21 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	char* errorMessage = nullptr;
 
 	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
-		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
 		return;
 	}
 
 	const char* createTableQuery = R"(
             CREATE TABLE IF NOT EXISTS entries (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                NAME TEXT NOT NULL,
-                DAYS INTEGER NOT NULL,
-                FILEPATH TEXT NOT NULL
+                Name TEXT NOT NULL,
+                Days INTEGER NOT NULL,
+                Filepath TEXT NOT NULL
             );
         )";
 
 	if (sqlite3_exec(db, createTableQuery, nullptr, nullptr, &errorMessage) != SQLITE_OK) {
-		std::cerr << "Error creating table: " << errorMessage << std::endl;
+		std::cerr << "Error creating table for Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
 		sqlite3_close(db);
 		return;
@@ -716,9 +715,46 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 		name + "', " + std::to_string(days) + ", '" + filePath + "');";
 
 	if (sqlite3_exec(db, insertQuery.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
-		std::cerr << "Error inserting data: " << errorMessage << std::endl;
+		std::cerr << "Error inserting datafor Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
 	}
 
 	sqlite3_close(db);
+}
+
+// Helper function to join strings (for constructing SQL query)
+std::string join(const std::vector<std::string>& elements, const std::string& delimiter) {
+	std::string result;
+	for (size_t i = 0; i < elements.size(); ++i) {
+		result += elements[i];
+		if (i < elements.size() - 1) {
+			result += delimiter;
+		}
+	}
+	return result;
+}
+
+void showErrorDialog(const std::string& title, const std::string& message) {
+	sf::RenderWindow window(sf::VideoMode(400, 200), title);
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
+		return;  // Error loading font
+	}
+
+	sf::Text text(message, font, 20);
+	text.setFillColor(sf::Color::Black);
+	text.setPosition(20, 80);
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed) {
+				window.close();
+			}
+		}
+
+		window.clear(sf::Color::White);
+		window.draw(text);
+		window.display();
+	}
 }

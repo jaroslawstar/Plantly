@@ -24,7 +24,9 @@ enum class ButtonClick {
 //extern ButtonClick buttonClick;
 extern AppState appState;
 
+
 void draw_signup_screen(sf::RenderWindow& window);
+void draw_login_screen(sf::RenderWindow& window, sf::Event event);
 void draw_login_screen(sf::RenderWindow& window);
 void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
@@ -45,16 +47,18 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show);
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 //void buttons_engine(sf::RenderWindow& window, sf::Event event);
 //void openURL(const std::string& url);
-void check_user();
+bool check_user_L(std::string email, std::string password, const std::string& dbFile);
 
 void handleTextInput(sf::Text& text, sf::Event& event, std::string& input);
-
+std::string join(const std::vector<std::string>& elements, const std::string& delimiter);
+void showErrorDialog(const std::string& title, const std::string& message);
 
 class UserData {
 public:
     std::string name;
     std::string age;
     std::string email;
+    std::string password;
 
     void saveToDatabase(const std::string& dbFile); // Function declaration
 };
@@ -70,5 +74,7 @@ public:
     
 };
 
+extern UserData User;
+extern Plant usersPlants[];
 
 #endif 
