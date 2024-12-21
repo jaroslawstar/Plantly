@@ -99,7 +99,7 @@ int main() {
                     }
                     else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'SignUp' button" << std::endl;
-                        draw_signup_screen(window);
+                        draw_signup_screen(window, event);
                     }
 
                 }
@@ -123,7 +123,7 @@ int main() {
                     if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Home' button" << std::endl;
                         //draw_menu(window, event, false);
-                        draw_plants(window, event, true, "plants.db");
+                        draw_plants(window, event, true, "plantly.db");
                     }
                     else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Menu' button" << std::endl;
@@ -139,6 +139,7 @@ int main() {
                     }
                     else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Feed' button" << std::endl;
+                        std::cout << "Logged in User info from DataBase:\nID: " << User.id << "\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " << User.password << "\nStatus:" << User.pstatus << std::endl;
                         draw_text(window, true);
                     }
                     else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {

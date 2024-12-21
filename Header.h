@@ -25,7 +25,7 @@ enum class ButtonClick {
 extern AppState appState;
 
 
-void draw_signup_screen(sf::RenderWindow& window);
+void draw_signup_screen(sf::RenderWindow& window, sf::Event event);
 void draw_login_screen(sf::RenderWindow& window, sf::Event event);
 void draw_login_screen(sf::RenderWindow& window);
 void draw_clear_screen(sf::RenderWindow& window);
@@ -47,7 +47,9 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show);
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
 //void buttons_engine(sf::RenderWindow& window, sf::Event event);
 //void openURL(const std::string& url);
-bool check_user_L(std::string email, std::string password, const std::string& dbFile);
+bool check_user(std::string email, std::string password, const std::string& dbFile);
+bool check_user(std::string name, std::string email, std::string password1, std::string password2, const std::string& dbFile);
+void check_user_in(std::string email, std::string password, const std::string& dbFile);
 
 void handleTextInput(sf::Text& text, sf::Event& event, std::string& input);
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter);
@@ -55,10 +57,11 @@ void showErrorDialog(const std::string& title, const std::string& message);
 
 class UserData {
 public:
+    int id;
     std::string name;
-    std::string age;
     std::string email;
     std::string password;
+    std::string pstatus;
 
     void saveToDatabase(const std::string& dbFile); // Function declaration
 };

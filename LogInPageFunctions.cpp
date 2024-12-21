@@ -39,7 +39,7 @@ void draw_clear_screen(sf::RenderWindow& window) {
 
 }
 
-void draw_signup_screen(sf::RenderWindow& window) {
+void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 	//window.clear();
 	sf::Texture SignUPScreen;
 	if (!SignUPScreen.loadFromFile("Resources/images/SignUp_MainPage.png")) {
@@ -52,6 +52,418 @@ void draw_signup_screen(sf::RenderWindow& window) {
 
 	sf::Sprite SignUPScreenP(SignUPScreen);
 	window.draw(SignUPScreenP);
+	sf::RectangleShape targetFieldName(sf::Vector2f(200, 17));
+	sf::RectangleShape targetFieldEmail(sf::Vector2f(200, 17));
+	sf::RectangleShape targetFieldPass1(sf::Vector2f(200, 17));
+	sf::RectangleShape targetFieldPass2(sf::Vector2f(200, 17));
+	sf::RectangleShape targetL(sf::Vector2f(105, 36));
+	sf::RectangleShape targetN(sf::Vector2f(105, 36));
+	targetFieldName.setPosition(578, 286);
+	targetFieldEmail.setPosition(578, 327);
+	targetFieldPass1.setPosition(578, 368);
+	targetFieldPass2.setPosition(578, 401);
+	targetL.setPosition(520, 212);
+	targetN.setPosition(585, 467);
+
+	window.draw(targetFieldName);
+	window.draw(targetFieldEmail);
+	window.draw(targetFieldPass1);
+	window.draw(targetFieldPass2);
+	
+	std::string pass1Stars = "";
+	std::string pass2Stars = "";
+	std::string nameInput;
+	std::string emailInput = "";
+	std::string pass1Input;
+	std::string pass2Input;
+	sf::Text nameText(nameInput, font, 15);
+	sf::Text emailText(emailInput, font, 15);
+	sf::Text pass1Text(pass1Stars, font, 15);
+	sf::Text pass2Text(pass2Stars, font, 15);
+	nameText.setPosition(578, 286);
+	emailText.setPosition(578, 327);
+	pass1Text.setPosition(578, 368);
+	pass2Text.setPosition(578, 401);
+	nameText.setFillColor(sf::Color::Black);
+	emailText.setFillColor(sf::Color::Black);
+	pass1Text.setFillColor(sf::Color::Black);
+	pass2Text.setFillColor(sf::Color::Black);
+	//window.display();
+
+
+	bool userDataEntered = false;
+
+	bool inNameField = false;
+	bool inEmailField = false;
+	bool inPass1Field = false;
+	bool inPass2Field = false;
+	
+	while (!userDataEntered) {
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::Closed)
+				window.close();
+			//Close button service
+			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+				//----------Logged_OUT_Buttons----------
+				sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+				std::cout << "Mouse clicked at: ("
+					<< mousePosition.x << ", "
+					<< mousePosition.y << ")" << std::endl;
+				if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+					std::cout << "Click at 'SignUp' button" << std::endl;
+					targetFieldName.setPosition(2000, 2000);
+					targetFieldEmail.setPosition(2000, 2000);
+					targetFieldPass1.setPosition(2000, 2000);
+					targetFieldPass2.setPosition(2000, 2000);
+					draw_login_screen(window, event);
+					userDataEntered = true;
+					break;
+
+				}
+				else if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inNameField == true) {
+					std::cout << "Click at 'E-mail' field" << std::endl;
+					inNameField = true;
+					while (inNameField) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !nameInput.empty()) { // Handle backspace
+									nameInput.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									nameInput += static_cast<char>(event.text.unicode);
+								}
+								nameText.setString(nameInput);
+								std::cout << nameInput << std::endl;
+								User.name = nameInput;
+								//window.draw(emailText);
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = true;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								}else if (targetFieldPass1.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = true;
+									inPass2Field = false;
+									break;
+								} else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = true;
+									break;
+								}
+								else if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'LogIn' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									draw_login_screen(window, event);
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
+										userDataEntered = false;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										pass1Text.setFillColor(sf::Color::Red);
+										pass2Text.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										break;
+									}
+									userDataEntered = true;
+									break;
+								}
+							}
+							window.clear();
+							window.draw(SignUPScreenP);
+							window.draw(nameText);
+							window.draw(emailText);
+							window.draw(pass1Text);
+							window.draw(pass2Text);
+							window.display();
+						}
+					}
+				}
+				else if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inEmailField == true) {
+					std::cout << "Click at 'E-mail' field" << std::endl;
+					inEmailField = true;
+					while (inEmailField) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !emailInput.empty()) { // Handle backspace
+									emailInput.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									emailInput += static_cast<char>(event.text.unicode);
+								}
+								emailText.setString(emailInput);
+								std::cout << emailInput << std::endl;
+								User.email = emailInput;
+								//window.draw(emailText);
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = true;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								} else if (targetFieldPass1.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = true;
+									inPass2Field = false;
+									break;
+								}
+								else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = true;
+									break;
+								}
+								else if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'LogIn' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									draw_login_screen(window, event);
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
+										userDataEntered = false;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										pass1Text.setFillColor(sf::Color::Red);
+										pass2Text.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										break;
+									}
+									userDataEntered = true;
+									break;
+								}
+								
+							}
+							window.clear();
+							window.draw(SignUPScreenP);
+							window.draw(nameText);
+							window.draw(emailText);
+							window.draw(pass1Text);
+							window.draw(pass2Text);
+							window.display();
+						}
+					}
+				}
+				else if (targetFieldPass1.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inPass1Field == true) {
+					std::cout << "Click at 'Password1' field" << std::endl;
+					inPass1Field = true;
+					while (inPass1Field) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !pass1Input.empty()) { // Handle backspace
+									emailText.setFillColor(sf::Color::Black);
+									pass1Text.setFillColor(sf::Color::Black);
+									pass1Input.pop_back();
+									pass1Stars.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									pass1Input += static_cast<char>(event.text.unicode);
+									pass1Stars += "*";
+								}
+								pass1Text.setString(pass1Stars);
+								std::cout << pass1Input << std::endl;
+								User.password = pass1Input;
+
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = true;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								}else if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = true;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								} else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = true;
+									break;
+								}
+								else if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'LogIn' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									draw_login_screen(window, event);
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
+										userDataEntered = false;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										pass1Text.setFillColor(sf::Color::Red);
+										pass2Text.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										break;
+									}
+									userDataEntered = true;
+									break;
+								}
+
+							}
+							window.clear();
+							window.draw(SignUPScreenP);
+							window.draw(nameText);
+							window.draw(emailText);
+							window.draw(pass1Text);
+							window.draw(pass2Text);
+							window.display();
+						}
+					}
+				}
+				else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inPass2Field == true) {
+					std::cout << "Click at 'Password' field" << std::endl;
+					inPass2Field = true;
+					while (inPass2Field) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !pass2Input.empty()) { // Handle backspace
+									emailText.setFillColor(sf::Color::Black);
+									pass2Text.setFillColor(sf::Color::Black);
+									pass2Input.pop_back();
+									pass2Stars.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									pass2Input += static_cast<char>(event.text.unicode);
+									pass2Stars += "*";
+								}
+								pass2Text.setString(pass2Stars);
+								std::cout << pass2Input << std::endl;
+								//User.password = pass2Input;
+
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = true;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								}
+								else if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = true;
+									inPass1Field = false;
+									inPass2Field = false;
+									break;
+								}
+								else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = true;
+									break;
+								}
+								else if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'LogIn' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									draw_login_screen(window, event);
+								}
+								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inNameField = false;
+									inEmailField = false;
+									inPass1Field = false;
+									inPass2Field = false;
+									if (!check_user(nameInput, emailInput, User.password, pass2Input, "plantly.db")) {
+										userDataEntered = false;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										pass1Text.setFillColor(sf::Color::Red);
+										pass2Text.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										break;
+									}
+									userDataEntered = true;
+									break;
+								}
+							}
+							window.clear();
+							window.draw(SignUPScreenP);
+							window.draw(nameText);
+							window.draw(emailText);
+							window.draw(pass1Text);
+							window.draw(pass2Text);
+							window.display();
+						}
+					}
+				}
+			}
+			if (userDataEntered == true)
+				break;
+		}
+		//window.draw(emailText);
+		//window.draw(passText);
+
+	}
+	draw_clear_screen(window);
+	
+
 	window.display();
 
 }
@@ -97,7 +509,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 
 	bool inPassField = false;
 	bool inEmailField = false;
-
+	
 	while (!userDataEntered) {
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
@@ -113,7 +525,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 					std::cout << "Click at 'SignUp' button" << std::endl;
 					targetFieldEmail.setPosition(2000, 2000);
 					targetFieldPass.setPosition(2000, 2000);
-					draw_signup_screen(window);
+					draw_signup_screen(window, event);
 					userDataEntered = true;
 					break;
 
@@ -127,7 +539,10 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 								window.close();
 							if (event.type == sf::Event::TextEntered)
 							{
+								
 								if (event.text.unicode == 8 && !emailInput.empty()) { // Handle backspace
+									emailText.setFillColor(sf::Color::Black);
+									passText.setFillColor(sf::Color::Black);
 									emailInput.pop_back();
 								}
 								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
@@ -142,29 +557,36 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 								if (targetFieldPass.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-									inPassField = true;
 									inEmailField = false;
+									inPassField = true;
 									break;
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
 									inPassField = false;
-									inEmailField = true;
-									if (!check_user_L(emailInput, passInput, "plants.db")) {
+									inEmailField = false;
+									if (check_user(emailInput, passInput, "plantly.db")) {
+										std::cout << "Record is true!" << std::endl;
+										check_user_in(emailInput, passInput, "plantly.db");
+										userDataEntered = true;
+										appState = AppState::LOGGED_IN;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										passText.setFillColor(sf::Color::Red);
 										userDataEntered = false;
+										//window.display();
 
 									}
-									userDataEntered = true;
 									break;
 								}
 								else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'SignUp' button" << std::endl;
-									if (!check_user_L(emailInput, passInput, "plants.db")) {
-										emailText.setFillColor(sf::Color::Red);
-										passText.setFillColor(sf::Color::Red);
-										userDataEntered = false;
-										inEmailField = true;
-									}
+									inPassField = false;
+									inEmailField = false;
+									userDataEntered = false;
+									draw_signup_screen(window, event);
+									break;
 								}
 							}
 							window.clear();
@@ -177,6 +599,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 				}
 				else if (targetFieldPass.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inPassField == true) {
 					std::cout << "Click at 'Password' field" << std::endl;
+					
 					inPassField = true;
 					while (inPassField) {
 						while (window.pollEvent(event)) {
@@ -184,16 +607,20 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 								window.close();
 							if (event.type == sf::Event::TextEntered)
 							{
+								
 								if (event.text.unicode == 8 && !passInput.empty()) { // Handle backspace
+									emailText.setFillColor(sf::Color::Black);
+									passText.setFillColor(sf::Color::Black);
 									passInput.pop_back();
+									passStars.pop_back();
 								}
 								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
 									passInput += static_cast<char>(event.text.unicode);
+									passStars += "*";
 								}
-								passText.setString(passInput);
+								passText.setString(passStars);
 								std::cout << passInput << std::endl;
 								User.password = passInput;
-								//window.draw(emailText);
 
 							}
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
@@ -201,16 +628,24 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 								if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inPassField = false;
-									inEmailField = true;
+									inEmailField = false;
 									break;
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
 									inPassField = false;
-									if (!check_user_L(User.email, User.password, "plants.db")) {
+									inEmailField = false;
+									if (check_user(emailInput, passInput, "plantly.db")) {
+										std::cout << "Record is true!" << std::endl;
+										check_user_in(emailInput, passInput, "plantly.db");
+										userDataEntered = true;
+										appState = AppState::LOGGED_IN;
+									}
+									else {
 										emailText.setFillColor(sf::Color::Red);
 										passText.setFillColor(sf::Color::Red);
 										userDataEntered = false;
+										break;
 									}
 									break;
 								}
@@ -218,8 +653,8 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									std::cout << "Click at 'SignUp' button" << std::endl;
 									inPassField = false;
 									inEmailField = false;
-									userDataEntered = true;
-									draw_signup_screen(window);
+									userDataEntered = false;
+									draw_signup_screen(window, event);
 									break;
 
 								}
@@ -266,7 +701,7 @@ void draw_login_screen(sf::RenderWindow& window) {
 
 }
 
-bool check_user_L(std::string email, std::string password, const std::string& dbFile) {
+bool check_user(std::string email, std::string password, const std::string& dbFile) {
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
 		std::cerr << "Error, email must contain only eligible characters\n";
 		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
@@ -292,7 +727,7 @@ bool check_user_L(std::string email, std::string password, const std::string& db
 		return false;
 	}
 	// Construct the SQL query
-	std::string query = "SELECT 1 FROM users WHERE email = ? AND password = ? LIMIT 1;";
+	std::string query = "SELECT 1 FROM Users WHERE Email = ? AND Password = ? LIMIT 1;";
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -319,4 +754,69 @@ bool check_user_L(std::string email, std::string password, const std::string& db
 
 	return exists;
 }
+void check_user_in(std::string email, std::string password, const std::string& dbFile) {
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	bool exists = false;
 
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+	}
+	// Construct the SQL query
+	std::string query = "SELECT ID, Name, Email, Password, PStatus FROM Users WHERE Email = ? AND Password = ? LIMIT 1;";
+
+	// Prepare the query
+	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+		sqlite3_close(db);
+	}
+
+	// Bind values to the query
+	sqlite3_bind_text(stmt, 1, email.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 2, password.c_str(), -1, SQLITE_STATIC);
+
+
+
+	// Execute the query
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		User.id = sqlite3_column_int(stmt, 0);
+		User.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		User.email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+		User.password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+		User.pstatus = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+	appState = AppState::LOGGED_IN;
+}
+bool check_user(std::string name, std::string email, std::string password1, std::string password2, const std::string& dbFile) {
+	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
+		std::cerr << "Error, email must contain only eligible characters\n";
+		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
+		return false;
+	}
+	else if (email.find_first_of("@") == std::string::npos) {
+		std::cerr << "Error, not an email\n";
+		showErrorDialog("Email address typo", "Error, not an email");
+		return false;
+	}
+	else if (password1 == "" || password2 == "") {
+		showErrorDialog("Passsword typo", "Error, password field is empty");
+		return false;
+	}
+	else if (password1 != password2) {
+		showErrorDialog("Passsword typo", "Error, password doesn't match");
+		return false;
+	}
+
+	User.saveToDatabase("plantly.db");
+	showErrorDialog("SignUp", name + " successfully registered!");
+	return true;
+}

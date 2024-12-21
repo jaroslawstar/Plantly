@@ -568,7 +568,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 							entry.name = nameBuffer;
 							entry.days = std::stoi(daysBuffer);
 							entry.filePath = filePathBuffer;
-							entry.saveToDatabase("plants.db");
+							entry.saveToDatabase("plantly.db");
 							std::cout << "Data saved!" << std::endl;
 							added_plant = true;
 						}
@@ -590,7 +590,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 //Function to data base for Plants
 void open_plants_db() {
 	sqlite3* db;
-	int exit = sqlite3_open("plants.db", &db);
+	int exit = sqlite3_open("plantly.db", &db);
 
 	if (exit) {
 		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
@@ -662,8 +662,9 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	std::string createTableSQL = "CREATE TABLE IF NOT EXISTS Users ("
 		"ID INTEGER PRIMARY KEY AUTOINCREMENT, "
 		"Name TEXT, "
-		"Age TEXT, "
-		"Email TEXT);";
+		"Email TEXT,"
+		"Password TEXT,"
+		"PStatus BOOLEAN);";
 	if (sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error creating table for Users: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
@@ -672,8 +673,8 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	}
 
 	// Insert data
-	std::string insertSQL = "INSERT INTO Users (Name, Age, Email) VALUES ('" +
-		name + "', '" + age + "', '" + email + "');";
+	std::string insertSQL = "INSERT INTO Users (Name, Email, Password, PStatus) VALUES ('" +
+		name + "', '" + email + "', '" + password + "', '" + pstatus + "');";
 	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
