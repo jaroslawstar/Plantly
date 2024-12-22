@@ -139,7 +139,7 @@ int main() {
                     }
                     else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Feed' button" << std::endl;
-                        std::cout << "Logged in User info from DataBase:\nID: " << User.id << "\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " << User.password << "\nStatus:" << User.pstatus << std::endl;
+                        std::cout << "Logged in User info from DataBase:\nID: " << User.id << "\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " << User.password << "\nStatus:`" << User.pstatus << std::endl;
                         draw_text(window, true);
                     }
                     else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {

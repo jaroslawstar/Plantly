@@ -61,15 +61,15 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 	targetFieldName.setPosition(578, 286);
 	targetFieldEmail.setPosition(578, 327);
 	targetFieldPass1.setPosition(578, 368);
-	targetFieldPass2.setPosition(578, 401);
+	targetFieldPass2.setPosition(578, 409);
 	targetL.setPosition(520, 212);
 	targetN.setPosition(585, 467);
 
-	window.draw(targetFieldName);
-	window.draw(targetFieldEmail);
-	window.draw(targetFieldPass1);
-	window.draw(targetFieldPass2);
-	
+	//window.draw(targetFieldName);
+	//window.draw(targetFieldEmail);
+	//window.draw(targetFieldPass1);
+	//window.draw(targetFieldPass2);
+
 	std::string pass1Stars = "";
 	std::string pass2Stars = "";
 	std::string nameInput;
@@ -83,12 +83,12 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 	nameText.setPosition(578, 286);
 	emailText.setPosition(578, 327);
 	pass1Text.setPosition(578, 368);
-	pass2Text.setPosition(578, 401);
+	pass2Text.setPosition(578, 409);
 	nameText.setFillColor(sf::Color::Black);
 	emailText.setFillColor(sf::Color::Black);
 	pass1Text.setFillColor(sf::Color::Black);
 	pass2Text.setFillColor(sf::Color::Black);
-	//window.display();
+	window.display();
 
 
 	bool userDataEntered = false;
@@ -127,6 +127,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							nameText.setString(nameInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
 								if (event.text.unicode == 8 && !nameInput.empty()) { // Handle backspace
@@ -135,7 +136,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
 									nameInput += static_cast<char>(event.text.unicode);
 								}
-								nameText.setString(nameInput);
+								nameText.setString(nameInput + "|");
 								std::cout << nameInput << std::endl;
 								User.name = nameInput;
 								//window.draw(emailText);
@@ -143,6 +144,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								nameText.setString(nameInput);
 								if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inNameField = false;
 									inEmailField = true;
@@ -207,6 +209,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							emailText.setString(emailInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
 								if (event.text.unicode == 8 && !emailInput.empty()) { // Handle backspace
@@ -215,7 +218,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
 									emailInput += static_cast<char>(event.text.unicode);
 								}
-								emailText.setString(emailInput);
+								emailText.setString(emailInput + "|");
 								std::cout << emailInput << std::endl;
 								User.email = emailInput;
 								//window.draw(emailText);
@@ -223,6 +226,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								emailText.setString(emailInput);
 								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inNameField = true;
 									inEmailField = false;
@@ -289,6 +293,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							pass1Text.setString(pass1Stars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
 								if (event.text.unicode == 8 && !pass1Input.empty()) { // Handle backspace
@@ -301,7 +306,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									pass1Input += static_cast<char>(event.text.unicode);
 									pass1Stars += "*";
 								}
-								pass1Text.setString(pass1Stars);
+								pass1Text.setString(pass1Stars + "|");
 								std::cout << pass1Input << std::endl;
 								User.password = pass1Input;
 
@@ -309,6 +314,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								pass1Text.setString(pass1Stars);
 								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inNameField = true;
 									inEmailField = false;
@@ -374,6 +380,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							pass2Text.setString(pass2Stars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
 								if (event.text.unicode == 8 && !pass2Input.empty()) { // Handle backspace
@@ -386,7 +393,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									pass2Input += static_cast<char>(event.text.unicode);
 									pass2Stars += "*";
 								}
-								pass2Text.setString(pass2Stars);
+								pass2Text.setString(pass2Stars + "|");
 								std::cout << pass2Input << std::endl;
 								//User.password = pass2Input;
 
@@ -394,6 +401,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								pass2Text.setString(pass2Stars);
 								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inNameField = true;
 									inEmailField = false;
@@ -537,18 +545,17 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							emailText.setString(emailInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
-								
 								if (event.text.unicode == 8 && !emailInput.empty()) { // Handle backspace
-									emailText.setFillColor(sf::Color::Black);
-									passText.setFillColor(sf::Color::Black);
+									
 									emailInput.pop_back();
 								}
 								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
 									emailInput += static_cast<char>(event.text.unicode);
 								}
-								emailText.setString(emailInput);
+								emailText.setString(emailInput + "|");
 								std::cout << emailInput << std::endl;
 								User.email = emailInput;
 								//window.draw(emailText);
@@ -556,6 +563,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								emailText.setString(emailInput);
 								if (targetFieldPass.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inEmailField = false;
 									inPassField = true;
@@ -605,12 +613,11 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 						while (window.pollEvent(event)) {
 							if (event.type == sf::Event::Closed)
 								window.close();
+							passText.setString(passStars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
 								
 								if (event.text.unicode == 8 && !passInput.empty()) { // Handle backspace
-									emailText.setFillColor(sf::Color::Black);
-									passText.setFillColor(sf::Color::Black);
 									passInput.pop_back();
 									passStars.pop_back();
 								}
@@ -618,7 +625,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									passInput += static_cast<char>(event.text.unicode);
 									passStars += "*";
 								}
-								passText.setString(passStars);
+								passText.setString(passStars + "|");
 								std::cout << passInput << std::endl;
 								User.password = passInput;
 
@@ -626,6 +633,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
 								std::cout << "Key pressed 'Enter'" << std::endl;
 								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								passText.setString(passStars);
 								if (targetFieldEmail.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inPassField = false;
 									inEmailField = false;
