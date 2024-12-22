@@ -54,6 +54,7 @@ void check_user_in(std::string email, std::string password, const std::string& d
 void handleTextInput(sf::Text& text, sf::Event& event, std::string& input);
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter);
 void showErrorDialog(const std::string& title, const std::string& message);
+std::string generate_username(std::string email);
 
 class UserData {
 public:

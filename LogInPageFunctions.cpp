@@ -170,7 +170,8 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									inEmailField = false;
 									inPass1Field = false;
 									inPass2Field = false;
-									draw_login_screen(window, event);
+									userDataEntered = true;
+									//draw_login_screen(window, event);
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
@@ -253,7 +254,8 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									inEmailField = false;
 									inPass1Field = false;
 									inPass2Field = false;
-									draw_login_screen(window, event);
+									userDataEntered = true;
+									//draw_login_screen(window, event);
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
@@ -340,7 +342,8 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									inEmailField = false;
 									inPass1Field = false;
 									inPass2Field = false;
-									draw_login_screen(window, event);
+									userDataEntered = true;
+									//draw_login_screen(window, event);
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
@@ -374,7 +377,7 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 					}
 				}
 				else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inPass2Field == true) {
-					std::cout << "Click at 'Password' field" << std::endl;
+					std::cout << "Click at 'Password2' field" << std::endl;
 					inPass2Field = true;
 					while (inPass2Field) {
 						while (window.pollEvent(event)) {
@@ -416,11 +419,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									inPass2Field = false;
 									break;
 								}
-								else if (targetFieldPass2.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+								else if (targetFieldPass1.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									inNameField = false;
 									inEmailField = false;
-									inPass1Field = false;
-									inPass2Field = true;
+									inPass1Field = true;
+									inPass2Field = false;
 									break;
 								}
 								else if (targetL.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
@@ -429,7 +432,8 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 									inEmailField = false;
 									inPass1Field = false;
 									inPass2Field = false;
-									draw_login_screen(window, event);
+									userDataEntered = true;
+									//draw_login_screen(window, event);
 								}
 								else if (targetN.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 									std::cout << "Click at 'Next' button" << std::endl;
@@ -592,8 +596,8 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									std::cout << "Click at 'SignUp' button" << std::endl;
 									inPassField = false;
 									inEmailField = false;
-									userDataEntered = false;
-									draw_signup_screen(window, event);
+									userDataEntered = true;
+									//draw_signup_screen(window, event);
 									break;
 								}
 							}
@@ -661,8 +665,8 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									std::cout << "Click at 'SignUp' button" << std::endl;
 									inPassField = false;
 									inEmailField = false;
-									userDataEntered = false;
-									draw_signup_screen(window, event);
+									userDataEntered = true;
+									//draw_signup_screen(window, event);
 									break;
 
 								}

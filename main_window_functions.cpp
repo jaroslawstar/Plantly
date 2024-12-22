@@ -361,7 +361,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		return;
 	}
 
-	sf::Text name("Name \nSurname", text_font, 20);
+	sf::Text name(User.name +"\n" + generate_username(User.email), text_font, 20);
 	sf::Text Preferences("Preferences", text_font, 20);
 	sf::Text AS("Account settings", text_font, 20);
 	sf::Text RP("Restore purchases", text_font, 20);
@@ -758,4 +758,16 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 		window.draw(text);
 		window.display();
 	}
+}
+
+std::string generate_username(std::string email) {
+	std::string result = "@";
+	std::string output = "";
+	email.length();
+	for (int i = 0; i < email.find("@"); i++) {
+		output += email[i];
+	}
+
+	return result += output;
+
 }
