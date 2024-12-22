@@ -17,6 +17,12 @@ Wazne parametry:
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#define NOMINMAX
+#ifdef _WIN32
+	#include <windows.h>
+#else
+	//#include <cstdlib> // dla system()
+#endif
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
@@ -25,15 +31,6 @@ Wazne parametry:
 #include "SQLite/sqlite3.h"
 #include <fstream>
 #include <array>
-
-/*
-#ifdef _WIN32
-	#include <windows.h>
-#else
-	#include <cstdlib> // dla system()
-#endif
-*/
-using namespace std;
 
 
 void draw_main_screen(sf::RenderWindow& window) {
@@ -51,7 +48,7 @@ void draw_main_screen(sf::RenderWindow& window) {
 	*/
 	sf::Texture MainScreen;
  	if (!MainScreen.loadFromFile("Resources/images/Plantly_Main_Screen.png")) {
-		cout << "Failed to load profile picture!" << endl;
+		std::cout << "Failed to load profile picture!" << std::endl;
 		return;
 	}
 	sf::Sprite MainScreenP;
@@ -74,7 +71,7 @@ void draw_buttons(sf::RenderWindow& window) {
 	sf::Texture Feed;
 	sf::Texture QM;
 	if (!Home.loadFromFile("Resources/images/Home.png") || !Menu.loadFromFile("Resources/images/Menu.png") || !AP.loadFromFile("Resources/images/AP.png") || !Feed.loadFromFile("Resources/images/Feed.png") || !QM.loadFromFile("Resources/images/QM.png")) {
-		cout << "Failed to load image!" << endl;
+		std::cout << "Failed to load image!" << endl;
 	}
 
 	sf::Sprite HomeButton;
@@ -116,7 +113,7 @@ void draw_buttons(sf::RenderWindow& window) {
 void draw_X(sf::RenderWindow& window, int x, int y) {
 	sf::Texture XT;
 	if (!XT.loadFromFile("Resources/images/AP.png"))
-		cout << "Failed to load image!" << endl;
+		std::cout << "Failed to load image!" << std::endl;
 
 	sf::Sprite X;
 	X.setTexture(XT);
@@ -131,7 +128,7 @@ void draw_logo(sf::RenderWindow& window) {
 	// Ustawienia tekstu
 	sf::Font logo_font;
 	if (!logo_font.loadFromFile("Resources/Fonts/League_Script/LeagueScript-Regular.ttf")) {
-		cout << "Failed to load font";
+		std::cout << "Failed to load font";
 	}
 	sf::Text logo;
 	logo.setFont(logo_font);
@@ -174,11 +171,11 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	// Wykonywanie zapytania i wyświetlanie wyników
 	sf::Font Font;
 	if (!Font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold"))
-		cout << "Failed to load font";
+		std::cout << "Failed to load font";
 
 	sf::Texture PlantBlock;
 	if (!PlantBlock.loadFromFile("Resources/images/PlantBackground.png")) {
-		cout << "Failed to load plant block background!" << endl;
+		std::cout << "Failed to load plant block background!" << std::endl;
 		return;
 	}
 
@@ -209,7 +206,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 		sf::Texture PlantPictureT;
 		if (!PlantPictureT.loadFromFile(filePaths)) {
-			cout << "Failed to load plant block background!" << endl;
+			std::cout << "Failed to load plant block background!" << std::endl;
 			return;
 		}
 		sf::Sprite PlantPicture;
@@ -352,12 +349,12 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	// Ustawienia tekstu
 	sf::Font text_font;
 	if (!text_font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
-		cout << "Failed to load font";
+		std::cout << "Failed to load font";
 	}
 
 	sf::Texture PFP;
 	if (!PFP.loadFromFile("Resources/images/pfp.png")) {
-		cout << "Failed to load profile picture!" << endl;
+		std::cout << "Failed to load profile picture!" << std::endl;
 		return;
 	}
 
@@ -449,7 +446,7 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 	// Ustawienia tekstu
 	sf::Font text_font;
 	if (!text_font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
-		cout << "Failed to load font";
+		std::cout << "Failed to load font";
 	}
 	sf::Text text;
 	text.setFont(text_font);
@@ -470,7 +467,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		cout << "Failed to load font";
+		std::cout << "Failed to load font";
 	
 	sf::Text nameText("Name:", font, 20);
 	sf::Text nameInput("", font, 20);
@@ -546,13 +543,13 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 
 				if (event.type == sf::Event::TextEntered) {
 					if (enteringFilePath) {
-						handleTextInput(filePathInput, event, filePathBuffer);
+						
 					}
 					else if (nameInput.getString().isEmpty() || nameInput.getString() == nameBuffer) {
-						handleTextInput(nameInput, event, nameBuffer);
+						
 					}
 					else {
-						handleTextInput(daysInput, event, daysBuffer);
+						
 					}
 					
 				}
@@ -603,7 +600,7 @@ void open_plants_db() {
 
 
 //--------------------------------------------------DB Files--------------------------------------------------
-// 
+
 // Function to read a file and return its content as a byte vector
 std::vector<unsigned char> readFile(const std::string& filePath) {
 	std::ifstream file(filePath, std::ios::binary | std::ios::ate);
@@ -637,17 +634,6 @@ void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::strin
 
 // Helper function to handle text input
 
-void handleTextInput(sf::Text& text, sf::Event& event, std::string& input) {
-	if (event.text.unicode < 128) {
-		if (event.text.unicode == '\b' && !input.empty()) { // Backspace
-			input.pop_back();
-		}
-		else if (event.text.unicode != '\b') {
-			input += static_cast<char>(event.text.unicode);
-		}
-		text.setString(input);
-	}
-}
 void UserData::saveToDatabase(const std::string& dbFile) {
 	sqlite3* db;
 	char* errorMessage = nullptr;
@@ -664,7 +650,8 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 		"Name TEXT, "
 		"Email TEXT,"
 		"Password TEXT,"
-		"PStatus BOOLEAN);";
+		"PStatus BOOLEAN,"
+		"Image BLOP);";
 	if (sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error creating table for Users: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
@@ -675,6 +662,30 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	// Insert data
 	std::string insertSQL = "INSERT INTO Users (Name, Email, Password, PStatus) VALUES ('" +
 		name + "', '" + email + "', '" + password + "', '" + pstatus + "');";
+	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+	}
+	else {
+		std::cout << "Data saved successfully!\n";
+	}
+
+	// Close database
+	sqlite3_close(db);
+}
+
+void UserData::set_image(const std::string& dbFile){
+	sqlite3* db;
+	char* errorMessage = nullptr;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db)) {
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	// Insert data
+	std::string insertSQL = "INSERT INTO Users (Image) VALUES ('" + image + "');";
 	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
@@ -735,6 +746,18 @@ std::string join(const std::vector<std::string>& elements, const std::string& de
 	return result;
 }
 
+std::string generate_username(std::string email) {
+	std::string result = "@";
+	std::string output = "";
+	email.length();
+	for (int i = 0; i < email.find("@"); i++) {
+		output += email[i];
+	}
+
+	return result += output;
+
+}
+
 void showErrorDialog(const std::string& title, const std::string& message) {
 	sf::RenderWindow window(sf::VideoMode(400, 200), title);
 	sf::Font font;
@@ -758,16 +781,4 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 		window.draw(text);
 		window.display();
 	}
-}
-
-std::string generate_username(std::string email) {
-	std::string result = "@";
-	std::string output = "";
-	email.length();
-	for (int i = 0; i < email.find("@"); i++) {
-		output += email[i];
-	}
-
-	return result += output;
-
 }

@@ -9,14 +9,18 @@ Wazne parametry:
 	League_Script/LeagueScript-Regular.ttf <LOGO>
 
 */
-
-
 #include <iostream>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#define NOMINMAX
+#ifdef _WIN32
+#include <windows.h>
+#else
+//#include <cstdlib> // dla system()
+#endif
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
@@ -24,13 +28,11 @@ Wazne parametry:
 #include "Header.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
-//#include "windows.h"
-using namespace std;
 
 void draw_clear_screen(sf::RenderWindow& window) {
 	sf::Texture ClearScreen;
 	if (!ClearScreen.loadFromFile("Resources/images/Clear_MainPage.png")) {
-		cout << "Failed to load Clear screen!" << endl;
+		std::cout << "Failed to load Clear screen!" << std::endl;
 		return;
 	}
 	sf::Sprite ClearScreenP(ClearScreen);
@@ -43,12 +45,12 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 	//window.clear();
 	sf::Texture SignUPScreen;
 	if (!SignUPScreen.loadFromFile("Resources/images/SignUp_MainPage.png")) {
-		cout << "Failed to load Sign up screen!" << endl;
+		std::cout << "Failed to load Sign up screen!" << std::endl;
 		return;
 	}
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		cout << "Failed to load font";
+		std::cout << "Failed to load font" << std::endl;
 
 	sf::Sprite SignUPScreenP(SignUPScreen);
 	window.draw(SignUPScreenP);
@@ -484,12 +486,12 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 	//window.clear();
 	sf::Texture LogINScreen;
 	if (!LogINScreen.loadFromFile("Resources/images/LogIn_MainPage.png")) {
-		cout << "Failed to load Log in screen!" << endl;
+		std::cout << "Failed to load Log in screen!" << std::endl;
 		return;
 	}
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		cout << "Failed to load font";
+		std::cout << "Failed to load font" << std::endl;
 
 	sf::Sprite LogINScreenP(LogINScreen);
 	window.draw(LogINScreenP);
@@ -696,23 +698,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 
 }
 
-void draw_login_screen(sf::RenderWindow& window) {
-	//window.clear();
-	sf::Texture LogINScreen;
-	if (!LogINScreen.loadFromFile("Resources/images/LogIn_MainPage.png")) {
-		cout << "Failed to load Log in screen!" << endl;
-		return;
-	}
-	sf::Font font;
-	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		cout << "Failed to load font";
-
-	sf::Sprite LogINScreenP(LogINScreen);
-	window.draw(LogINScreenP);
-	window.display();
-
-}
-
+//Check user for login
 bool check_user(std::string email, std::string password, const std::string& dbFile) {
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
 		std::cerr << "Error, email must contain only eligible characters\n";
@@ -766,6 +752,33 @@ bool check_user(std::string email, std::string password, const std::string& dbFi
 
 	return exists;
 }
+
+//Check user for signup
+bool check_user(std::string name, std::string email, std::string password1, std::string password2, const std::string& dbFile) {
+	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
+		std::cerr << "Error, email must contain only eligible characters\n";
+		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
+		return false;
+	}
+	else if (email.find_first_of("@") == std::string::npos) {
+		std::cerr << "Error, not an email\n";
+		showErrorDialog("Email address typo", "Error, not an email");
+		return false;
+	}
+	else if (password1 == "" || password2 == "") {
+		showErrorDialog("Passsword typo", "Error, password field is empty");
+		return false;
+	}
+	else if (password1 != password2) {
+		showErrorDialog("Passsword typo", "Error, password doesn't match");
+		return false;
+	}
+
+	User.saveToDatabase("plantly.db");
+	showErrorDialog("SignUp", name + " successfully registered!");
+	return true;
+}//
+
 void check_user_in(std::string email, std::string password, const std::string& dbFile) {
 	sqlite3* db;
 	sqlite3_stmt* stmt;
@@ -807,28 +820,4 @@ void check_user_in(std::string email, std::string password, const std::string& d
 	sqlite3_close(db);
 
 	appState = AppState::LOGGED_IN;
-}
-bool check_user(std::string name, std::string email, std::string password1, std::string password2, const std::string& dbFile) {
-	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
-		std::cerr << "Error, email must contain only eligible characters\n";
-		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
-		return false;
-	}
-	else if (email.find_first_of("@") == std::string::npos) {
-		std::cerr << "Error, not an email\n";
-		showErrorDialog("Email address typo", "Error, not an email");
-		return false;
-	}
-	else if (password1 == "" || password2 == "") {
-		showErrorDialog("Passsword typo", "Error, password field is empty");
-		return false;
-	}
-	else if (password1 != password2) {
-		showErrorDialog("Passsword typo", "Error, password doesn't match");
-		return false;
-	}
-
-	User.saveToDatabase("plantly.db");
-	showErrorDialog("SignUp", name + " successfully registered!");
-	return true;
 }

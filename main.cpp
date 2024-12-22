@@ -4,6 +4,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#define NOMINMAX
+#ifdef _WIN32
+#include <windows.h>
+#else
+//#include <cstdlib> // dla system()
+#endif
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
