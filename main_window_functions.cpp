@@ -356,19 +356,36 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 	sf::Texture PFP;
 	if (!PFP.loadFromMemory(User.image.data(), User.image.size())) {
 		std::cout << "Failed to load profile picture from binary data!" << std::endl;
+		PFP.loadFromFile("Resources/images/pfp.png");
 	}
-	if (!PFP.loadFromMemory(User.image.data(), User.image.size()) || !PFP.loadFromFile("Resources/images/pfp.png")) {
-		std::cout << "Failed to load profile picture!" << std::endl;
-	}
+	//if (!PFP.loadFromMemory(User.image.data(), User.image.size()) || !PFP.loadFromFile("Resources/images/pfp.png")) {
+	//	std::cout << "Failed to load profile picture!" << std::endl;
+	//}
 
 	sf::Text name(User.name +"\n" + generate_username(User.email), text_font, 20);
 	sf::Text Preferences("Preferences", text_font, 20);
 	sf::Text AS("Account settings", text_font, 20);
 	sf::Text RP("Restore purchases", text_font, 20);
 	sf::Text LogoutB("Logout", text_font, 20);
+	std::cout << "Texture size x: " << PFP.getSize().x << std::endl;
+	std::cout << "Texture size x: " << PFP.getSize().y << std::endl;
 	sf::Sprite PFPp;
 	PFPp.setTexture(PFP);
-	PFPp.setScale(0.15f, 0.15f);
+
+	// Desired width and height for the sprite
+	float desiredWidth = 48.0f; // in pixels
+	float desiredHeight = 48.0f; // in pixels
+
+	// Get the original size of the texture
+	sf::Vector2u originalSize = PFP.getSize();
+	float originalWidth = static_cast<float>(originalSize.x);
+	float originalHeight = static_cast<float>(originalSize.y);
+
+	// Calculate scale factors
+	float scaleX = desiredWidth / originalWidth;
+	float scaleY = desiredHeight / originalHeight;
+	PFPp.setScale(scaleX, scaleY);
+	//PFPp.setScale(0.15f, 0.15f);
 
 
 	if (!show) {
@@ -402,7 +419,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 
 		sf::RectangleShape targetPFP(sf::Vector2f(43, 43));
 		targetPFP.setPosition(300, 100);
-		targetPFP.setFillColor(sf::Color::Black);
+		//targetPFP.setFillColor(sf::Color::Black);
 
 		bool MainBs = false;
 
@@ -410,7 +427,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(rectangle_shadow);
 		window.draw(rectangle_white);
 		window.draw(name);
-		window.draw(targetPFP);
+		//window.draw(targetPFP);
 		window.draw(PFPp);
 		window.draw(Preferences);
 		window.draw(AS);
@@ -435,9 +452,13 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 					}
 					if (targetPFP.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 						std::cout << "Click at 'Profile Picture' button" << std::endl;
+						//if () {
+						//
+						//}
 						User.image = GetFileBlobDialog();
 						User.set_image("Plantly.db");
 						window.draw(PFPp);
+						//window.display();
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 						std::cout << "Click at 'Logout' button" << std::endl;
