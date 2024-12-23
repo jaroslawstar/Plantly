@@ -32,6 +32,8 @@ Wazne parametry:
 #include "SQLite/sqlite3.h"
 #include <fstream>
 #include <array>
+#include "sqlitecloud/sqcloud.h"
+
 
 
 void draw_main_screen(sf::RenderWindow& window) {
