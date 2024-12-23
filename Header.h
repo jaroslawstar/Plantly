@@ -26,6 +26,7 @@ void draw_text(sf::RenderWindow& window, bool show);
 std::vector<unsigned char> readFile(const std::string& filePath);
 void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::string& fileName);
 void open_plants_db();
+std::vector<uint8_t> GetFileBlobDialog();
 
 void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show);
 //void open_menu(sf::RenderWindow& window, sf::Event event, int Click_Value);
@@ -46,7 +47,7 @@ public:
     std::string email;
     std::string password;
     std::string pstatus;
-    std::string image;
+    std::vector<uint8_t> image;
 
     void saveToDatabase(const std::string& dbFile); // Function declaration
     void set_image(const std::string& dbFile);

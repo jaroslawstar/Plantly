@@ -23,6 +23,7 @@ Wazne parametry:
 #else
 	//#include <cstdlib> // dla system()
 #endif
+#include <shobjidl.h> // For IFileOpenDialog
 #include <openssl/sha.h>
 #include <iomanip>
 #include <sstream>
@@ -337,7 +338,7 @@ void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::Re
 }
 */
 
-void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int Click_Value_m
+void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 	sf::RectangleShape rectangle_white(sf::Vector2f(250.0f, 780.0f));
 	rectangle_white.setFillColor(sf::Color(0xFFFFFFFF));
 	rectangle_white.setPosition(120, 70);
@@ -345,7 +346,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	sf::RectangleShape rectangle_shadow(sf::Vector2f(250.0f, 780.0f));
 	rectangle_shadow.setFillColor(sf::Color(0, 0, 0, 50));
 	rectangle_shadow.setPosition(125, 75);
-
+	
 	// Ustawienia tekstu
 	sf::Font text_font;
 	if (!text_font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf")) {
@@ -353,9 +354,11 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	}
 
 	sf::Texture PFP;
-	if (!PFP.loadFromFile("Resources/images/pfp.png")) {
+	if (!PFP.loadFromMemory(User.image.data(), User.image.size())) {
+		std::cout << "Failed to load profile picture from binary data!" << std::endl;
+	}
+	if (!PFP.loadFromMemory(User.image.data(), User.image.size()) || !PFP.loadFromFile("Resources/images/pfp.png")) {
 		std::cout << "Failed to load profile picture!" << std::endl;
-		return;
 	}
 
 	sf::Text name(User.name +"\n" + generate_username(User.email), text_font, 20);
@@ -363,12 +366,9 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 	sf::Text AS("Account settings", text_font, 20);
 	sf::Text RP("Restore purchases", text_font, 20);
 	sf::Text LogoutB("Logout", text_font, 20);
-	sf::Sprite PFPb;
-	PFPb.setTexture(PFP);
-	PFPb.setScale(0.15f, 0.15f);
-
-
-	
+	sf::Sprite PFPp;
+	PFPp.setTexture(PFP);
+	PFPp.setScale(0.15f, 0.15f);
 
 
 	if (!show) {
@@ -378,7 +378,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		Preferences.setPosition(2000, 2000);
 		AS.setPosition(2000, 2000);
 		RP.setPosition(2000, 2000);
-		PFPb.setPosition(2000, 2000);
+		PFPp.setPosition(2000, 2000);
 	}
 	else if (show) {
 		name.setPosition(140, 100); // Pozycja tekstu
@@ -386,7 +386,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		AS.setPosition(140, 190);
 		RP.setPosition(140, 220);
 		LogoutB.setPosition(140, 250);
-		PFPb.setPosition(300, 100);
+		PFPp.setPosition(300, 100);
 
 		name.setFillColor(sf::Color::Black);
 		Preferences.setFillColor(sf::Color::Black);
@@ -400,13 +400,18 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 		sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
 		targetMainBs.setPosition(40, 40);
 
+		sf::RectangleShape targetPFP(sf::Vector2f(43, 43));
+		targetPFP.setPosition(300, 100);
+		targetPFP.setFillColor(sf::Color::Black);
+
 		bool MainBs = false;
 
 
 		window.draw(rectangle_shadow);
 		window.draw(rectangle_white);
 		window.draw(name);
-		window.draw(PFPb);
+		window.draw(targetPFP);
+		window.draw(PFPp);
 		window.draw(Preferences);
 		window.draw(AS);
 		window.draw(RP);
@@ -428,11 +433,17 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) { //, int C
 						std::cout << "Click at 'X' button" << std::endl;
 						MainBs = true;
 					}
+					if (targetPFP.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+						std::cout << "Click at 'Profile Picture' button" << std::endl;
+						User.image = GetFileBlobDialog();
+						User.set_image("Plantly.db");
+						window.draw(PFPp);
+					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 						std::cout << "Click at 'Logout' button" << std::endl;
 						appState = AppState::LOGGED_OUT;
 						MainBs = true;
-					}
+					}	
 				}
 			}
 		}
@@ -674,7 +685,7 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	sqlite3_close(db);
 }
 
-void UserData::set_image(const std::string& dbFile){
+void UserData::set_image(const std::string& dbFile) {
 	sqlite3* db;
 	char* errorMessage = nullptr;
 
@@ -684,18 +695,39 @@ void UserData::set_image(const std::string& dbFile){
 		return;
 	}
 
-	// Insert data
-	std::string insertSQL = "INSERT INTO Users (Image) VALUES ('" + image + "');";
-	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
-		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
-		sqlite3_free(errorMessage);
-	}
-	else {
-		std::cout << "Data saved successfully!\n";
+	std::string updateSQL = "UPDATE Users SET Image = ? WHERE ID = ?;";
+	sqlite3_stmt* stmt;
+
+	// Prepare the SQL statement
+	if (sqlite3_prepare_v2(db, updateSQL.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+		return;
 	}
 
-	// Close database
-	sqlite3_close(db);
+	// Bind the BLOB data
+	if (sqlite3_bind_blob(stmt, 1, image.data(), image.size(), SQLITE_STATIC) != SQLITE_OK) {
+		std::cerr << "Failed to bind BLOB: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	// Bind the user ID
+	if (sqlite3_bind_int(stmt, 2, id) != SQLITE_OK) {
+		std::cerr << "Failed to bind ID: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	// Execute the statement
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+	}
+	else {
+		std::cout << "User image updated successfully!" << std::endl;
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
 }
 
 void Plant::saveToDatabase(const std::string& dbFile) {
@@ -781,4 +813,102 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 		window.draw(text);
 		window.display();
 	}
+}
+
+
+
+// Function to display a file dialog and return the file content as a binary blob
+const size_t MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+std::vector<uint8_t> GetFileBlobDialog() {
+	// Initialize COM library
+	HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	if (FAILED(hr)) {
+		std::cerr << "Failed to initialize COM library." << std::endl;
+		return {};
+	}
+
+	IFileOpenDialog* pFileOpen = nullptr;
+
+	// Create the FileOpenDialog object
+	hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+	if (FAILED(hr)) {
+		std::cerr << "Failed to create file dialog instance." << std::endl;
+		CoUninitialize();
+		return {};
+	}
+
+	// Set file type filters (images only)
+	const COMDLG_FILTERSPEC fileTypes[] = {
+		{L"Image Files", L"*.jpg;*.jpeg;*.png;*.bmp;*.gif"}, // Friendly name and filter
+		{L"JPEG Files", L"*.jpg;*.jpeg"},
+		{L"PNG Files", L"*.png"},
+		{L"BMP Files", L"*.bmp"},
+		{L"GIF Files", L"*.gif"}
+	};
+	pFileOpen->SetFileTypes(ARRAYSIZE(fileTypes), fileTypes); // Apply the filter
+	pFileOpen->SetFileTypeIndex(1); // Default to the first filter
+	pFileOpen->SetDefaultExtension(L"jpg"); // Default file extension
+
+	// Show the file open dialog
+	hr = pFileOpen->Show(nullptr);
+	if (SUCCEEDED(hr)) {
+		// Get the file name from the dialog
+		IShellItem* pItem = nullptr;
+		hr = pFileOpen->GetResult(&pItem);
+		if (SUCCEEDED(hr)) {
+			PWSTR pszFilePath = nullptr;
+			hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+			if (SUCCEEDED(hr)) {
+				// Convert the wide string to a standard string
+				std::wstring widePath(pszFilePath);
+				std::string filePath(widePath.begin(), widePath.end());
+
+				// Check the file size before reading
+				std::ifstream file(filePath, std::ios::binary | std::ios::ate); // Open in binary mode and seek to the end
+				if (!file) {
+					std::cerr << "Error opening file." << std::endl;
+					CoTaskMemFree(pszFilePath);
+					pItem->Release();
+					pFileOpen->Release();
+					CoUninitialize();
+					return {};
+				}
+
+				// Get the file size
+				std::streamsize fileSize = file.tellg();
+				if (fileSize > MAX_FILE_SIZE) {
+					std::cerr << "File size exceeds the 2 MB limit. File size: " << fileSize / 1024 << " kilobytes." << std::endl;
+					showErrorDialog("File size error", "File size exceeds the 2 MB limit.\nFile size: " + std::to_string(fileSize/1024) + " kilobytes.");
+					file.close();
+					CoTaskMemFree(pszFilePath);
+					pItem->Release();
+					pFileOpen->Release();
+					CoUninitialize();
+					return {};
+				}
+
+				// Read the file into a binary blob
+				file.seekg(0, std::ios::beg); // Move back to the start of the file
+				std::vector<uint8_t> blob(fileSize);
+				file.read(reinterpret_cast<char*>(blob.data()), fileSize);
+
+				// Clean up
+				file.close();
+				CoTaskMemFree(pszFilePath);
+				pItem->Release();
+				pFileOpen->Release();
+				CoUninitialize();
+
+				return blob;
+			}
+			pItem->Release();
+		}
+	}
+
+	// Clean up
+	if (pFileOpen) {
+		pFileOpen->Release();
+	}
+	CoUninitialize();
+	return {};
 }

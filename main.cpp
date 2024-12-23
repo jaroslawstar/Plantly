@@ -141,6 +141,14 @@ int main() {
                         std::cout << "Click at 'Add Plant' button" << std::endl;
                         draw_menu(window, event, false);
                         //draw_main_screen(window);
+                        auto blob = GetFileBlobDialog();
+
+                        if (!blob.empty()) {
+                            std::cout << "File loaded successfully with size: " << blob.size() << " bytes." << std::endl;
+                        }
+                        else {
+                            std::cout << "No file loaded or operation failed." << std::endl;
+                        }
                         draw_AP_screen(window, event, true);
                     }
                     else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {

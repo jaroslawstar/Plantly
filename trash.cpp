@@ -275,4 +275,45 @@ ________________________________________________________________________________
                         else {
                             buttonClick = ButtonClick::QM;
                         }
-                    */
+              
+              
+	std::string result(User.image.begin(), User.image.end());
+
+	// Insert data
+	std::string insertSQL = "INSERT INTO Users (Image) VALUES ('" + result + "');";
+	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
+		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
+		sqlite3_free(errorMessage);
+	}
+	else {
+		std::cout << "Data saved successfully!\n";
+	}
+
+	// Close database
+	sqlite3_close(db);
+
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              */

@@ -790,7 +790,7 @@ void check_user_in(std::string email, std::string password, const std::string& d
 		showErrorDialog("Database error", sqlite3_errmsg(db));
 	}
 	// Construct the SQL query
-	std::string query = "SELECT ID, Name, Email, Password, PStatus FROM Users WHERE Email = ? AND Password = ? LIMIT 1;";
+	std::string query = "SELECT ID, Name, Email, Password, PStatus, Image FROM Users WHERE Email = ? AND Password = ? LIMIT 1;";
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -812,7 +812,15 @@ void check_user_in(std::string email, std::string password, const std::string& d
 		User.email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
 		User.password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
 		User.pstatus = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
-
+		const void* blobData = sqlite3_column_blob(stmt, 5);
+		int blobSize = sqlite3_column_bytes(stmt, 5);
+		if (blobData && blobSize > 0) {
+			User.image.assign(reinterpret_cast<const uint8_t*>(blobData),
+				reinterpret_cast<const uint8_t*>(blobData) + blobSize);
+		}
+		else {
+			User.image.clear();
+		}
 	}
 
 	// Clean up
