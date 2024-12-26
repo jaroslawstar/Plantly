@@ -17,7 +17,7 @@
 #include "Header.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
-
+#include "sqlitecloud/sqcloud.h"
 
 AppState appState = AppState::LOGGED_OUT;
 
@@ -49,7 +49,11 @@ public:111
 
 int main() {
     //check_user();
-
+   /*
+    if (init_sqcloud()) {
+        std::cout << "FUCKING FINALLY" << std::endl; 
+    }
+   */
     //Window creation
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
     UserData User_Data;
@@ -141,14 +145,15 @@ int main() {
                         std::cout << "Click at 'Add Plant' button" << std::endl;
                         draw_menu(window, event, false);
                         //draw_main_screen(window);
-                        auto blob = GetFileBlobDialog();
-
+                        //auto blob = GetFileBlobDialog();
+                        /*
                         if (!blob.empty()) {
                             std::cout << "File loaded successfully with size: " << blob.size() << " bytes." << std::endl;
                         }
                         else {
                             std::cout << "No file loaded or operation failed." << std::endl;
                         }
+                        */
                         draw_AP_screen(window, event, true);
                     }
                     else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {

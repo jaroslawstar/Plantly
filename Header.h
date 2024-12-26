@@ -40,6 +40,9 @@ std::string join(const std::vector<std::string>& elements, const std::string& de
 void showErrorDialog(const std::string& title, const std::string& message);
 std::string generate_username(std::string email);
 
+//bool init_sqcloud();
+
+
 class UserData {
 public:
     int id;
@@ -55,13 +58,15 @@ public:
 
 class Plant {
 public:
-    std::string name;
+    int id;
+    int userid;
     int days;
-    std::string filePath;
+    std::string name;
+    std::string type;
+    std::string location;
+    std::vector<uint8_t> image;
 
     void saveToDatabase(const std::string& dbFile);
-
-    
 };
 
 extern UserData User;

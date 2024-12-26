@@ -28,6 +28,8 @@ Wazne parametry:
 #include "Header.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
+#include "sqlitecloud/sqcloud.h"
+
 
 void draw_clear_screen(sf::RenderWindow& window) {
 	sf::Texture ClearScreen;
