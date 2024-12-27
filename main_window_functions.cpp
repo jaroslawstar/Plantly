@@ -509,6 +509,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	sf::Text nameUI("Name:", font, 20);
 	sf::Text daysUI("Days:", font, 20);
 	sf::Text typeUI("Type:", font, 20);
+	sf::Text locaUI("Loca:", font, 20);
 	sf::Text imageUI("Image:", font, 20);
 	sf::Text saveUI("Save", font, 20);
 
@@ -516,9 +517,11 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	std::string nameInput = "";
 	std::string daysInput = "";
 	std::string typeInput = "";
+	std::string locaInput = "";
 	sf::Text nameText(nameInput, font, 15);
 	sf::Text daysText(daysInput, font, 15);
 	sf::Text typeText(typeInput, font, 15);
+	sf::Text locaText(locaInput, font, 15);
 
 	//window.draw(targetFieldPass);
 	window.display();
@@ -528,6 +531,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		nameUI.setPosition(2000, 2000);
 		daysUI.setPosition(2000, 2000);
 		typeUI.setPosition(2000, 2000);
+		locaUI.setPosition(2000, 2000);
 		imageUI.setPosition(2000, 2000);
 		saveUI.setPosition(2000, 2000);
 		nameText.setPosition(2000, 2000);
@@ -539,6 +543,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		nameUI.setPosition(100, 100);
 		daysUI.setPosition(150, 100);
 		typeUI.setPosition(585, 467);
+		locaUI.setPosition(585, 467);
 		imageUI.setPosition(100, 200);
 		saveUI.setPosition(585, 467);
 		nameText.setPosition(578, 286);
@@ -548,6 +553,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		nameUI.setFillColor(sf::Color::Black);
 		daysUI.setFillColor(sf::Color::Black);
 		typeUI.setFillColor(sf::Color::Black);
+		locaUI.setFillColor(sf::Color::Black);
 		imageUI.setFillColor(sf::Color::Black);
 		saveUI.setFillColor(sf::Color::Black);
 		nameText.setFillColor(sf::Color::Black);
@@ -562,17 +568,20 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		sf::RectangleShape targetFieldName(sf::Vector2f(200, 17));
 		sf::RectangleShape targetFieldDays(sf::Vector2f(200, 17));
 		sf::RectangleShape targetFieldType(sf::Vector2f(200, 17));
+		sf::RectangleShape targetFieldLoca(sf::Vector2f(200, 17));
 		sf::RectangleShape targetFieldImage(sf::Vector2f(105, 36));
 		sf::RectangleShape targetSave(sf::Vector2f(105, 36)); // posibility of getting rid cause sf::Text is enough to get global bounds
 		targetFieldName.setPosition(578, 286);
 		targetFieldDays.setPosition(578, 327);
 		targetFieldType.setPosition(578, 327);
+		targetFieldLoca.setPosition(578, 327);
 		targetFieldImage.setPosition(655, 212);
 		targetSave.setPosition(585, 467); //sameee
 
 		targetFieldName.setFillColor(sf::Color(0, 0, 0, 50));
 		targetFieldDays.setFillColor(sf::Color(0, 0, 0, 50));
 		targetFieldType.setFillColor(sf::Color(0, 0, 0, 50));
+		targetFieldLoca.setFillColor(sf::Color(0, 0, 0, 50));
 		targetFieldImage.setFillColor(sf::Color(0, 0, 0, 50));
 		targetSave.setFillColor(sf::Color(0, 0, 0, 50));
 		
@@ -580,16 +589,19 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(nameUI);
 		window.draw(daysUI);
 		window.draw(typeUI);
+		window.draw(locaUI);
 		window.draw(imageUI);
 		window.draw(saveUI);
 
 		window.draw(nameText);
 		window.draw(daysText);
 		window.draw(typeText);
+		window.draw(locaText);
 
 		window.draw(targetFieldName);
 		window.draw(targetFieldDays);
 		window.draw(targetFieldType);
+		window.draw(targetFieldLoca);
 		window.draw(targetFieldImage);
 		window.draw(targetSave);
 
@@ -605,6 +617,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		bool inNameField = false;
 		bool inDaysField = false;
 		bool inTypeField = false;
+		bool inLocaField = false;
 		bool inImageField = false;
 		
 		while (!added_plant) {
@@ -651,6 +664,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = true;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										break;
 									}
@@ -658,6 +672,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = true;
+										inLocaField = false;
+										inImageField = false;
+										break;
+									}
+									else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = true;
 										inImageField = false;
 										break;
 									}
@@ -665,6 +688,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = true;
 										break;
 									}
@@ -673,6 +697,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										/*
 										if (!check_plant(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
@@ -696,16 +721,19 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
+								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
 
 								window.draw(nameText);
 								window.draw(daysText);
 								window.draw(typeText);
+								window.draw(locaText);
 
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
+								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.display();
@@ -713,7 +741,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						}
 					}
 					else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inDaysField == true) {
-						std::cout << "Click at 'E-mail' field" << std::endl;
+						std::cout << "Click at 'Watering days' field" << std::endl;
 						inDaysField = true;
 						while (inDaysField) {
 							while (window.pollEvent(event)) {
@@ -748,6 +776,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = true;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										break;
 									}
@@ -755,6 +784,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = true;
+										inLocaField = false;
+										inImageField = false;
+										break;
+									}
+									else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = true;
 										inImageField = false;
 										break;
 									}
@@ -762,6 +800,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = true;
 										break;
 									}
@@ -770,6 +809,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										/*
 										if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
@@ -794,16 +834,19 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
+								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
 
 								window.draw(nameText);
 								window.draw(daysText);
 								window.draw(typeText);
+								window.draw(locaText);
 
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
+								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.display();
@@ -811,7 +854,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						}
 					}
 					else if (targetFieldType .getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inTypeField == true) {
-						std::cout << "Click at 'Password1' field" << std::endl;
+						std::cout << "Click at 'Plant type' field" << std::endl;
 						inTypeField = true;
 						while (inTypeField) {
 							while (window.pollEvent(event)) {
@@ -840,6 +883,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = true;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										break;
 									}
@@ -847,6 +891,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = true;
 										inTypeField = false;
+										inLocaField = false;
+										inImageField = false;
+										break;
+									}
+									else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = true;
 										inImageField = false;
 										break;
 									}
@@ -854,6 +907,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = true;
 										break;
 									}
@@ -862,6 +916,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										/*
 										if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
@@ -886,21 +941,131 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
+								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
 
 								window.draw(nameText);
 								window.draw(daysText);
 								window.draw(typeText);
+								window.draw(locaText);
 
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
+								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.display();
 							}
 						}
+					}
+					else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inLocaField == true) {
+					std::cout << "Click at 'Location' field" << std::endl;
+					inLocaField = true;
+					while (inLocaField) {
+						while (window.pollEvent(event)) {
+							if (event.type == sf::Event::Closed)
+								window.close();
+							locaText.setString(locaInput + "|");
+							if (event.type == sf::Event::TextEntered)
+							{
+								if (event.text.unicode == 8 && !locaInput.empty()) { // Handle backspace
+									locaText.setFillColor(sf::Color::Black);
+									locaInput.pop_back();
+								}
+								else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									locaInput += static_cast<char>(event.text.unicode);
+								}
+								locaText.setString(locaInput + "|");
+								std::cout << locaInput << std::endl;
+								entry.location = locaInput;
+
+							}
+							if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+								std::cout << "Key pressed 'Enter'" << std::endl;
+								sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+								locaText.setString(locaInput);
+								if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = true;
+									inDaysField = false;
+									inTypeField = false;
+									inLocaField = false;
+									inImageField = false;
+									break;
+								}
+								else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inDaysField = true;
+									inTypeField = false;
+									inLocaField = false;
+									inImageField = false;
+									break;
+								}
+								else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inDaysField = false;
+									inTypeField = true;
+									inLocaField = false;
+									inImageField = false;
+									break;
+								}
+								else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									inNameField = false;
+									inDaysField = false;
+									inTypeField = false;
+									inLocaField = false;
+									inImageField = true;
+									break;
+								}
+								else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+									std::cout << "Click at 'Next' button" << std::endl;
+									inNameField = false;
+									inDaysField = false;
+									inTypeField = false;
+									inLocaField = false;
+									inImageField = false;
+									/*
+									if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
+										userDataEntered = false;
+									}
+									else {
+										emailText.setFillColor(sf::Color::Red);
+										pass1Text.setFillColor(sf::Color::Red);
+										pass2Text.setFillColor(sf::Color::Red);
+										userDataEntered = false;
+										break;
+									}
+									*/
+									added_plant = true;
+									break;
+								}
+
+							}
+							window.clear();
+							window.clear(sf::Color::White);
+							draw_X(window, 870, 100);
+							window.draw(nameUI);
+							window.draw(daysUI);
+							window.draw(typeUI);
+							window.draw(locaUI);
+							window.draw(imageUI);
+							window.draw(saveUI);
+
+							window.draw(nameText);
+							window.draw(daysText);
+							window.draw(typeText);
+							window.draw(locaText);
+
+							window.draw(targetFieldName);
+							window.draw(targetFieldDays);
+							window.draw(targetFieldType);
+							window.draw(targetFieldLoca);
+							window.draw(targetFieldImage);
+							window.draw(targetSave);
+							window.display();
+						}
+					}
 					}
 					else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inImageField == true) {
 						std::cout << "Click at 'Password2' field" << std::endl;
@@ -924,6 +1089,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = true;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										break;
 									}
@@ -931,6 +1097,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = true;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										break;
 									}
@@ -938,6 +1105,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = true;
+										inLocaField = false;
+										inImageField = false;
+										break;
+									}
+									else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = true;
 										inImageField = false;
 										break;
 									}
@@ -946,6 +1122,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
+										inLocaField = false;
 										inImageField = false;
 										/*
 										if (!check_user(nameInput, emailInput, User.password, pass2Input, "plantly.db")) {
@@ -969,16 +1146,19 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
+								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
 
 								window.draw(nameText);
 								window.draw(daysText);
 								window.draw(typeText);
+								window.draw(locaText);
 
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
+								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.display();
