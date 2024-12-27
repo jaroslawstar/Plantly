@@ -25,10 +25,10 @@ UserData User;
 
 bool UserSighned = 0;
 
-const int SIZE = 10;
+//const int SIZE = 10;
 
 Plant usersPlants[SIZE];
-    
+
 /*
 class Plant {
 public:111

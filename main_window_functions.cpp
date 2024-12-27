@@ -1602,7 +1602,7 @@ int array_length() {
 	//int al = sizeof(usersPlants) / sizeof(Plant);
 	
 	int ans = 0;
-	for (size_t i = 1; i <= SIZE; i++){
+	for (int i = 1; i <= SIZE; i++){
 		if (usersPlants[i].id != NULL){
 			ans++;
 		}

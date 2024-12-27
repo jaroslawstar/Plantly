@@ -10,7 +10,7 @@ enum class AppState {
 
 extern AppState appState;
 extern bool UserSighned;
-
+extern const size_t SIZE = 10;
 
 void draw_signup_screen(sf::RenderWindow& window, sf::Event event);
 void draw_login_screen(sf::RenderWindow& window, sf::Event event);
@@ -83,7 +83,7 @@ public:
     }
 };
 
-extern const int SIZE;
+
 extern UserData User;
 extern Plant usersPlants[];
 
