@@ -66,9 +66,24 @@ public:
     std::string location;
     std::vector<uint8_t> image;
 
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
+        std::cout << "Plant default constructor called." << std::endl;
+    }
+
     void saveToDatabase(const std::string& dbFile);
+    void fetch_plants_from_db(const std::string& dbFile);
+    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) {
+        id = id_;
+        userid = userid_;
+        days = days_;
+        name = name_;
+        type = type_;
+        location = location_;
+        image = image_;
+    }
 };
 
+extern const int SIZE;
 extern UserData User;
 extern Plant usersPlants[];
 

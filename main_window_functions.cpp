@@ -1198,6 +1198,77 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	return;
 }
 
+//____________________________________________NOT
+void Plant::fetch_plants_from_db(const std::string& dbFile) {
+
+
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	bool exists = false;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+	}
+	// Construct the SQL query
+	std::string query = "SELECT id, userid, days, name, type, location, image FROM Plants WHERE userid = ? LIMIT 10;";
+
+	// Prepare the query
+	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
+		showErrorDialog("Database error", sqlite3_errmsg(db));
+		sqlite3_close(db);
+	}
+
+	// Bind values to the query
+	sqlite3_bind_int(stmt, 1, User.id);
+
+	int i = 0;
+	// Execute the query and fetch the results
+	while (sqlite3_step(stmt) == SQLITE_ROW && i < SIZE) {
+		int id = sqlite3_column_int(stmt, 0);
+		int userid = sqlite3_column_int(stmt, 1);
+		int days = sqlite3_column_int(stmt, 2);
+		std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+		std::string type = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+		std::string location = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
+		// Fetch BLOB data
+		const void* blobData = sqlite3_column_blob(stmt, 6);
+		int blobSize = sqlite3_column_bytes(stmt, 6);
+		std::vector<uint8_t> image;
+		if (blobData && blobSize > 0) {
+			image.assign(static_cast<const uint8_t*>(blobData), static_cast<const uint8_t*>(blobData) + blobSize);
+		}
+
+		// Populate the array with the object
+		usersPlants[i].populate(id, userid, days, name, type, location, image);
+		++i;
+	}
+
+	// Execute the query
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		User.id = sqlite3_column_int(stmt, 0);
+		User.name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+		User.email = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2));
+		User.password = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
+		User.pstatus = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
+		const void* blobData = sqlite3_column_blob(stmt, 5);
+		int blobSize = sqlite3_column_bytes(stmt, 5);
+		if (blobData && blobSize > 0) {
+			User.image.assign(reinterpret_cast<const uint8_t*>(blobData),
+				reinterpret_cast<const uint8_t*>(blobData) + blobSize);
+		}
+		else {
+			User.image.clear();
+		}
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+
+}
 // Helper function to join strings (for constructing SQL query)
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter) {
 	std::string result;
@@ -1343,6 +1414,23 @@ std::vector<uint8_t> GetFileBlobDialog() {
 	}
 	CoUninitialize();
 	return {};
+}
+
+
+int array_length() {
+	//std::cout << "\nThe length of the given Array is: " << usersPlants.size();
+	//int al = sizeof(usersPlants) / sizeof(Plant);
+	
+	int ans = 0;
+	for (size_t i = 1; i <= SIZE; i++){
+		if (usersPlants[i].id != NULL){
+			ans++;
+		}
+		else {
+			i = SIZE;
+		}
+	}
+	return ans;
 }
 
 
