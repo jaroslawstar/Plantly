@@ -25,9 +25,9 @@ UserData User;
 
 bool UserSighned = 0;
 
-//const int SIZE = 10;
+const size_t plantsnum = 10;
 
-Plant usersPlants[SIZE];
+Plant usersPlants[plantsnum];
 
 /*
 class Plant {

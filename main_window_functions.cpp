@@ -1406,7 +1406,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 
 	int i = 0;
 	// Execute the query and fetch the results
-	while (sqlite3_step(stmt) == SQLITE_ROW && i < SIZE) {
+	while (sqlite3_step(stmt) == SQLITE_ROW && i < plantsnum) {
 		int id = sqlite3_column_int(stmt, 0);
 		int userid = sqlite3_column_int(stmt, 1);
 		int days = sqlite3_column_int(stmt, 2);
@@ -1602,12 +1602,12 @@ int array_length() {
 	//int al = sizeof(usersPlants) / sizeof(Plant);
 	
 	int ans = 0;
-	for (int i = 1; i <= SIZE; i++){
+	for (int i = 1; i <= plantsnum; i++){
 		if (usersPlants[i].id != NULL){
 			ans++;
 		}
 		else {
-			i = SIZE;
+			i = plantsnum;
 		}
 	}
 	return ans;
