@@ -115,19 +115,19 @@ void draw_buttons(sf::RenderWindow& window) {
 }
 */
 
-void draw_X(sf::RenderWindow& window, int x, int y) {
+void draw_AP_Screen(sf::RenderWindow& window) {
 	sf::Texture XT;
-	if (!XT.loadFromFile("Resources/images/AP.png"))
+	if (!XT.loadFromFile("Resources/images/AP_Screen.png"))
 		std::cout << "Failed to load image!" << std::endl;
 
 	sf::Sprite X;
 	X.setTexture(XT);
-	X.setScale(0.12f, 0.12f);
-	X.setPosition(x, y);
-	X.setRotation(45);
+	X.setPosition(0, 0);
+	//X.setRotation(45);
 	window.draw(X);
 	//window.display();
 }
+
 /*
 void draw_logo(sf::RenderWindow& window) {
 	// Ustawienia tekstu
@@ -506,12 +506,14 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		std::cout << "Failed to load font";
 
 	//Description text
+	/*
 	sf::Text nameUI("Name:", font, 20);
 	sf::Text daysUI("Days:", font, 20);
 	sf::Text typeUI("Type:", font, 20);
 	sf::Text locaUI("Loca:", font, 20);
 	sf::Text imageUI("Image:", font, 20);
 	sf::Text saveUI("Save", font, 20);
+	*/
 
 
 	std::string nameInput = "";
@@ -528,55 +530,66 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 
 
 	if (!show) {
+		/*
 		nameUI.setPosition(2000, 2000);
 		daysUI.setPosition(2000, 2000);
 		typeUI.setPosition(2000, 2000);
 		locaUI.setPosition(2000, 2000);
 		imageUI.setPosition(2000, 2000);
 		saveUI.setPosition(2000, 2000);
+		*/
 		nameText.setPosition(2000, 2000);
 		daysText.setPosition(2000, 2000);
 		typeText.setPosition(2000, 2000);
+		locaText.setPosition(2000, 2000);
 	}
 	else {
 		window.clear(sf::Color::White);
+		/*
 		nameUI.setPosition(100, 100);
 		daysUI.setPosition(150, 100);
 		typeUI.setPosition(585, 467);
 		locaUI.setPosition(585, 467);
 		imageUI.setPosition(100, 200);
 		saveUI.setPosition(585, 467);
-		nameText.setPosition(578, 286);
-		daysText.setPosition(578, 327);
-		typeText.setPosition(578, 327);
+		*/
+		nameText.setPosition(500, 465);
+		daysText.setPosition(500, 525);
+		typeText.setPosition(500, 585);
+		locaText.setPosition(500, 645);
 
+
+		/*
 		nameUI.setFillColor(sf::Color::Black);
 		daysUI.setFillColor(sf::Color::Black);
 		typeUI.setFillColor(sf::Color::Black);
 		locaUI.setFillColor(sf::Color::Black);
 		imageUI.setFillColor(sf::Color::Black);
 		saveUI.setFillColor(sf::Color::Black);
+		*/
 		nameText.setFillColor(sf::Color::Black);
 		daysText.setFillColor(sf::Color::Black);
 		typeText.setFillColor(sf::Color::Black);
+		locaText.setFillColor(sf::Color::Black);
 
 
-		sf::RectangleShape targetXB(sf::Vector2f(49, 49));
-		targetXB.setPosition(849, 116);
+
+		sf::RectangleShape targetXB(sf::Vector2f(60, 60));
+		targetXB.setPosition(560, 700);
 
 		//Buttons and fields 
-		sf::RectangleShape targetFieldName(sf::Vector2f(200, 17));
-		sf::RectangleShape targetFieldDays(sf::Vector2f(200, 17));
-		sf::RectangleShape targetFieldType(sf::Vector2f(200, 17));
-		sf::RectangleShape targetFieldLoca(sf::Vector2f(200, 17));
-		sf::RectangleShape targetFieldImage(sf::Vector2f(105, 36));
-		sf::RectangleShape targetSave(sf::Vector2f(105, 36)); // posibility of getting rid cause sf::Text is enough to get global bounds
-		targetFieldName.setPosition(578, 286);
-		targetFieldDays.setPosition(578, 327);
-		targetFieldType.setPosition(578, 327);
-		targetFieldLoca.setPosition(578, 327);
-		targetFieldImage.setPosition(655, 212);
-		targetSave.setPosition(585, 467); //sameee
+		sf::RectangleShape targetFieldName(sf::Vector2f(300, 25));
+		sf::RectangleShape targetFieldDays(sf::Vector2f(300, 25));
+		sf::RectangleShape targetFieldType(sf::Vector2f(300, 25));
+		sf::RectangleShape targetFieldLoca(sf::Vector2f(300, 25));
+		sf::RectangleShape targetFieldImage(sf::Vector2f(300, 25));
+		sf::RectangleShape targetSave(sf::Vector2f(60, 60)); // posibility of getting rid cause sf::Text is enough to get global bounds
+		targetFieldName.setPosition(500, 286);
+		targetFieldDays.setPosition(500, 327);
+		targetFieldType.setPosition(500, 327);
+		targetFieldLoca.setPosition(500, 327);
+		targetFieldImage.setPosition(0, 212);
+		targetSave.setPosition(680, 700); //sameee
 
 		targetFieldName.setFillColor(sf::Color(0, 0, 0, 50));
 		targetFieldDays.setFillColor(sf::Color(0, 0, 0, 50));
@@ -584,14 +597,19 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		targetFieldLoca.setFillColor(sf::Color(0, 0, 0, 50));
 		targetFieldImage.setFillColor(sf::Color(0, 0, 0, 50));
 		targetSave.setFillColor(sf::Color(0, 0, 0, 50));
+		targetXB.setFillColor(sf::Color(0, 0, 0, 50));
 
 		//Text and targets
+		/*
 		window.draw(nameUI);
 		window.draw(daysUI);
 		window.draw(typeUI);
 		window.draw(locaUI);
 		window.draw(imageUI);
 		window.draw(saveUI);
+		*/
+
+		draw_AP_Screen(window);
 
 		window.draw(nameText);
 		window.draw(daysText);
@@ -605,14 +623,12 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(targetFieldImage);
 		window.draw(targetSave);
 
-		draw_X(window, 870, 100);
 
 		window.display();
 
 
-		bool added_plant = false;
-		std::string nameBuffer, daysBuffer, filePathBuffer;
 		Plant entry;
+		bool added_plant = false;
 		bool enteringFilePath = false;
 		bool inNameField = false;
 		bool inDaysField = false;
@@ -717,13 +733,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
-								draw_X(window, 870, 100);
+								/*
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
 								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
+								*/
+								draw_AP_Screen(window);
 
 								window.draw(nameText);
 								window.draw(daysText);
@@ -736,6 +754,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
+								
 								window.display();
 							}
 						}
@@ -830,13 +849,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
-								draw_X(window, 870, 100);
+								/*
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
 								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
+								*/
+								draw_AP_Screen(window);
 
 								window.draw(nameText);
 								window.draw(daysText);
@@ -937,13 +958,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
-								draw_X(window, 870, 100);
+								draw_AP_Screen(window);
+								/*
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
 								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
+								*/
 
 								window.draw(nameText);
 								window.draw(daysText);
@@ -1044,13 +1067,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
-								draw_X(window, 870, 100);
+								draw_AP_Screen(window);
+								/*
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);
 								window.draw(locaUI);
 								window.draw(imageUI);
 								window.draw(saveUI);
+								*/
 
 								window.draw(nameText);
 								window.draw(daysText);
@@ -1071,6 +1096,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						std::cout << "Click at 'Choose image' field" << std::endl;
 						entry.image = GetFileBlobDialog();
 						inImageField = false;
+						
 						/*
 						while (inImageField) {
 							while (window.pollEvent(event)) {
@@ -1145,7 +1171,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
-								draw_X(window, 870, 100);
+								draw_AP_Screen(window);
 								window.draw(nameUI);
 								window.draw(daysUI);
 								window.draw(typeUI);

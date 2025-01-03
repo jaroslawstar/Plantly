@@ -17,7 +17,7 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event);
 void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
-void draw_X(sf::RenderWindow& window, int x, int y);
+void draw_AP_Screen(sf::RenderWindow& window);
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show);
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
 void draw_text(sf::RenderWindow& window, bool show); 
