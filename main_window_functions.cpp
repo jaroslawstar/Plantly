@@ -582,13 +582,13 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		sf::RectangleShape targetFieldDays(sf::Vector2f(300, 25));
 		sf::RectangleShape targetFieldType(sf::Vector2f(300, 25));
 		sf::RectangleShape targetFieldLoca(sf::Vector2f(300, 25));
-		sf::RectangleShape targetFieldImage(sf::Vector2f(300, 25));
+		sf::RectangleShape targetFieldImage(sf::Vector2f(1280, 435));
 		sf::RectangleShape targetSave(sf::Vector2f(60, 60)); // posibility of getting rid cause sf::Text is enough to get global bounds
-		targetFieldName.setPosition(500, 286);
-		targetFieldDays.setPosition(500, 327);
-		targetFieldType.setPosition(500, 327);
-		targetFieldLoca.setPosition(500, 327);
-		targetFieldImage.setPosition(0, 212);
+		targetFieldName.setPosition(500, 465);
+		targetFieldDays.setPosition(500, 525);
+		targetFieldType.setPosition(500, 585);
+		targetFieldLoca.setPosition(500, 645);
+		targetFieldImage.setPosition(0, 0);
 		targetSave.setPosition(680, 700); //sameee
 
 		targetFieldName.setFillColor(sf::Color(0, 0, 0, 50));
@@ -622,6 +622,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(targetFieldLoca);
 		window.draw(targetFieldImage);
 		window.draw(targetSave);
+		window.draw(targetXB);
 
 
 		window.display();
@@ -779,6 +780,8 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 									if (daysInput.find_first_not_of("0123456789") != std::string::npos) {
 										std::cerr << "Error, this field receives only digits\n";
 										showErrorDialog("Days typo", "Error, this field receives only\n digits");
+
+										daysInput = "";
 										break;
 									}
 									else {
