@@ -461,8 +461,18 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 						//}
 						User.image = GetFileBlobDialog();
 						User.set_image("Plantly.db");
+						PFP.loadFromMemory(User.image.data(), User.image.size());
+						PFPp.setTexture(PFP);
+						window.draw(rectangle_shadow);
+						window.draw(rectangle_white);
+						window.draw(name);
+						//window.draw(targetPFP);
 						window.draw(PFPp);
-						//window.display();
+						window.draw(Preferences);
+						window.draw(AS);
+						window.draw(RP);
+						window.draw(LogoutB);
+						window.display();
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 						std::cout << "Click at 'Logout' button" << std::endl;
@@ -503,7 +513,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		std::cout << "Failed to load font";
+		std::cout << "Failed to load font\n";
 
 	//Description text
 	/*
@@ -514,6 +524,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	sf::Text imageUI("Image:", font, 20);
 	sf::Text saveUI("Save", font, 20);
 	*/
+
 
 
 	std::string nameInput = "";
@@ -609,6 +620,32 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(saveUI);
 		*/
 
+		Plant entry;
+		bool added_plant = false;
+		bool enteringFilePath = false;
+		bool inNameField = false;
+		bool inDaysField = false;
+		bool inTypeField = false;
+		bool inLocaField = false;
+		bool inImageField = false;
+
+
+
+		sf::Texture plantT;
+		if (!plantT.loadFromMemory(entry.image.data(), entry.image.size())) {
+			std::cout << "Failed to load plant picture from binary data!" << std::endl;
+			plantT.create(10, 10);
+		}
+
+		std::cout << "Texture size x: " << plantT.getSize().x << std::endl;
+		std::cout << "Texture size x: " << plantT.getSize().y << std::endl;
+		sf::Sprite plantP;
+		plantP.setTexture(plantT);
+		CenterBlobImage(window, entry.image);
+
+
+
+
 		draw_AP_Screen(window);
 
 		window.draw(nameText);
@@ -628,14 +665,13 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.display();
 
 
-		Plant entry;
-		bool added_plant = false;
-		bool enteringFilePath = false;
-		bool inNameField = false;
-		bool inDaysField = false;
-		bool inTypeField = false;
-		bool inLocaField = false;
-		bool inImageField = false;
+		
+
+
+
+
+
+
 
 		while (!added_plant) {
 			while (window.pollEvent(event)) {
@@ -777,7 +813,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										daysInput += static_cast<char>(event.text.unicode);
 									}
 									daysText.setString(daysInput + "|");
-									if (daysInput.find_first_not_of("0123456789") != std::string::npos) {
+									if ((daysInput.find_first_not_of("0123456789") != std::string::npos) && event.text.unicode != 8) {
 										std::cerr << "Error, this field receives only digits\n";
 										showErrorDialog("Days typo", "Error, this field receives only\n digits");
 
@@ -1649,6 +1685,28 @@ int array_length() {
 	return ans;
 }
 
+// Funkcja do wyświetlania obrazu w istniejącym oknie
+void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image) {
+	// Tworzenie tekstury
+	sf::Texture texture;
+	if (!texture.loadFromMemory(image.data(), image.size())) {
+		std::cerr << "Nie można utworzyć tekstury!\n";
+		return;
+	}
+
+	// Tworzenie sprajtu
+	sf::Sprite sprite(texture);
+
+	// Obliczanie pozycji centralnej
+	const sf::Vector2u windowSize = window.getSize();
+	const sf::Vector2u textureSize = texture.getSize();
+	float x = (windowSize.x - textureSize.x) / 2.0f;
+	float y = (windowSize.y - textureSize.y) / 2.0f;
+	sprite.setPosition(x, y);
+
+	// Odrysowanie obrazu w oknie
+	window.draw(sprite);
+}
 
 /*
 bool init_sqcloud() {
