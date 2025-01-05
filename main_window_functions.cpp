@@ -629,7 +629,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		bool inLocaField = false;
 		bool inImageField = false;
 
-
+		window.clear(sf::Color::White);
 
 		sf::Texture plantT;
 		if (!plantT.loadFromMemory(entry.image.data(), entry.image.size())) {
@@ -641,8 +641,9 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		std::cout << "Texture size x: " << plantT.getSize().y << std::endl;
 		sf::Sprite plantP;
 		plantP.setTexture(plantT);
-		CenterBlobImage(window, entry.image);
-
+		CenterBlobImage(window, entry.image, plantT, plantP);
+		window.draw(plantP);
+		
 
 
 
@@ -1133,7 +1134,35 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 					}
 					else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inImageField == true) {
 						std::cout << "Click at 'Choose image' field" << std::endl;
+						
+						//entry.set_image("Plantly.db"); //Save image to DataBase
 						entry.image = GetFileBlobDialog();
+		 
+						window.clear(sf::Color::White);
+						plantT.loadFromMemory(entry.image.data(), entry.image.size());
+						plantP.setTexture(plantT);
+						CenterBlobImage(window, entry.image, plantT, plantP);
+
+						window.draw(plantP);
+						draw_AP_Screen(window);
+
+						window.draw(nameText);
+						window.draw(daysText);
+						window.draw(typeText);
+						window.draw(locaText);
+
+						window.draw(targetFieldName);
+						window.draw(targetFieldDays);
+						window.draw(targetFieldType);
+						window.draw(targetFieldLoca);
+						window.draw(targetFieldImage);
+						window.draw(targetSave);
+						window.draw(targetXB);
+
+
+						window.display();
+
+		
 						inImageField = false;
 						
 						/*
@@ -1685,17 +1714,14 @@ int array_length() {
 	return ans;
 }
 
-// Funkcja do wyświetlania obrazu w istniejącym oknie
-void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image) {
-	// Tworzenie tekstury
-	sf::Texture texture;
+// Func to change picture's position
+void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image, sf::Texture& texture, sf::Sprite& sprite) {
 	if (!texture.loadFromMemory(image.data(), image.size())) {
 		std::cerr << "Nie można utworzyć tekstury!\n";
 		return;
 	}
 
-	// Tworzenie sprajtu
-	sf::Sprite sprite(texture);
+	sprite.setTexture(texture);
 
 	// Obliczanie pozycji centralnej
 	const sf::Vector2u windowSize = window.getSize();

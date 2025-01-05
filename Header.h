@@ -40,7 +40,7 @@ std::string join(const std::vector<std::string>& elements, const std::string& de
 void showErrorDialog(const std::string& title, const std::string& message);
 std::string generate_username(std::string email);
 
-void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image);
+void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image, sf::Texture& texture, sf::Sprite& sprite);
 //bool init_sqcloud();
 
 
