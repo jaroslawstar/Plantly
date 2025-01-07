@@ -646,14 +646,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		sf::Texture plantT;
 		if (!plantT.loadFromMemory(entry.image.data(), entry.image.size())) {
 			std::cout << "Failed to load plant picture from binary data!" << std::endl;
-			plantT.create(10, 10);
+			plantT.loadFromFile("Resources/images/Image_text.png");
 		}
 
 		std::cout << "Texture size x: " << plantT.getSize().x << std::endl;
 		std::cout << "Texture size x: " << plantT.getSize().y << std::endl;
 		sf::Sprite plantP;
 		plantP.setTexture(plantT);
-		CenterBlobImage(window, entry.image, plantT, plantP);
+		plantP.setPosition(507, 200);
+		//CenterBlobImage(window, entry.image, plantT, plantP);
 		window.draw(plantP);
 		
 
@@ -676,11 +677,6 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 
 
 		window.display();
-
-
-		
-
-
 
 
 
@@ -758,6 +754,16 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inImageField = true;
 										break;
 									}
+									else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										std::cout << "Click at 'X' button" << std::endl;
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = false;
+										inImageField = false;
+										added_plant = true;
+										break;
+									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 										std::cout << "Click at 'Next' button" << std::endl;
 										inNameField = false;
@@ -804,7 +810,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
-								
+								window.draw(targetXB);
 								window.display();
 							}
 						}
@@ -875,6 +881,16 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inImageField = true;
 										break;
 									}
+									else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										std::cout << "Click at 'X' button" << std::endl;
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = false;
+										inImageField = false;
+										added_plant = true;
+										break;
+									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 										std::cout << "Click at 'Next' button" << std::endl;
 										inNameField = false;
@@ -922,6 +938,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
+								window.draw(targetXB);
 								window.display();
 							}
 						}
@@ -984,6 +1001,16 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inImageField = true;
 										break;
 									}
+									else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										std::cout << "Click at 'X' button" << std::endl;
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = false;
+										inImageField = false;
+										added_plant = true;
+										break;
+									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 										std::cout << "Click at 'Next' button" << std::endl;
 										inNameField = false;
@@ -1031,6 +1058,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
+								window.draw(targetXB);
 								window.display();
 							}
 						}
@@ -1093,6 +1121,16 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inImageField = true;
 										break;
 									}
+									else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+										std::cout << "Click at 'X' button" << std::endl;
+										inNameField = false;
+										inDaysField = false;
+										inTypeField = false;
+										inLocaField = false;
+										inImageField = false;
+										added_plant = true;
+										break;
+									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 										std::cout << "Click at 'Next' button" << std::endl;
 										inNameField = false;
@@ -1140,6 +1178,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldLoca);
 								window.draw(targetFieldImage);
 								window.draw(targetSave);
+								window.draw(targetXB);
 								window.display();
 							}
 						}
@@ -1152,7 +1191,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		 
 						window.clear(sf::Color::White);
 						plantT.loadFromMemory(entry.image.data(), entry.image.size());
-						plantP.setTexture(plantT);
+						plantP.setTexture(plantT, true);
 						CenterBlobImage(window, entry.image, plantT, plantP);
 
 						window.draw(plantP);

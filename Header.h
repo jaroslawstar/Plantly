@@ -17,7 +17,6 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event);
 void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
-void draw_AP_Screen(sf::RenderWindow& window);
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show);
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
 void draw_text(sf::RenderWindow& window, bool show); 
@@ -67,7 +66,7 @@ public:
     std::string location;
     std::vector<uint8_t> image;
 
-    Plant() : id(1), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
 
