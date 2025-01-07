@@ -418,15 +418,20 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 		RP.setFillColor(sf::Color::Black);
 		LogoutB.setFillColor(sf::Color::Black);
 
+		sf::RectangleShape targetPFP(sf::Vector2f(43, 43));
+		targetPFP.setPosition(300, 100);
+
+		sf::RectangleShape targetASB(sf::Vector2f(150, 20));
+		targetASB.setPosition(140, 190);
+
 		sf::RectangleShape targetLogoutB(sf::Vector2f(49, 20));
 		targetLogoutB.setPosition(140, 250);
 
 		sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
 		targetMainBs.setPosition(40, 40);
 
-		sf::RectangleShape targetPFP(sf::Vector2f(43, 43));
-		targetPFP.setPosition(300, 100);
-		//targetPFP.setFillColor(sf::Color::Black);
+		
+		//targetASB.setFillColor(sf::Color(0, 0, 0, 50));
 
 		bool MainBs = false;
 
@@ -435,6 +440,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(rectangle_white);
 		window.draw(name);
 		//window.draw(targetPFP);
+		//window.draw(targetASB);
 		window.draw(PFPp);
 		window.draw(Preferences);
 		window.draw(AS);
@@ -476,6 +482,13 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 						window.draw(RP);
 						window.draw(LogoutB);
 						window.display();
+					}
+					if (targetASB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+						//std::string result(User.image.begin(), User.image.end());
+						std::cout << "Logged in User info from DataBase:\nID: " << User.id <<
+							"\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " 
+							<< User.password << "\nStatus:" << User.pstatus << std::endl;
+							//<< User.password << "\nStatus:" << User.pstatus << "\nImage:" << result << std::endl;
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 						std::cout << "Click at 'Logout' button" << std::endl;
@@ -576,10 +589,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		imageUI.setPosition(100, 200);
 		saveUI.setPosition(585, 467);
 		*/
-		nameText.setPosition(500, 465);
-		daysText.setPosition(500, 525);
-		typeText.setPosition(500, 585);
-		locaText.setPosition(500, 645);
+		nameText.setPosition(500, 463);
+		daysText.setPosition(500, 523);
+		typeText.setPosition(500, 583);
+		locaText.setPosition(500, 643);
 
 
 		/*
