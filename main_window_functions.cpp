@@ -150,7 +150,7 @@ void draw_logo(sf::RenderWindow& window) {
 
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile) {
 	
-
+	/*
 	sqlite3* db;
 	sqlite3_stmt* stmt;
 
@@ -161,7 +161,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	}
 
 	// Zapytanie SQL do pobrania danych
-	const char* query = "SELECT ID, NAME, DAYS, FILEPATH FROM entries;";
+	const char* query = "SELECT ID, NAME, DAYS, LOCATION FROM Plants WHERE UserID = ?;";
 
 	// Przygotowanie zapytania
 	if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
@@ -169,6 +169,14 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 		sqlite3_close(db);
 		return;
 	}
+
+	// Bind values to the query
+	sqlite3_bind_int(stmt, 1, User.id);
+
+	*/
+
+
+	usersPlants->fetch_plants_from_db("plantly.db");
 
 	std::cout << "Zawartosc bazy danych:" << std::endl;
 	std::cout << "----------------------------------" << std::endl;
@@ -184,40 +192,38 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 		return;
 	}
 
-	//zapt o wiersze
-	int items = 0;
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		items++;
-	}
-	const int NUM_SPRITES = items; // Liczba spritów
-	std::vector<sf::Sprite> plantSprites(NUM_SPRITES);
-	std::vector<sf::Text> plantName(NUM_SPRITES);
+	for (size_t i = 0; i <= plants_number(); i++) {
+		
+		int id = usersPlants[i].id;
+		int userid = usersPlants[i].userid;
+		int days = usersPlants[i].days;
+		std::string name = usersPlants[i].name;
+		std::string location = usersPlants[i].location;
+		std::string type = usersPlants[i].type;
+		std::vector<uint8_t> image = usersPlants[i].image;
 
-	for (size_t i = 0; i < NUM_SPRITES; i++) {
 
-		int id = sqlite3_column_int(stmt, 0);
-		const unsigned char* name = sqlite3_column_text(stmt, 1);
-		int days = sqlite3_column_int(stmt, 2);
-		const unsigned char* filePath = sqlite3_column_text(stmt, 3);
-
-		std::string names = name ? reinterpret_cast<const char*>(name) : "NULL";
-		std::string filePaths = filePath ? reinterpret_cast<const char*>(filePath) : "NULL";
 
 		std::cout << "ID: " << id << std::endl;
-		std::cout << "Nazwa: " << (name ? reinterpret_cast<const char*>(name) : "NULL") << std::endl;
-		std::cout << "Ilosc dni: " << days << std::endl;
-		std::cout << "Plik: " << (filePath ? reinterpret_cast<const char*>(filePath) : "NULL") << std::endl;
+		std::cout << "Owner: " << userid << std::endl;
+
+		std::cout << "Plant name: " << name<< std::endl;
+		std::cout << "Watering days: " << days << std::endl;
+		std::cout << "Type: " << type << std::endl;
+		std::cout << "Location: " << location << std::endl;
+
+		std::cout << "Image: " << image.size() << std::endl;
 		std::cout << "----------------------------------" << std::endl;
 
+		/*
 		sf::Texture PlantPictureT;
-		if (!PlantPictureT.loadFromFile(filePaths)) {
+		if (!PlantPictureT.loadFromFile(location)) {
 			std::cout << "Failed to load plant block background!" << std::endl;
 			return;
 		}
 		sf::Sprite PlantPicture;
 		PlantPicture.setTexture(PlantPictureT);
 		PlantPicture.setPosition((210 + i * 100), 160);
-		
 		plantSprites[i].setTexture(PlantBlock);
 		plantSprites[i].setPosition((200 + i * 100), 160);
 		plantName[i].setFont(Font);
@@ -229,12 +235,13 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 		//("PlantBackground", Font, 20);
 
 
+		*/
 
 	}
 
 	// Zwolnienie zasobów
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
+	//sqlite3_finalize(stmt);
+	//sqlite3_close(db);
 
 	
 	/*
@@ -264,7 +271,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			ButtonClick::AP;
 		}
 	}*/
-	window.display();
+	//window.display();
 }
 /*
 void buttonsEngine(sf::RenderWindow& window, sf::RectangleShape targetHB, sf::RectangleShape targetMB, sf::RectangleShape targetAPB, sf::RectangleShape targetFB, sf::RectangleShape targetQMB) {
@@ -679,14 +686,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(daysText);
 		window.draw(typeText);
 		window.draw(locaText);
-
+		/*
 		window.draw(targetFieldName);
 		window.draw(targetFieldDays);
 		window.draw(targetFieldType);
 		window.draw(targetFieldLoca);
-		//window.draw(targetFieldImage);
+		window.draw(targetFieldImage);
 		window.draw(targetSave);
 		window.draw(targetXB);
+		*/
 
 
 		window.display();
@@ -778,26 +786,27 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										break;
 									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-										std::cout << "Click at 'Next' button" << std::endl;
+										std::cout << "Click at 'Save' button" << std::endl;
+										std::cout << "entry.name: " << entry.name << std::endl;
+										std::cout << "entry.days: " << entry.days << std::endl;
+										std::cout << "entry.loca: " << entry.location << std::endl;
+										std::cout << "entry.type: " << entry.type << std::endl;
+
+
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
 										inLocaField = false;
 										inImageField = false;
-										/*
-										if (!check_plant(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
-											userDataEntered = false;
-										}
-										else {
-											emailText.setFillColor(sf::Color::Red);
-											pass1Text.setFillColor(sf::Color::Red);
-											pass2Text.setFillColor(sf::Color::Red);
-											userDataEntered = false;
+										if ((entry.name != "") || (entry.days != NULL) || (entry.type != "") || (entry.location != "")) {
+											entry.saveToDatabase("plantly.db");
+											added_plant = true;
 											break;
 										}
-										*/
-										added_plant = true;
-										break;
+										else {
+											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											break;
+										}
 									}
 								}
 								window.clear();
@@ -817,14 +826,16 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(daysText);
 								window.draw(typeText);
 								window.draw(locaText);
-
+								/*
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								//window.draw(targetFieldImage);
+								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
+								*/
+
 								window.display();
 							}
 						}
@@ -842,20 +853,17 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 									if (event.text.unicode == 8 && !daysInput.empty()) { // Handle backspace
 										daysInput.pop_back();
 									}
-									else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+									else if (event.text.unicode >= 48 && event.text.unicode < 57) { // Handle printable characters
 										daysInput += static_cast<char>(event.text.unicode);
-										daysText.setString(daysInput + "|");
-										if ((daysInput.find_first_not_of("0123456789") != std::string::npos) && event.text.unicode != 8) {
-											std::cerr << "Error, this field receives only digits\n";
-											showErrorDialog("Days typo", "Error, this field receives only digits");
-
-											daysInput = "";
-										}
 									}
 									else {
-										std::cout << daysInput << std::endl;
-										entry.days = stoi(daysInput);
+										std::cerr << "Error, this field receives only digits\n";
+										showErrorDialog("Days typo", "Error, this field receives only digits");
+										daysInput = "";
 									}
+									daysText.setString(daysInput + "|");
+									std::cout << daysInput << std::endl;
+									entry.days = stoi(daysInput);
 									//window.draw(emailText);
 								}
 								if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
@@ -905,26 +913,21 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										break;
 									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-										std::cout << "Click at 'Next' button" << std::endl;
+										std::cout << "Click at 'Save' button" << std::endl;
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
 										inLocaField = false;
 										inImageField = false;
-										/*
-										if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
-											userDataEntered = false;
-										}
-										else {
-											emailText.setFillColor(sf::Color::Red);
-											pass1Text.setFillColor(sf::Color::Red);
-											pass2Text.setFillColor(sf::Color::Red);
-											userDataEntered = false;
+										if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+											entry.saveToDatabase("plantly.db");
+											added_plant = true;
 											break;
 										}
-										*/
-										added_plant = true;
-										break;
+										else {
+											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											break;
+										}
 									}
 
 								}
@@ -946,13 +949,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(typeText);
 								window.draw(locaText);
 
+								/*
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								//window.draw(targetFieldImage);
+								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
+								*/
 								window.display();
 							}
 						}
@@ -1026,26 +1031,21 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										break;
 									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-										std::cout << "Click at 'Next' button" << std::endl;
+										std::cout << "Click at 'Save' button" << std::endl;
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
 										inLocaField = false;
 										inImageField = false;
-										/*
-										if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
-											userDataEntered = false;
-										}
-										else {
-											emailText.setFillColor(sf::Color::Red);
-											pass1Text.setFillColor(sf::Color::Red);
-											pass2Text.setFillColor(sf::Color::Red);
-											userDataEntered = false;
+										if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+											entry.saveToDatabase("plantly.db");
+											added_plant = true;
 											break;
 										}
-										*/
-										added_plant = true;
-										break;
+										else {
+											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											break;
+										}
 									}
 
 								}
@@ -1067,13 +1067,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(typeText);
 								window.draw(locaText);
 
+								/*
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								//window.draw(targetFieldImage);
+								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
+								*/
 								window.display();
 							}
 						}
@@ -1147,26 +1149,21 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										break;
 									}
 									else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-										std::cout << "Click at 'Next' button" << std::endl;
+										std::cout << "Click at 'Save' button" << std::endl;
 										inNameField = false;
 										inDaysField = false;
 										inTypeField = false;
 										inLocaField = false;
 										inImageField = false;
-										/*
-										if (!check_user(nameInput, emailInput, pass1Input, pass2Input, "plantly.db")) {
-											userDataEntered = false;
-										}
-										else {
-											emailText.setFillColor(sf::Color::Red);
-											pass1Text.setFillColor(sf::Color::Red);
-											pass2Text.setFillColor(sf::Color::Red);
-											userDataEntered = false;
+										if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+											entry.saveToDatabase("plantly.db");
+											added_plant = true;
 											break;
 										}
-										*/
-										added_plant = true;
-										break;
+										else {
+											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											break;
+										}
 									}
 
 								}
@@ -1188,13 +1185,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(typeText);
 								window.draw(locaText);
 
+								/*
 								window.draw(targetFieldName);
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								//window.draw(targetFieldImage);
+								window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
+								*/
 								window.display();
 							}
 						}
@@ -1217,15 +1216,15 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						window.draw(daysText);
 						window.draw(typeText);
 						window.draw(locaText);
-
+						/*
 						window.draw(targetFieldName);
 						window.draw(targetFieldDays);
 						window.draw(targetFieldType);
 						window.draw(targetFieldLoca);
-						//window.draw(targetFieldImage);
+						window.draw(targetFieldImage);
 						window.draw(targetSave);
 						window.draw(targetXB);
-
+						*/
 
 						window.display();
 
@@ -1331,7 +1330,22 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 							//}
 					}
 					else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-
+						//usersPlants[plants_number()] = entry;
+						std::cout << "Click at 'Save' button" << std::endl;
+						inNameField = false;
+						inDaysField = false;
+						inTypeField = false;
+						inLocaField = false;
+						inImageField = false;
+						if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+							entry.saveToDatabase("plantly.db");
+							added_plant = true;
+							break;
+						}
+						else {
+							showErrorDialog("Error adding Plant", "All fields must be filled out");
+							break;
+						}
 					}
 				}
 
@@ -1359,7 +1373,7 @@ void open_plants_db() {
 
 
 
-//--------------------------------------------------DB Files--------------------------------------------------
+//--------------------------------------------------db--------------------------------------------------
 
 // Function to read a file and return its content as a byte vector
 std::vector<unsigned char> readFile(const std::string& filePath) {
@@ -1391,8 +1405,6 @@ void saveBlobToFile(const std::vector<unsigned char>& blobData, const std::strin
 	outFile.close();
 	std::cout << "Picture saved to file: " << fileName << std::endl;
 }
-
-// Helper function to handle text input
 
 void UserData::saveToDatabase(const std::string& dbFile) {
 	sqlite3* db;
@@ -1492,7 +1504,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	}
 
 	const char* createTableQuery = R"(
-            CREATE TABLE IF NOT EXISTS entries (
+            CREATE TABLE IF NOT EXISTS Plants (
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 UserID INTEGER NOT NULL,
                 Days INTEGER NOT NULL,
@@ -1513,7 +1525,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	//std::string insertQuery = "INSERT INTO entries (UserID, Days, Name, Type, Location, Image) VALUES ('" +
 	//	name + "', " + std::to_string(days) + ", '" + filePath + "');";
 
-	std::string insertQuery = "INSERT INTO entries (UserID, Days, Name, Type, Location, Image) VALUES (" + std::to_string(User.id) + ", '?', '?', '?', '?', ?);";
+	std::string insertQuery = "INSERT INTO Plants (UserID, Days, Name, Type, Location, Image) VALUES (?, ?, ?, ?, ?, ?);";
 
 
 	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -1523,13 +1535,14 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 		return;
 	}
 	// Bind values to the query
-	sqlite3_bind_int(stmt, 1, days);
-	sqlite3_bind_text(stmt, 2, name.c_str(), -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 3, type.c_str(), -1, SQLITE_STATIC);
-	sqlite3_bind_text(stmt, 4, location.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_int(stmt, 1, User.id);
+	sqlite3_bind_int(stmt, 2, days);
+	sqlite3_bind_text(stmt, 3, name.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 4, type.c_str(), -1, SQLITE_STATIC);
+	sqlite3_bind_text(stmt, 5, location.c_str(), -1, SQLITE_STATIC);
 
 	// Bind the BLOB data
-	if (sqlite3_bind_blob(stmt, 5, image.data(), image.size(), SQLITE_STATIC) != SQLITE_OK) {
+	if (sqlite3_bind_blob(stmt, 6, image.data(), image.size(), SQLITE_STATIC) != SQLITE_OK) {
 		std::cerr << "Failed to bind BLOB: " << sqlite3_errmsg(db) << std::endl;
 		
 		return;
@@ -1546,7 +1559,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	return;
 }
 
-//____________________________________________NOT
+//____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
 
 
@@ -1593,7 +1606,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		usersPlants[i].populate(id, userid, days, name, type, location, image);
 		++i;
 	}
-
+	/*
 	// Execute the query
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		User.id = sqlite3_column_int(stmt, 0);
@@ -1611,6 +1624,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 			User.image.clear();
 		}
 	}
+	*/
 
 	// Clean up
 	sqlite3_finalize(stmt);
