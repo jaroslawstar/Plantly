@@ -42,7 +42,7 @@ std::string generate_username(std::string email);
 
 void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image, sf::Texture& texture, sf::Sprite& sprite);
 //bool init_sqcloud();
-
+int plants_number();
 
 class UserData {
 public:
@@ -67,7 +67,7 @@ public:
     std::string location;
     std::vector<uint8_t> image;
 
-    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
+    Plant() : id(1), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
 

@@ -392,6 +392,9 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 	//PFPp.setScale(0.15f, 0.15f);
 
 
+
+	
+	
 	if (!show) {
 		rectangle_white.setPosition(2000, 2000);
 		rectangle_shadow.setPosition(2000, 2000);
@@ -510,6 +513,15 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 }
 
 void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
+
+	//Call for function to get array used spaces aka plants number
+	int PlantsNumber = plants_number();
+	std::wcout << "Plants number after function calling:" << PlantsNumber << std::endl;
+	if (PlantsNumber >= 9) {
+		showErrorDialog("Error adding new plant", "You reached maximum size of available\nplants, please consider buying\nPlantlyCare+ to get more spaces");
+		show = false;
+	}
+
 
 	sf::Font font;
 	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
@@ -1698,7 +1710,7 @@ std::vector<uint8_t> GetFileBlobDialog() {
 }
 
 
-int array_length() {
+int plants_number() {
 	//std::cout << "\nThe length of the given Array is: " << usersPlants.size();
 	//int al = sizeof(usersPlants) / sizeof(Plant);
 	
@@ -1706,11 +1718,13 @@ int array_length() {
 	for (int i = 1; i <= plantsnum; i++){
 		if (usersPlants[i].id != NULL){
 			ans++;
+			std::cout << "Ans: " << ans << std::endl;
 		}
 		else {
 			i = plantsnum;
 		}
 	}
+	std::cout << "Final ans: " << ans << std::endl;
 	return ans;
 }
 
