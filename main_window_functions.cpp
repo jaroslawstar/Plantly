@@ -607,10 +607,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		sf::RectangleShape targetFieldLoca(sf::Vector2f(300, 25));
 		sf::RectangleShape targetFieldImage(sf::Vector2f(1280, 435));
 		sf::RectangleShape targetSave(sf::Vector2f(60, 60)); // posibility of getting rid cause sf::Text is enough to get global bounds
-		targetFieldName.setPosition(500, 465);
-		targetFieldDays.setPosition(500, 525);
-		targetFieldType.setPosition(500, 585);
-		targetFieldLoca.setPosition(500, 645);
+		targetFieldName.setPosition(490, 460);
+		targetFieldDays.setPosition(490, 520);
+		targetFieldType.setPosition(490, 580);
+		targetFieldLoca.setPosition(490, 640);
 		targetFieldImage.setPosition(0, 0);
 		targetSave.setPosition(680, 700); //sameee
 
@@ -671,7 +671,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 		window.draw(targetFieldDays);
 		window.draw(targetFieldType);
 		window.draw(targetFieldLoca);
-		window.draw(targetFieldImage);
+		//window.draw(targetFieldImage);
 		window.draw(targetSave);
 		window.draw(targetXB);
 
@@ -797,6 +797,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(imageUI);
 								window.draw(saveUI);
 								*/
+								window.draw(plantP);
 								draw_AP_Screen(window);
 
 								window.draw(nameText);
@@ -808,7 +809,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								window.draw(targetFieldImage);
+								//window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
 								window.display();
@@ -830,14 +831,13 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 									}
 									else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
 										daysInput += static_cast<char>(event.text.unicode);
-									}
-									daysText.setString(daysInput + "|");
-									if ((daysInput.find_first_not_of("0123456789") != std::string::npos) && event.text.unicode != 8) {
-										std::cerr << "Error, this field receives only digits\n";
-										showErrorDialog("Days typo", "Error, this field receives only\n digits");
+										daysText.setString(daysInput + "|");
+										if ((daysInput.find_first_not_of("0123456789") != std::string::npos) && event.text.unicode != 8) {
+											std::cerr << "Error, this field receives only digits\n";
+											showErrorDialog("Days typo", "Error, this field receives only digits");
 
-										daysInput = "";
-										break;
+											daysInput = "";
+										}
 									}
 									else {
 										std::cout << daysInput << std::endl;
@@ -925,6 +925,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(imageUI);
 								window.draw(saveUI);
 								*/
+								window.draw(plantP);
 								draw_AP_Screen(window);
 
 								window.draw(nameText);
@@ -936,7 +937,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								window.draw(targetFieldImage);
+								//window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
 								window.display();
@@ -1037,6 +1038,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
+								window.draw(plantP);
 								draw_AP_Screen(window);
 								/*
 								window.draw(nameUI);
@@ -1056,7 +1058,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								window.draw(targetFieldImage);
+								//window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
 								window.display();
@@ -1157,6 +1159,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								}
 								window.clear();
 								window.clear(sf::Color::White);
+								window.draw(plantP);
 								draw_AP_Screen(window);
 								/*
 								window.draw(nameUI);
@@ -1176,7 +1179,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								window.draw(targetFieldDays);
 								window.draw(targetFieldType);
 								window.draw(targetFieldLoca);
-								window.draw(targetFieldImage);
+								//window.draw(targetFieldImage);
 								window.draw(targetSave);
 								window.draw(targetXB);
 								window.display();
@@ -1206,7 +1209,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						window.draw(targetFieldDays);
 						window.draw(targetFieldType);
 						window.draw(targetFieldLoca);
-						window.draw(targetFieldImage);
+						//window.draw(targetFieldImage);
 						window.draw(targetSave);
 						window.draw(targetXB);
 
@@ -1773,16 +1776,16 @@ void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image
 		std::cerr << "Nie można utworzyć tekstury!\n";
 		return;
 	}
-
+	float scale = 0.2f;
 	sprite.setTexture(texture);
+	sprite.setScale(scale, scale);
 
 	// Obliczanie pozycji centralnej
 	const sf::Vector2u windowSize = window.getSize();
 	const sf::Vector2u textureSize = texture.getSize();
-	float x = (windowSize.x - textureSize.x) / 2.0f;
-	float y = (windowSize.y - textureSize.y) / 2.0f;
-	sprite.setPosition(x, y);
-
+	float x = (windowSize.x - (textureSize.x * scale)) / 2.0f;
+	float y = (windowSize.y - (textureSize.y * scale)) / 2.0f;
+	sprite.setPosition(x, y - 125);
 	// Odrysowanie obrazu w oknie
 	window.draw(sprite);
 }
