@@ -65,6 +65,7 @@ public:
     std::string type;
     std::string location;
     std::vector<uint8_t> image;
+    //daaaaate
 
     Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
@@ -72,7 +73,8 @@ public:
 
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
-    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) {
+    void insertCurrentDateTime(const std::string& dbFile);
+    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) { ///daaaaaate
         id = id_;
         userid = userid_;
         days = days_;

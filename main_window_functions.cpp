@@ -165,7 +165,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 	// Przygotowanie zapytania
 	if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
-		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
+		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;`
 		sqlite3_close(db);
 		return;
 	}
@@ -174,26 +174,59 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	sqlite3_bind_int(stmt, 1, User.id);
 
 	*/
-
-
 	usersPlants->fetch_plants_from_db("plantly.db");
 
-	std::cout << "Zawartosc bazy danych:" << std::endl;
+	if (plants_number() == 0){
+		sf::Texture AddFirstPlant;
+		if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
+			std::cout << "Failed to load plant block background!" << std::endl;
+			return;
+		}
+		sf::Sprite AFPS(AddFirstPlant);
+		AFPS.setPosition(223, 126);
+		window.draw(AFPS);
+		window.display();
+	}
+	else {
+		sf::Texture WaterToday;
+		if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
+			std::cout << "Failed to load plant block background!" << std::endl;
+			return;
+		}
+		sf::Sprite WaterTodayS(WaterToday);
+		WaterTodayS.setPosition(1111, 140);
+		window.draw(WaterTodayS);
+		window.display();
+
+		sf::Texture PlantFrame;
+		if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
+			std::cout << "Failed to load plant block background!" << std::endl;
+			return;
+		}
+		std::vector<sf::Sprite> PlantFrameS;
+		//
+		PlantFrameS[0].setTexture(PlantFrame);
+
+		sf::Texture PlantInfoBlock;
+		if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
+			std::cout << "Failed to load plant block background!" << std::endl;
+			return;
+		}
+		std::vector<sf::Sprite> PlantInfoBlockS;
+		//
+		PlantInfoBlockS[0].setTexture(PlantInfoBlock);
+	}
+
+	std::cout << "Plants owner: " << User.name << std::endl;
 	std::cout << "----------------------------------" << std::endl;
 
 	// Wykonywanie zapytania i wyświetlanie wyników
-	sf::Font Font;
-	if (!Font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold"))
-		std::cout << "Failed to load font";
+	//sf::Font Font;
+	//if (!Font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold"))
+	//	std::cout << "Failed to load font\n";
 
-	sf::Texture PlantBlock;
-	if (!PlantBlock.loadFromFile("Resources/images/PlantBackground.png")) {
-		std::cout << "Failed to load plant block background!" << std::endl;
-		return;
-	}
+	for (size_t i = 0; i < plants_number(); i++) {
 
-	for (size_t i = 0; i <= plants_number(); i++) {
-		
 		int id = usersPlants[i].id;
 		int userid = usersPlants[i].userid;
 		int days = usersPlants[i].days;
@@ -204,16 +237,49 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 
 
-		std::cout << "ID: " << id << std::endl;
-		std::cout << "Owner: " << userid << std::endl;
+		std::cout << "Plant ID: " << id << std::endl;
+		std::cout << "Owner's ID: " << userid << std::endl;
 
-		std::cout << "Plant name: " << name<< std::endl;
-		std::cout << "Watering days: " << days << std::endl;
+		std::cout << "Plant name: " << name << std::endl;
+		std::cout << "Watering frequency days: " << days << std::endl;
 		std::cout << "Type: " << type << std::endl;
 		std::cout << "Location: " << location << std::endl;
 
 		std::cout << "Image: " << image.size() << std::endl;
 		std::cout << "----------------------------------" << std::endl;
+	}
+
+	// Load the sprite texture
+	sf::Texture texture;
+	if (!texture.loadFromFile("image.png")) {
+		return;
+	}
+
+	// Create the sprite
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
+	sprite.setPosition(100, 100);
+
+	// Load the rounded corner mask
+	sf::Texture maskTexture;
+	if (!maskTexture.loadFromFile("mask.png")) { // The mask has transparent rounded corners
+		return;
+	}
+
+	// Apply the mask to the sprite
+	sf::RenderTexture renderTexture;
+	renderTexture.create(texture.getSize().x, texture.getSize().y);
+	sf::Sprite textureSprite(texture);
+	sf::Sprite maskSprite(maskTexture);
+
+	renderTexture.clear(sf::Color::Transparent);
+	renderTexture.draw(textureSprite); // Draw the original texture
+	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
+	renderTexture.display();
+
+	// Use the rendered texture as the sprite's texture
+	sf::Texture finalTexture = renderTexture.getTexture();
+	sprite.setTexture(finalTexture);
 
 		/*
 		sf::Texture PlantPictureT;
@@ -237,7 +303,6 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 		*/
 
-	}
 
 	// Zwolnienie zasobów
 	//sqlite3_finalize(stmt);
@@ -1508,6 +1573,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 UserID INTEGER NOT NULL,
                 Days INTEGER NOT NULL,
+                Datetime DATETIME NOT NULL,
                 Name TEXT NOT NULL,
                 Type TEXT NOT NULL,
                 Location TEXT NOT NULL,
@@ -1559,6 +1625,41 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	return;
 }
 
+void Plant::insertCurrentDateTime(const std::string& dbFile) {
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	char* errorMessage = nullptr;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	// Construct the SQL query
+	std::string insertQuery = "UPDATE Plants SET Datetime = DATETIME('now') WHERE id = ?;";
+
+	// Prepare the SQL statement
+	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return;
+	}
+	//Binding
+	sqlite3_bind_int(stmt, 1, id);
+
+	// Execute the SQL statement
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+	}
+	else {
+		std::cout << "Inserted current DATETIME successfully." << std::endl;
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+}
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
 
@@ -1784,7 +1885,7 @@ int plants_number() {
 	//int al = sizeof(usersPlants) / sizeof(Plant);
 	
 	int ans = 0;
-	for (int i = 1; i <= plantsnum; i++){
+	for (int i = 0; i < plantsnum; i++){
 		if (usersPlants[i].id != NULL){
 			ans++;
 			std::cout << "Ans: " << ans << std::endl;
