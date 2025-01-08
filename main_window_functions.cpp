@@ -149,73 +149,792 @@ void draw_logo(sf::RenderWindow& window) {
 
 
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile) {
-	
-	/*
-	sqlite3* db;
-	sqlite3_stmt* stmt;
-
-	// Otwarcie połączenia z bazą danych
-	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
-		std::cerr << "Error opening database: " << sqlite3_errmsg(db) << std::endl;
-		return;
-	}
-
-	// Zapytanie SQL do pobrania danych
-	const char* query = "SELECT ID, NAME, DAYS, LOCATION FROM Plants WHERE UserID = ?;";
-
-	// Przygotowanie zapytania
-	if (sqlite3_prepare_v2(db, query, -1, &stmt, nullptr) != SQLITE_OK) {
-		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;`
-		sqlite3_close(db);
-		return;
-	}
-
-	// Bind values to the query
-	sqlite3_bind_int(stmt, 1, User.id);
-
-	*/
 	usersPlants->fetch_plants_from_db("plantly.db");
+	sf::Texture AddFirstPlant;
+	sf::Texture WaterToday;
+	sf::Texture PlantFrame;
+	sf::Texture PlantInfoBlock;
 
-	if (plants_number() == 0){
-		sf::Texture AddFirstPlant;
-		if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
-			std::cout << "Failed to load plant block background!" << std::endl;
-			return;
-		}
-		sf::Sprite AFPS(AddFirstPlant);
-		AFPS.setPosition(223, 126);
-		window.draw(AFPS);
-		window.display();
+
+	sf::Sprite AFPS;
+	sf::Sprite WaterTodayS;
+	std::vector<sf::Sprite> PlantFrameS;
+	std::vector<sf::Sprite> PlantInfoBlockS;
+	  
+	sf::RectangleShape TargetObject(sf::Vector2f(170, 250));
+	TargetObject.setFillColor(sf::Color(0, 0, 0, 50));
+
+	std::vector<sf::RectangleShape> TargetsObjects;
+
+	for (size_t i = 0; i < plants_number(); i++){
+		TargetsObjects.push_back(TargetObject);
 	}
-	else {
-		sf::Texture WaterToday;
-		if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
-			std::cout << "Failed to load plant block background!" << std::endl;
-			return;
-		}
-		sf::Sprite WaterTodayS(WaterToday);
-		WaterTodayS.setPosition(1111, 140);
-		window.draw(WaterTodayS);
-		window.display();
 
-		sf::Texture PlantFrame;
-		if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
-			std::cout << "Failed to load plant block background!" << std::endl;
-			return;
-		}
-		std::vector<sf::Sprite> PlantFrameS;
-		//
-		PlantFrameS[0].setTexture(PlantFrame);
+	sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
+	targetMainBs.setPosition(40, 40);
+	targetMainBs.setFillColor(sf::Color(0, 0, 0, 50));
 
-		sf::Texture PlantInfoBlock;
-		if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
-			std::cout << "Failed to load plant block background!" << std::endl;
-			return;
-		}
-		std::vector<sf::Sprite> PlantInfoBlockS;
-		//
-		PlantInfoBlockS[0].setTexture(PlantInfoBlock);
+	if (!show){
+		AFPS.setPosition(2000, 2000);
+		WaterTodayS.setPosition(2000, 2000);
+		for (size_t i = 0; i <= PlantInfoBlockS.size(); i++)
+			PlantInfoBlockS[i].setPosition(2000, 2000);
+		
+		for (size_t i = 0; i <= PlantFrameS.size(); i++)
+			PlantFrameS[i].setPosition(2000, 2000);
+
+
 	}
+	else if (show) {
+		if (plants_number() == 0) {
+			if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
+			AFPS.setTexture(AddFirstPlant);
+			AFPS.setPosition(223, 126);
+			window.draw(AFPS);
+			window.display();
+			bool inHomeScreen = true;
+
+			while (inHomeScreen) {
+				while (window.pollEvent(event)) {
+					if (event.type == sf::Event::Closed)
+						window.close();
+					//Close button service
+					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+						//----------Logged_OUT_Buttons----------
+						sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+						std::cout << "Mouse clicked at: ("
+							<< mousePosition.x << ", "
+							<< mousePosition.y << ")" << std::endl;
+						if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+							std::cout << "Click at 'X' button" << std::endl;
+							inHomeScreen = false;
+						}
+					}
+
+					if (inHomeScreen == false)
+						break;
+				}
+
+
+
+			}
+			window.display();
+		}
+		else {
+			if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
+			WaterTodayS.setTexture(WaterToday);
+			WaterTodayS.setPosition(1111, 140);
+			window.draw(WaterTodayS);
+			//window.display();
+
+			if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
+
+			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
+			//
+			//PlantFrameS[0].setTexture(PlantFrame);
+
+			//
+			//PlantInfoBlockS[0].setTexture(PlantInfoBlock);
+
+
+			// Building Targets:
+			if (plants_number() <= 5) {
+				for (size_t i = 0; i < plants_number(); i++) {
+					TargetsObjects[i].setPosition(232 + (i * 195), 126);
+					TargetsObjects[i].setFillColor(sf::Color(0, 0, 0, 50));
+					window.draw(TargetsObjects[i]);
+				}
+			}
+			else if (plants_number() >= 6) {
+				for (size_t j = 0; j < 2; j++) {
+					for (size_t i = 0; i < plants_number() - (j * 5); i++) {
+						TargetsObjects[i + (j * 6)].setPosition(232 + (i * 195), 446 + (j * 320));
+						TargetsObjects[i + (j * 6)].setFillColor(sf::Color(0, 0, 0, 50));
+						window.draw(TargetsObjects[i + (j * 6)]);
+					}
+				}
+			}
+			window.display();
+			/*
+			for (size_t i = 0; i < plants_number(); i++)
+			{
+
+			}
+			*/
+			
+
+			bool inHomeScreen = true;
+
+			while (inHomeScreen) {
+				while (window.pollEvent(event)) {
+					if (event.type == sf::Event::Closed)
+						window.close();
+					//Close button service
+					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+						//----------Logged_OUT_Buttons----------
+						sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+						std::cout << "Mouse clicked at: ("
+							<< mousePosition.x << ", "
+							<< mousePosition.y << ")" << std::endl;
+						if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+							std::cout << "Click at 'X' button" << std::endl;
+							inHomeScreen = false;
+						}
+						/*
+						else if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inNameField == true) {
+							std::cout << "Click at 'Plant name' field" << std::endl;
+							inNameField = true;
+							while (inNameField) {
+								while (window.pollEvent(event)) {
+									if (event.type == sf::Event::Closed)
+										window.close();
+									nameText.setString(nameInput + "|");
+									if (event.type == sf::Event::TextEntered)
+									{
+										if (event.text.unicode == 8 && !nameInput.empty()) { // Handle backspace
+											nameInput.pop_back();
+										}
+										else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+											nameInput += static_cast<char>(event.text.unicode);
+										}
+										nameText.setString(nameInput + "|");
+										std::cout << nameInput << std::endl;
+										entry.name = nameInput;
+										//window.draw(emailText);
+									}
+									if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+										std::cout << "Key pressed 'Enter'" << std::endl;
+										sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+										nameText.setString(nameInput);
+										if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = true;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = true;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = true;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = true;
+											break;
+										}
+										else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'X' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											added_plant = true;
+											break;
+										}
+										else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'Save' button" << std::endl;
+											std::cout << "entry.name: " << entry.name << std::endl;
+											std::cout << "entry.days: " << entry.days << std::endl;
+											std::cout << "entry.loca: " << entry.location << std::endl;
+											std::cout << "entry.type: " << entry.type << std::endl;
+
+
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											if ((entry.name != "") || (entry.days != NULL) || (entry.type != "") || (entry.location != "")) {
+												entry.saveToDatabase("plantly.db");
+												added_plant = true;
+												break;
+											}
+											else {
+												showErrorDialog("Error adding Plant", "All fields must be filled out");
+												break;
+											}
+										}
+									}
+									window.clear();
+									window.clear(sf::Color::White);
+									/*
+									window.draw(nameUI);
+									window.draw(daysUI);
+									window.draw(typeUI);
+									window.draw(locaUI);
+									window.draw(imageUI);
+									window.draw(saveUI);
+									* /
+									window.draw(plantP);
+									draw_AP_Screen(window);
+
+									window.draw(nameText);
+									window.draw(daysText);
+									window.draw(typeText);
+									window.draw(locaText);
+									/*
+									window.draw(targetFieldName);
+									window.draw(targetFieldDays);
+									window.draw(targetFieldType);
+									window.draw(targetFieldLoca);
+									window.draw(targetFieldImage);
+									window.draw(targetSave);
+									window.draw(targetXB);
+									* /
+
+									window.display();
+								}
+							}
+						}
+						else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inDaysField == true) {
+							std::cout << "Click at 'Watering days' field" << std::endl;
+							inDaysField = true;
+							while (inDaysField) {
+								while (window.pollEvent(event)) {
+									if (event.type == sf::Event::Closed)
+										window.close();
+									daysText.setString(daysInput + "|");
+									if (event.type == sf::Event::TextEntered)
+									{
+										if (event.text.unicode == 8 && !daysInput.empty()) { // Handle backspace
+											daysInput.pop_back();
+										}
+										else if (event.text.unicode >= 48 && event.text.unicode < 57) { // Handle printable characters
+											daysInput += static_cast<char>(event.text.unicode);
+										}
+										else {
+											std::cerr << "Error, this field receives only digits\n";
+											showErrorDialog("Days typo", "Error, this field receives only digits");
+											daysInput = "";
+										}
+										daysText.setString(daysInput + "|");
+										std::cout << daysInput << std::endl;
+										entry.days = stoi(daysInput);
+										//window.draw(emailText);
+									}
+									if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+										std::cout << "Key pressed 'Enter'" << std::endl;
+										sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+										daysText.setString(daysInput);
+										if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = true;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = true;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = true;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = true;
+											break;
+										}
+										else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'X' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											added_plant = true;
+											break;
+										}
+										else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'Save' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+												entry.saveToDatabase("plantly.db");
+												added_plant = true;
+												break;
+											}
+											else {
+												showErrorDialog("Error adding Plant", "All fields must be filled out");
+												break;
+											}
+										}
+
+									}
+									window.clear();
+									window.clear(sf::Color::White);
+									/*
+									window.draw(nameUI);
+									window.draw(daysUI);
+									window.draw(typeUI);
+									window.draw(locaUI);
+									window.draw(imageUI);
+									window.draw(saveUI);
+									* /
+									window.draw(plantP);
+									draw_AP_Screen(window);
+
+									window.draw(nameText);
+									window.draw(daysText);
+									window.draw(typeText);
+									window.draw(locaText);
+
+									/*
+									window.draw(targetFieldName);
+									window.draw(targetFieldDays);
+									window.draw(targetFieldType);
+									window.draw(targetFieldLoca);
+									window.draw(targetFieldImage);
+									window.draw(targetSave);
+									window.draw(targetXB);
+									* /
+									window.display();
+								}
+							}
+						}
+						else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inTypeField == true) {
+							std::cout << "Click at 'Plant type' field" << std::endl;
+							inTypeField = true;
+							while (inTypeField) {
+								while (window.pollEvent(event)) {
+									if (event.type == sf::Event::Closed)
+										window.close();
+									typeText.setString(typeInput + "|");
+									if (event.type == sf::Event::TextEntered)
+									{
+										if (event.text.unicode == 8 && !typeInput.empty()) { // Handle backspace
+											typeText.setFillColor(sf::Color::Black);
+											typeInput.pop_back();
+										}
+										else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+											typeInput += static_cast<char>(event.text.unicode);
+										}
+										typeText.setString(typeInput + "|");
+										std::cout << typeInput << std::endl;
+										entry.type = typeInput;
+
+									}
+									if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+										std::cout << "Key pressed 'Enter'" << std::endl;
+										sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+										typeText.setString(typeInput);
+										if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = true;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = true;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = true;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = true;
+											break;
+										}
+										else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'X' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											added_plant = true;
+											break;
+										}
+										else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'Save' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+												entry.saveToDatabase("plantly.db");
+												added_plant = true;
+												break;
+											}
+											else {
+												showErrorDialog("Error adding Plant", "All fields must be filled out");
+												break;
+											}
+										}
+
+									}
+									window.clear();
+									window.clear(sf::Color::White);
+									window.draw(plantP);
+									draw_AP_Screen(window);
+									/*
+									window.draw(nameUI);
+									window.draw(daysUI);
+									window.draw(typeUI);
+									window.draw(locaUI);
+									window.draw(imageUI);
+									window.draw(saveUI);
+									* /
+
+									window.draw(nameText);
+									window.draw(daysText);
+									window.draw(typeText);
+									window.draw(locaText);
+
+									/*
+									window.draw(targetFieldName);
+									window.draw(targetFieldDays);
+									window.draw(targetFieldType);
+									window.draw(targetFieldLoca);
+									window.draw(targetFieldImage);
+									window.draw(targetSave);
+									window.draw(targetXB);
+									* /
+									window.display();
+								}
+							}
+						}
+						else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inLocaField == true) {
+							std::cout << "Click at 'Location' field" << std::endl;
+							inLocaField = true;
+							while (inLocaField) {
+								while (window.pollEvent(event)) {
+									if (event.type == sf::Event::Closed)
+										window.close();
+									locaText.setString(locaInput + "|");
+									if (event.type == sf::Event::TextEntered)
+									{
+										if (event.text.unicode == 8 && !locaInput.empty()) { // Handle backspace
+											locaText.setFillColor(sf::Color::Black);
+											locaInput.pop_back();
+										}
+										else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+											locaInput += static_cast<char>(event.text.unicode);
+										}
+										locaText.setString(locaInput + "|");
+										std::cout << locaInput << std::endl;
+										entry.location = locaInput;
+
+									}
+									if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+										std::cout << "Key pressed 'Enter'" << std::endl;
+										sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+										locaText.setString(locaInput);
+										if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = true;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = true;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = true;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = true;
+											break;
+										}
+										else if (targetXB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'X' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											added_plant = true;
+											break;
+										}
+										else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'Save' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+												entry.saveToDatabase("plantly.db");
+												added_plant = true;
+												break;
+											}
+											else {
+												showErrorDialog("Error adding Plant", "All fields must be filled out");
+												break;
+											}
+										}
+
+									}
+									window.clear();
+									window.clear(sf::Color::White);
+									window.draw(plantP);
+									draw_AP_Screen(window);
+									/*
+									window.draw(nameUI);
+									window.draw(daysUI);
+									window.draw(typeUI);
+									window.draw(locaUI);
+									window.draw(imageUI);
+									window.draw(saveUI);
+									* /
+
+									window.draw(nameText);
+									window.draw(daysText);
+									window.draw(typeText);
+									window.draw(locaText);
+
+									/*
+									window.draw(targetFieldName);
+									window.draw(targetFieldDays);
+									window.draw(targetFieldType);
+									window.draw(targetFieldLoca);
+									window.draw(targetFieldImage);
+									window.draw(targetSave);
+									window.draw(targetXB);
+									* /
+									window.display();
+								}
+							}
+						}
+						else if (targetFieldImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inImageField == true) {
+							std::cout << "Click at 'Choose image' field" << std::endl;
+
+							//entry.set_image("Plantly.db"); //Save image to DataBase
+							entry.image = GetFileBlobDialog();
+
+							window.clear(sf::Color::White);
+							plantT.loadFromMemory(entry.image.data(), entry.image.size());
+							plantP.setTexture(plantT, true);
+							CenterBlobImage(window, entry.image, plantT, plantP);
+
+							window.draw(plantP);
+							draw_AP_Screen(window);
+
+							window.draw(nameText);
+							window.draw(daysText);
+							window.draw(typeText);
+							window.draw(locaText);
+							/*
+							window.draw(targetFieldName);
+							window.draw(targetFieldDays);
+							window.draw(targetFieldType);
+							window.draw(targetFieldLoca);
+							window.draw(targetFieldImage);
+							window.draw(targetSave);
+							window.draw(targetXB);
+							* /
+
+							window.display();
+
+
+							inImageField = false;
+
+							/*
+							while (inImageField) {
+								while (window.pollEvent(event)) {
+									if (event.type == sf::Event::Closed)
+										window.close();
+									auto blob = GetFileBlobDialog();
+
+
+									sf::Texture PFP;
+									if (!PFP.loadFromMemory(blob.data(), blob.size())) {
+										std::cout << "Failed to load profile picture from binary data!" << std::endl;
+										PFP.loadFromFile("Resources/images/pfp.png");
+									}
+
+									if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+										std::cout << "Key pressed 'Enter'" << std::endl;
+										sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+										if (targetFieldName.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = true;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = true;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldType.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = true;
+											inLocaField = false;
+											inImageField = false;
+											break;
+										}
+										else if (targetFieldLoca.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = true;
+											inImageField = false;
+											break;
+										}
+										else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+											std::cout << "Click at 'Next' button" << std::endl;
+											inNameField = false;
+											inDaysField = false;
+											inTypeField = false;
+											inLocaField = false;
+											inImageField = false;
+											///*
+											if (!check_user(nameInput, emailInput, User.password, pass2Input, "plantly.db")) {
+												userDataEntered = false;
+											}
+											else {
+												emailText.setFillColor(sf::Color::Red);
+												pass1Text.setFillColor(sf::Color::Red);
+												pass2Text.setFillColor(sf::Color::Red);
+												userDataEntered = false;
+												break;
+											}
+											// * /
+											added_plant = true;
+											break;
+										}
+									}
+									window.clear();
+									window.clear(sf::Color::White);
+									draw_AP_Screen(window);
+									window.draw(nameUI);
+									window.draw(daysUI);
+									window.draw(typeUI);
+									window.draw(locaUI);
+									window.draw(imageUI);
+									window.draw(saveUI);
+
+									window.draw(nameText);
+									window.draw(daysText);
+									window.draw(typeText);
+									window.draw(locaText);
+
+									window.draw(targetFieldName);
+									window.draw(targetFieldDays);
+									window.draw(targetFieldType);
+									window.draw(targetFieldLoca);
+									window.draw(targetFieldImage);
+									window.draw(targetSave);
+									window.display();
+
+								}* /
+								//}
+						}
+						else if (targetSave.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+							//usersPlants[plants_number()] = entry;
+							std::cout << "Click at 'Save' button" << std::endl;
+							inNameField = false;
+							inDaysField = false;
+							inTypeField = false;
+							inLocaField = false;
+							inImageField = false;
+							if ((entry.name != "") && (entry.days != NULL) && (entry.type != "") && (entry.location != "")) {
+								entry.saveToDatabase("plantly.db");
+								added_plant = true;
+								break;
+							}
+							else {
+								showErrorDialog("Error adding Plant", "All fields must be filled out");
+								break;
+							}
+						}*/
+					}
+
+					if (inHomeScreen == false)
+						break;
+				}
+
+
+
+			}
+			window.display();
+		}
+	}
+	
 
 	std::cout << "Plants owner: " << User.name << std::endl;
 	std::cout << "----------------------------------" << std::endl;
@@ -247,39 +966,12 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 		std::cout << "Image: " << image.size() << std::endl;
 		std::cout << "----------------------------------" << std::endl;
+
+
+		
 	}
 
-	// Load the sprite texture
-	sf::Texture texture;
-	if (!texture.loadFromFile("image.png")) {
-		return;
-	}
-
-	// Create the sprite
-	sf::Sprite sprite;
-	sprite.setTexture(texture);
-	sprite.setPosition(100, 100);
-
-	// Load the rounded corner mask
-	sf::Texture maskTexture;
-	if (!maskTexture.loadFromFile("mask.png")) { // The mask has transparent rounded corners
-		return;
-	}
-
-	// Apply the mask to the sprite
-	sf::RenderTexture renderTexture;
-	renderTexture.create(texture.getSize().x, texture.getSize().y);
-	sf::Sprite textureSprite(texture);
-	sf::Sprite maskSprite(maskTexture);
-
-	renderTexture.clear(sf::Color::Transparent);
-	renderTexture.draw(textureSprite); // Draw the original texture
-	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
-	renderTexture.display();
-
-	// Use the rendered texture as the sprite's texture
-	sf::Texture finalTexture = renderTexture.getTexture();
-	sprite.setTexture(finalTexture);
+	
 
 		/*
 		sf::Texture PlantPictureT;
@@ -1730,6 +2422,40 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	// Clean up
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
+
+}
+
+void Plant::showObject(sf::RenderWindow& Window, const Plant Plant, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
+
+
+	sf::Texture PlantImageT;
+	if (!PlantImageT.loadFromMemory(Plant.image.data(), Plant.image.size())) {
+		return;
+	}
+
+	Sprite.setTexture(PlantImageT);
+
+	// Apply the mask to the sprite
+	sf::RenderTexture renderTexture;
+	renderTexture.create(PlantImageT.getSize().x, PlantImageT.getSize().y);
+	sf::Sprite textureSprite(PlantImageT);
+	sf::Sprite maskSprite(maskTexture);
+
+	renderTexture.clear(sf::Color::Transparent);
+	renderTexture.draw(textureSprite); // Draw the original texture
+	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
+	renderTexture.display();
+
+	// Use the rendered texture as the sprite's texture
+	sf::Texture finalTexture = renderTexture.getTexture();
+	Sprite.setTexture(finalTexture);
+
+	Sprite.setPosition(posX, posY);
+
+
+	sf::Text Name(Plant.name, Font, 15);
+	auto center = Name.getGlobalBounds().getSize() / 2.f;
+	Name.setPosition((posX + 9 + (85 - center.x)), (posY + (217 - center.y)));
 
 }
 // Helper function to join strings (for constructing SQL query)
