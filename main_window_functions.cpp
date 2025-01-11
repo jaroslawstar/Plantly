@@ -252,17 +252,24 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			// Building Targets:
 			if (plants_number() <= 5) {
 				for (size_t i = 0; i < plants_number(); i++) {
-					TargetsObjects[i].setPosition(232 + (i * 195), 126);
+					TargetsObjects[i].setPosition(145 + (i * 195), 140);
 					TargetsObjects[i].setFillColor(sf::Color(0, 0, 0, 50));
 					window.draw(TargetsObjects[i]);
 				}
 			}
-			else if (plants_number() >= 6) {
+			else if (plants_number() > 5) {
 				for (size_t j = 0; j < 2; j++) {
-					for (size_t i = 0; i < plants_number() - (j * 5); i++) {
-						TargetsObjects[i + (j * 6)].setPosition(232 + (i * 195), 446 + (j * 320));
-						TargetsObjects[i + (j * 6)].setFillColor(sf::Color(0, 0, 0, 50));
-						window.draw(TargetsObjects[i + (j * 6)]);
+					int var = plants_number() - (j * 4);
+					std::cout << "J value: " << j << std::endl;
+					std::cout << "Var value: " << var << std::endl;
+
+					for (size_t i = 0; i < var - 1; i++) {
+						std::cout << "I value: " << i << std::endl;
+						int ti = i + (j * 5);
+						std::cout << "Ti value: " << ti << std::endl;
+						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
+						TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
+						window.draw(TargetsObjects[ti]);
 					}
 				}
 			}
@@ -1294,7 +1301,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	//Call for function to get array used spaces aka plants number
 	int PlantsNumber = plants_number();
 	std::wcout << "Plants number after function calling:" << PlantsNumber << std::endl;
-	if (PlantsNumber >= 9) {
+	if (PlantsNumber >= 10) {
 		showErrorDialog("Error adding new plant", "You reached maximum size of available\nplants, please consider buying\nPlantlyCare+ to get more spaces");
 		show = false;
 	}
@@ -2354,7 +2361,9 @@ void Plant::insertCurrentDateTime(const std::string& dbFile) {
 }
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
-
+	for (size_t i = 0; i < plantsnum; i++){
+		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) });
+	}
 
 	sqlite3* db;
 	sqlite3_stmt* stmt;
