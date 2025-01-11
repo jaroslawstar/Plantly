@@ -258,18 +258,19 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				}
 			}
 			else if (plants_number() > 5) {
+				int showeditems = 0;
 				for (size_t j = 0; j < 2; j++) {
-					int var = plants_number() - (j * 4);
-					std::cout << "J value: " << j << std::endl;
-					std::cout << "Var value: " << var << std::endl;
-
-					for (size_t i = 0; i < var - 1; i++) {
+					for (size_t i = 0; i < 5; i++) {
 						std::cout << "I value: " << i << std::endl;
 						int ti = i + (j * 5);
 						std::cout << "Ti value: " << ti << std::endl;
 						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
 						TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
 						window.draw(TargetsObjects[ti]);
+						showeditems++;
+						if (showeditems == plants_number()) {
+							i = 5;
+						}
 					}
 				}
 			}
