@@ -154,25 +154,38 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	sf::Texture WaterToday;
 	sf::Texture PlantFrame;
 	sf::Texture PlantInfoBlock;
-
+	sf::Texture PlantImageMask;
 
 	sf::Sprite AFPS;
 	sf::Sprite WaterTodayS;
-	std::vector<sf::Sprite> PlantFrameS;
-	std::vector<sf::Sprite> PlantInfoBlockS;
 	  
 	sf::RectangleShape TargetObject(sf::Vector2f(170, 250));
 	TargetObject.setFillColor(sf::Color(0, 0, 0, 50));
-
 	std::vector<sf::RectangleShape> TargetsObjects;
+
+	sf::Sprite PlantFrames;
+	std::vector<sf::Sprite> PlantFrameS;
+	sf::Sprite PlantInfoBlocks;
+	std::vector<sf::Sprite> PlantInfoBlockS;
+
 
 	for (size_t i = 0; i < plants_number(); i++){
 		TargetsObjects.push_back(TargetObject);
+	}
+	for (size_t i = 0; i < plants_number(); i++) {
+		PlantFrameS.push_back(PlantFrames);
+	}
+	for (size_t i = 0; i < plants_number(); i++) {
+		PlantInfoBlockS.push_back(PlantInfoBlocks);
 	}
 
 	sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
 	targetMainBs.setPosition(40, 40);
 	targetMainBs.setFillColor(sf::Color(0, 0, 0, 50));
+
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
+		std::cout << "Failed to load font";
 
 	if (!show){
 		AFPS.setPosition(2000, 2000);
@@ -242,6 +255,11 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				std::cout << "Failed to load plant block background!" << std::endl;
 				return;
 			}
+
+			if (!PlantImageMask.loadFromFile("Resources/images/PlantsList/ImageMask.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
 			//
 			//PlantFrameS[0].setTexture(PlantFrame);
 
@@ -255,6 +273,34 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 					TargetsObjects[i].setPosition(145 + (i * 195), 140);
 					TargetsObjects[i].setFillColor(sf::Color(0, 0, 0, 50));
 					window.draw(TargetsObjects[i]);
+				}
+				std::cout << "Targets built\n" << std::endl;
+			}
+			else if (plants_number() > 5) {
+				int showeditems = 0;
+				for (size_t j = 0; j < 2; j++) {
+					for (size_t i = 0; i < 5; i++) {
+						std::cout << "I value: " << i << std::endl;
+						int ti = i + (j * 5);
+						std::cout << "Ti value: " << ti << std::endl;
+						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
+						TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
+						window.draw(TargetsObjects[ti]);
+						showeditems++;
+						if (showeditems == plants_number()) {
+							i = 5;
+						}
+					}
+				}
+			}
+			//
+			window.display();
+
+			// Building Objects:
+			if (plants_number() <= 5) {
+				for (size_t i = 0; i < plants_number(); i++) {
+					usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
+					window.draw(PlantFrameS[i]);
 				}
 			}
 			else if (plants_number() > 5) {
@@ -274,13 +320,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 					}
 				}
 			}
-			window.display();
-			/*
-			for (size_t i = 0; i < plants_number(); i++)
-			{
 
-			}
-			*/
+			window.display();
 			
 
 			bool inHomeScreen = true;
@@ -2256,6 +2297,41 @@ void UserData::set_image(const std::string& dbFile) {
 	sqlite3_finalize(stmt);
 }
 
+void Plant::showObject(sf::RenderWindow& Window, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
+
+
+	sf::Texture PlantImageT;
+	if (!PlantImageT.loadFromMemory(image.data(), image.size())) {
+		std::cout << "Failed to load plant image into texture\n" << std::endl;
+		return;
+	}
+	
+	Sprite.setTexture(PlantImageT);
+
+	// Apply the mask to the sprite
+	sf::RenderTexture renderTexture;
+	renderTexture.create(PlantImageT.getSize().x, PlantImageT.getSize().y);
+	sf::Sprite textureSprite(PlantImageT);
+	sf::Sprite maskSprite(maskTexture);
+
+	renderTexture.clear(sf::Color::Transparent);
+	renderTexture.draw(textureSprite); // Draw the original texture
+	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
+	renderTexture.display();
+
+	// Use the rendered texture as the sprite's texture
+	sf::Texture finalTexture = renderTexture.getTexture();
+	Sprite.setTexture(finalTexture);
+
+	Sprite.setPosition(posX, posY);
+
+
+	sf::Text Name(name, Font, 15);
+	auto center = Name.getGlobalBounds().getSize() / 2.f;
+	Name.setPosition((posX + 9 + (85 - center.x)), (posY + (217 - center.y)));
+
+}
+
 void Plant::saveToDatabase(const std::string& dbFile) {
 	sqlite3* db;
 	sqlite3_stmt* stmt;
@@ -2435,39 +2511,6 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 
 }
 
-void Plant::showObject(sf::RenderWindow& Window, const Plant Plant, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
-
-
-	sf::Texture PlantImageT;
-	if (!PlantImageT.loadFromMemory(Plant.image.data(), Plant.image.size())) {
-		return;
-	}
-
-	Sprite.setTexture(PlantImageT);
-
-	// Apply the mask to the sprite
-	sf::RenderTexture renderTexture;
-	renderTexture.create(PlantImageT.getSize().x, PlantImageT.getSize().y);
-	sf::Sprite textureSprite(PlantImageT);
-	sf::Sprite maskSprite(maskTexture);
-
-	renderTexture.clear(sf::Color::Transparent);
-	renderTexture.draw(textureSprite); // Draw the original texture
-	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
-	renderTexture.display();
-
-	// Use the rendered texture as the sprite's texture
-	sf::Texture finalTexture = renderTexture.getTexture();
-	Sprite.setTexture(finalTexture);
-
-	Sprite.setPosition(posX, posY);
-
-
-	sf::Text Name(Plant.name, Font, 15);
-	auto center = Name.getGlobalBounds().getSize() / 2.f;
-	Name.setPosition((posX + 9 + (85 - center.x)), (posY + (217 - center.y)));
-
-}
 // Helper function to join strings (for constructing SQL query)
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter) {
 	std::string result;
