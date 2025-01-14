@@ -294,13 +294,16 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				}
 			}
 			//
-			window.display();
+			//window.display();
 
 			// Building Objects:
 			if (plants_number() <= 5) {
 				for (size_t i = 0; i < plants_number(); i++) {
 					usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
-					window.draw(PlantFrameS[i]);
+					//window.draw(PlantFrameS[i]);
+					//window.draw(Sprite);
+					//window.draw();
+					//window.display();
 				}
 			}
 			else if (plants_number() > 5) {
@@ -2297,7 +2300,10 @@ void UserData::set_image(const std::string& dbFile) {
 	sqlite3_finalize(stmt);
 }
 
-void Plant::showObject(sf::RenderWindow& Window, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
+void Plant::showObject(sf::RenderWindow& window, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
+	sf::Sprite frameSprite(frameTexture);
+	frameSprite.setPosition(posX - 8, posY);
+	window.draw(frameSprite);
 
 
 	sf::Texture PlantImageT;
@@ -2305,31 +2311,56 @@ void Plant::showObject(sf::RenderWindow& Window, sf::Texture frameTexture, sf::T
 		std::cout << "Failed to load plant image into texture\n" << std::endl;
 		return;
 	}
-	
 	Sprite.setTexture(PlantImageT);
+
+	// Desired width and height for the sprite
+	//sf::Vector2u maskSize = maskTexture.getSize(); // Get size of the mask
+	
+	//float desiredWidth = static_cast<float>(maskSize.x);
+	//float desiredHeight = static_cast<float>(maskSize.y);
+	float desiredWidth = 150.0f; // in pixels
+	float desiredHeight = 195.0f; // in pixels
+
+	// Get the original size of the texture
+	sf::Vector2u originalSize = PlantImageT.getSize();
+	float originalWidth = static_cast<float>(originalSize.x);
+	float originalHeight = static_cast<float>(originalSize.y);
+
+	// Calculate scale factors
+	float scaleX = desiredWidth / originalWidth;
+	float scaleY = desiredHeight / originalHeight;
+	//Sprite.setScale(scaleX, scaleY);
+	Sprite.setPosition(posX + 10, posY + 10);
+
+	//Sprite.setTexture(PlantImageT);
 
 	// Apply the mask to the sprite
 	sf::RenderTexture renderTexture;
-	renderTexture.create(PlantImageT.getSize().x, PlantImageT.getSize().y);
-	sf::Sprite textureSprite(PlantImageT);
+	renderTexture.create(static_cast<unsigned int>(desiredWidth), static_cast<unsigned int>(desiredHeight));
+	//Prepare  mask
 	sf::Sprite maskSprite(maskTexture);
+	maskSprite.setPosition(posX + 10, posY + 10);
 
 	renderTexture.clear(sf::Color::Transparent);
-	renderTexture.draw(textureSprite); // Draw the original texture
+	renderTexture.draw(Sprite); // Draw the original texture
 	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
 	renderTexture.display();
 
 	// Use the rendered texture as the sprite's texture
 	sf::Texture finalTexture = renderTexture.getTexture();
-	Sprite.setTexture(finalTexture);
 
-	Sprite.setPosition(posX, posY);
+	Sprite.setTexture(finalTexture, true);
+	//Sprite.setScale(scaleX, scaleY);
 
 
-	sf::Text Name(name, Font, 15);
+	sf::Text Name(name, Font, 20);
 	auto center = Name.getGlobalBounds().getSize() / 2.f;
-	Name.setPosition((posX + 9 + (85 - center.x)), (posY + (217 - center.y)));
-
+	Name.setPosition((posX + (85 - center.x)), (posY + (220 - center.y)));
+	Name.setFillColor(sf::Color::Black);
+	
+	window.draw(Sprite);
+	window.draw(Name);
+	
 }
 
 void Plant::saveToDatabase(const std::string& dbFile) {
