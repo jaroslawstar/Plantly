@@ -70,7 +70,8 @@ public:
     Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
-    void showObject(sf::RenderWindow& Window, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font);
+    void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
+    void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
     void insertCurrentDateTime(const std::string& dbFile);

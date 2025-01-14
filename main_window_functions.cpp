@@ -155,7 +155,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	sf::Texture PlantFrame;
 	sf::Texture PlantInfoBlock;
 	sf::Texture PlantImageMask;
-
+	
 	sf::Sprite AFPS;
 	sf::Sprite WaterTodayS;
 	  
@@ -167,7 +167,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	std::vector<sf::Sprite> PlantFrameS;
 	sf::Sprite PlantInfoBlocks;
 	std::vector<sf::Sprite> PlantInfoBlockS;
-
+	sf::Texture PlantImageT;
+	std::vector<sf::Texture> PlantImageTVector;
 
 	for (size_t i = 0; i < plants_number(); i++){
 		TargetsObjects.push_back(TargetObject);
@@ -177,6 +178,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	}
 	for (size_t i = 0; i < plants_number(); i++) {
 		PlantInfoBlockS.push_back(PlantInfoBlocks);
+	}
+	for (size_t i = 0; i < plants_number(); i++) {
+		PlantImageTVector.push_back(PlantImageT);
 	}
 
 	sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
@@ -267,55 +271,42 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			//PlantInfoBlockS[0].setTexture(PlantInfoBlock);
 
 
-			// Building Targets:
-			if (plants_number() <= 5) {
-				for (size_t i = 0; i < plants_number(); i++) {
-					TargetsObjects[i].setPosition(145 + (i * 195), 140);
-					TargetsObjects[i].setFillColor(sf::Color(0, 0, 0, 50));
-					window.draw(TargetsObjects[i]);
-				}
-				std::cout << "Targets built\n" << std::endl;
-			}
-			else if (plants_number() > 5) {
-				int showeditems = 0;
-				for (size_t j = 0; j < 2; j++) {
-					for (size_t i = 0; i < 5; i++) {
-						std::cout << "I value: " << i << std::endl;
-						int ti = i + (j * 5);
-						std::cout << "Ti value: " << ti << std::endl;
-						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
-						TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
-						window.draw(TargetsObjects[ti]);
-						showeditems++;
-						if (showeditems == plants_number()) {
-							i = 5;
-						}
-					}
-				}
-			}
+			
 			//
 			//window.display();
 
-			// Building Objects:
+			// Building Targets & Objects:
 			if (plants_number() <= 5) {
 				for (size_t i = 0; i < plants_number(); i++) {
-					usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
-					//window.draw(PlantFrameS[i]);
-					//window.draw(Sprite);
-					//window.draw();
-					//window.display();
+					//Target for object
+					TargetsObjects[i].setPosition(145 + (i * 195), 140);
+					//Object
+					if (!PlantImageTVector[i].loadFromMemory(usersPlants[i].image.data(), usersPlants[i].image.size())) {
+						std::cout << "Failed to load plant image into texture\n" << std::endl;
+						//return;
+					}
+					//usersPlants[i].showObject(window, PlantImageTVector[i], PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
 				}
 			}
 			else if (plants_number() > 5) {
 				int showeditems = 0;
 				for (size_t j = 0; j < 2; j++) {
 					for (size_t i = 0; i < 5; i++) {
+						//Target for object
 						std::cout << "I value: " << i << std::endl;
 						int ti = i + (j * 5);
 						std::cout << "Ti value: " << ti << std::endl;
 						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
-						TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
-						window.draw(TargetsObjects[ti]);
+						//TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
+						//window.draw(TargetsObjects[ti]);
+						//Object
+						if (!PlantImageTVector[ti].loadFromMemory(usersPlants[ti].image.data(), usersPlants[ti].image.size())) {
+							std::cout << "Failed to load plant image into texture\n" << std::endl;
+							//return;
+						}
+						//usersPlants[ti].showObject(window, PlantImageTVector[ti], PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
+						usersPlants[ti].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
+
 						showeditems++;
 						if (showeditems == plants_number()) {
 							i = 5;
@@ -2300,57 +2291,65 @@ void UserData::set_image(const std::string& dbFile) {
 	sqlite3_finalize(stmt);
 }
 
-void Plant::showObject(sf::RenderWindow& window, sf::Texture frameTexture, sf::Texture maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font Font) {
+void Plant::showObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
 	sf::Sprite frameSprite(frameTexture);
 	frameSprite.setPosition(posX - 8, posY);
 	window.draw(frameSprite);
+	
+	// Get the size of the mask texture
+	sf::Vector2u maskSize = MaskTexture.getSize();
 
-
-	sf::Texture PlantImageT;
-	if (!PlantImageT.loadFromMemory(image.data(), image.size())) {
-		std::cout << "Failed to load plant image into texture\n" << std::endl;
+	// Create a render texture with the size of the mask
+	sf::RenderTexture renderTexture;
+	if (!renderTexture.create(maskSize.x, maskSize.y)) {
+		std::cerr << "Error: Unable to create render texture." << std::endl;
 		return;
 	}
-	Sprite.setTexture(PlantImageT);
 
-	// Desired width and height for the sprite
-	//sf::Vector2u maskSize = maskTexture.getSize(); // Get size of the mask
-	
-	//float desiredWidth = static_cast<float>(maskSize.x);
-	//float desiredHeight = static_cast<float>(maskSize.y);
-	float desiredWidth = 150.0f; // in pixels
-	float desiredHeight = 195.0f; // in pixels
+	sf::Texture Texture;
+	if (!Texture.loadFromMemory(image.data(), image.size())) {
+		std::cerr << "Error: Unable to create texture." << std::endl;
+		return;
+	}
+	// Create sprites for the textures
+	sf::Sprite imageSprite(Texture);
+	sf::Sprite maskSprite(MaskTexture);
 
-	// Get the original size of the texture
-	sf::Vector2u originalSize = PlantImageT.getSize();
-	float originalWidth = static_cast<float>(originalSize.x);
-	float originalHeight = static_cast<float>(originalSize.y);
+	// Scale ImageTexture to match the size of MaskTexture
+	sf::Vector2u imageSize = Texture.getSize();
+	imageSprite.setScale(
+		static_cast<float>(maskSize.x) / imageSize.x,
+		static_cast<float>(maskSize.y) / imageSize.y
+	);
 
-	// Calculate scale factors
-	float scaleX = desiredWidth / originalWidth;
-	float scaleY = desiredHeight / originalHeight;
-	//Sprite.setScale(scaleX, scaleY);
-	Sprite.setPosition(posX + 10, posY + 10);
-
-	//Sprite.setTexture(PlantImageT);
-
-	// Apply the mask to the sprite
-	sf::RenderTexture renderTexture;
-	renderTexture.create(static_cast<unsigned int>(desiredWidth), static_cast<unsigned int>(desiredHeight));
-	//Prepare  mask
-	sf::Sprite maskSprite(maskTexture);
-	maskSprite.setPosition(posX + 10, posY + 10);
-
+	// Clear the render texture
 	renderTexture.clear(sf::Color::Transparent);
-	renderTexture.draw(Sprite); // Draw the original texture
-	renderTexture.draw(maskSprite, sf::BlendMultiply); // Blend with the mask
+
+	// Render the ImageTexture first
+	renderTexture.draw(imageSprite);
+
+	// Apply the mask by setting blend mode to sf::BlendMultiply
+	sf::RenderStates states;
+	states.blendMode = sf::BlendMultiply;
+	renderTexture.draw(maskSprite, states);
+
+	// Display the result on the render texture
 	renderTexture.display();
 
-	// Use the rendered texture as the sprite's texture
-	sf::Texture finalTexture = renderTexture.getTexture();
+	// Get the combined texture
+	const sf::Texture& combinedTexture = renderTexture.getTexture();
 
-	Sprite.setTexture(finalTexture, true);
-	//Sprite.setScale(scaleX, scaleY);
+	// Update the sprite to use the combined texture
+	Sprite.setTexture(combinedTexture);
+	Sprite.setPosition(posX + 10, posY + 10);
+
+	// Draw everything to the window
+	//window.clear();
+	window.draw(Sprite);
+	//Sprite.setTexture(renderTexture.getTexture(), true);
+
+
+
 
 
 	sf::Text Name(name, Font, 20);
@@ -2358,10 +2357,81 @@ void Plant::showObject(sf::RenderWindow& window, sf::Texture frameTexture, sf::T
 	Name.setPosition((posX + (85 - center.x)), (posY + (220 - center.y)));
 	Name.setFillColor(sf::Color::Black);
 	
-	window.draw(Sprite);
 	window.draw(Name);
 	
 }
+
+void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
+	sf::Sprite frameSprite(frameTexture);
+	frameSprite.setPosition(posX - 8, posY);
+	window.draw(frameSprite);
+
+	// Get the size of the mask texture
+	sf::Vector2u maskSize = MaskTexture.getSize();
+
+	// Create a render texture with the size of the mask
+	sf::RenderTexture renderTexture;
+	if (!renderTexture.create(maskSize.x, maskSize.y)) {
+		std::cerr << "Error: Unable to create render texture." << std::endl;
+		return;
+	}
+
+	sf::Texture Texture;
+	if (!Texture.loadFromMemory(image.data(), image.size())) {
+		std::cerr << "Error: Unable to create texture." << std::endl;
+		return;
+	}
+
+	// Create sprites for the textures
+	sf::Sprite imageSprite(Texture);
+	sf::Sprite maskSprite(MaskTexture);
+
+	// Scale ImageTexture to match the size of MaskTexture
+	sf::Vector2u imageSize = Texture.getSize();
+	imageSprite.setScale(
+		static_cast<float>(maskSize.x) / imageSize.x,
+		static_cast<float>(maskSize.y) / imageSize.y
+	);
+
+	// Clear the render texture
+	renderTexture.clear(sf::Color::Transparent);
+
+	// Render the ImageTexture first
+	renderTexture.draw(imageSprite);
+
+	// Apply the mask by setting blend mode to sf::BlendMultiply
+	sf::RenderStates states;
+	states.blendMode = sf::BlendMultiply;
+	renderTexture.draw(maskSprite, states);
+
+	// Display the result on the render texture
+	renderTexture.display();
+
+	// Get the combined texture
+	const sf::Texture& combinedTexture = renderTexture.getTexture();
+
+	// Update the sprite to use the combined texture
+	Sprite.setTexture(combinedTexture);
+	Sprite.setPosition(posX + 10, posY + 10);
+
+	// Draw everything to the window
+	//window.clear();
+	window.draw(Sprite);
+	//Sprite.setTexture(renderTexture.getTexture(), true);
+
+
+
+
+
+	sf::Text Name(name, Font, 20);
+	auto center = Name.getGlobalBounds().getSize() / 2.f;
+	Name.setPosition((posX + (85 - center.x)), (posY + (220 - center.y)));
+	Name.setFillColor(sf::Color::Black);
+
+	window.draw(Name);
+
+}
+
 
 void Plant::saveToDatabase(const std::string& dbFile) {
 	sqlite3* db;
