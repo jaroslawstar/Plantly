@@ -51,6 +51,7 @@ public:
     std::string password;
     std::string pstatus;
     std::vector<uint8_t> image;
+    int datetimestamp;
 
     void saveToDatabase(const std::string& dbFile); // Function declaration
     void set_image(const std::string& dbFile);
@@ -65,9 +66,11 @@ public:
     std::string type;
     std::string location;
     std::vector<uint8_t> image;
+    int datetimestamp;
+    int waterDate;
     //daaaaate
 
-    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL) { // Default constructor
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp(NULL), waterDate(NULL) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
@@ -75,7 +78,7 @@ public:
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
     void insertCurrentDateTime(const std::string& dbFile);
-    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) { ///daaaaaate
+    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_, int datetimestamp_, int waterDate_) { ///daaaaaate
         id = id_;
         userid = userid_;
         days = days_;
@@ -83,6 +86,8 @@ public:
         type = type_;
         location = location_;
         image = image_;
+        datetimestamp = datetimestamp_;
+        waterDate = waterDate_;
     }
 };
 

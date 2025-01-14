@@ -155,7 +155,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	sf::Texture PlantFrame;
 	sf::Texture PlantInfoBlock;
 	sf::Texture PlantImageMask;
-	
+	sf::Texture PlantImageMaskInfoBlock;
+
 	sf::Sprite AFPS;
 	sf::Sprite WaterTodayS;
 	  
@@ -167,8 +168,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	std::vector<sf::Sprite> PlantFrameS;
 	sf::Sprite PlantInfoBlocks;
 	std::vector<sf::Sprite> PlantInfoBlockS;
-	sf::Texture PlantImageT;
-	std::vector<sf::Texture> PlantImageTVector;
+	//sf::Texture PlantImageT;
+	//std::vector<sf::Texture> PlantImageTVector;
 
 	for (size_t i = 0; i < plants_number(); i++){
 		TargetsObjects.push_back(TargetObject);
@@ -179,9 +180,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	for (size_t i = 0; i < plants_number(); i++) {
 		PlantInfoBlockS.push_back(PlantInfoBlocks);
 	}
-	for (size_t i = 0; i < plants_number(); i++) {
-		PlantImageTVector.push_back(PlantImageT);
-	}
+	//for (size_t i = 0; i < plants_number(); i++) {
+	//	PlantImageTVector.push_back(PlantImageT);
+	//}
 
 	sf::RectangleShape targetMainBs(sf::Vector2f(51, 360));
 	targetMainBs.setPosition(40, 40);
@@ -264,6 +265,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				std::cout << "Failed to load plant block background!" << std::endl;
 				return;
 			}
+			if (!PlantImageMaskInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoMask.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
 			//
 			//PlantFrameS[0].setTexture(PlantFrame);
 
@@ -281,11 +286,11 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 					//Target for object
 					TargetsObjects[i].setPosition(145 + (i * 195), 140);
 					//Object
-					if (!PlantImageTVector[i].loadFromMemory(usersPlants[i].image.data(), usersPlants[i].image.size())) {
-						std::cout << "Failed to load plant image into texture\n" << std::endl;
+					//if (!PlantImageTVector[i].loadFromMemory(usersPlants[i].image.data(), usersPlants[i].image.size())) {
+					//	std::cout << "Failed to load plant image into texture\n" << std::endl;
 						//return;
-					}
-					//usersPlants[i].showObject(window, PlantImageTVector[i], PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
+					//}
+					usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
 				}
 			}
 			else if (plants_number() > 5) {
@@ -300,10 +305,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 						//TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
 						//window.draw(TargetsObjects[ti]);
 						//Object
-						if (!PlantImageTVector[ti].loadFromMemory(usersPlants[ti].image.data(), usersPlants[ti].image.size())) {
-							std::cout << "Failed to load plant image into texture\n" << std::endl;
+						//if (!PlantImageTVector[ti].loadFromMemory(usersPlants[ti].image.data(), usersPlants[ti].image.size())) {
+						//	std::cout << "Failed to load plant image into texture\n" << std::endl;
 							//return;
-						}
+						//}
 						//usersPlants[ti].showObject(window, PlantImageTVector[ti], PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
 						usersPlants[ti].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
 
@@ -1295,6 +1300,8 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 						std::cout << "Logged in User info from DataBase:\nID: " << User.id <<
 							"\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " 
 							<< User.password << "\nStatus:" << User.pstatus << std::endl;
+						std::string messege = "Logged in User info from DataBase:\nID: " + std::to_string(User.id) + "\nName: " + User.name + "\nEmail : " + User.email + "\nPassword : " + User.password + "\nStatus:" + User.pstatus;
+						showErrorDialog("Account informaion", messege);
 							//<< User.password << "\nStatus:" << User.pstatus << "\nImage:" << result << std::endl;
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
@@ -2223,7 +2230,8 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 		"Email TEXT,"
 		"Password TEXT,"
 		"PStatus BOOLEAN,"
-		"Image BLOP);";
+		"Image BLOP,"
+		"Datetimestamp DATETIME);";
 	if (sqlite3_exec(db, createTableSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error creating table for Users: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
@@ -2232,8 +2240,8 @@ void UserData::saveToDatabase(const std::string& dbFile) {
 	}
 
 	// Insert data
-	std::string insertSQL = "INSERT INTO Users (Name, Email, Password, PStatus) VALUES ('" +
-		name + "', '" + email + "', '" + password + "', '" + pstatus + "');";
+	std::string insertSQL = "INSERT INTO Users (Name, Email, Password, PStatus, Datetimestamp) VALUES ('" +
+		name + "', '" + email + "', '" + password + "', '" + pstatus + "', CURRENT_TIMESTAMP);";
 	if (sqlite3_exec(db, insertSQL.c_str(), nullptr, nullptr, &errorMessage) != SQLITE_OK) {
 		std::cerr << "Error inserting data for Plants: " << errorMessage << std::endl;
 		sqlite3_free(errorMessage);
@@ -2450,11 +2458,12 @@ void Plant::saveToDatabase(const std::string& dbFile) {
                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 UserID INTEGER NOT NULL,
                 Days INTEGER NOT NULL,
-                Datetime DATETIME NOT NULL,
                 Name TEXT NOT NULL,
                 Type TEXT NOT NULL,
                 Location TEXT NOT NULL,
-                Image BLOP
+                Image BLOP,
+                Datetimestamp DATETIME,
+                waterDate DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         )";
 
@@ -2468,7 +2477,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	//std::string insertQuery = "INSERT INTO entries (UserID, Days, Name, Type, Location, Image) VALUES ('" +
 	//	name + "', " + std::to_string(days) + ", '" + filePath + "');";
 
-	std::string insertQuery = "INSERT INTO Plants (UserID, Days, Name, Type, Location, Image) VALUES (?, ?, ?, ?, ?, ?);";
+	std::string insertQuery = "INSERT INTO Plants (UserID, Days, Name, Type, Location, Image, Datetimestamp, waterDate) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);";
 
 
 	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -2514,7 +2523,7 @@ void Plant::insertCurrentDateTime(const std::string& dbFile) {
 	}
 
 	// Construct the SQL query
-	std::string insertQuery = "UPDATE Plants SET Datetime = DATETIME('now') WHERE id = ?;";
+	std::string insertQuery = "UPDATE Plants SET Datetmestamp = DATETIME('now') WHERE id = ?;";
 
 	// Prepare the SQL statement
 	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -2540,7 +2549,7 @@ void Plant::insertCurrentDateTime(const std::string& dbFile) {
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	for (size_t i = 0; i < plantsnum; i++){
-		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) });
+		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) }, NULL, NULL);
 	}
 
 	sqlite3* db;
@@ -2553,7 +2562,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		showErrorDialog("Database error", sqlite3_errmsg(db));
 	}
 	// Construct the SQL query
-	std::string query = "SELECT id, userid, days, name, type, location, image FROM Plants WHERE userid = ? LIMIT 10;";
+	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate FROM Plants WHERE userid = ? LIMIT 10;";
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -2574,6 +2583,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		std::string name = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3));
 		std::string type = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 4));
 		std::string location = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 5));
+
 		// Fetch BLOB data
 		const void* blobData = sqlite3_column_blob(stmt, 6);
 		int blobSize = sqlite3_column_bytes(stmt, 6);
@@ -2582,8 +2592,11 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 			image.assign(static_cast<const uint8_t*>(blobData), static_cast<const uint8_t*>(blobData) + blobSize);
 		}
 
+		int datetimestamp = sqlite3_column_int(stmt, 7);
+		int waterDate = sqlite3_column_int(stmt, 8);
+
 		// Populate the array with the object
-		usersPlants[i].populate(id, userid, days, name, type, location, image);
+		usersPlants[i].populate(id, userid, days, name, type, location, image, datetimestamp, waterDate);
 		++i;
 	}
 	/*
@@ -2643,9 +2656,9 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 		return;  // Error loading font
 	}
 
-	sf::Text text(message, font, 20);
+	sf::Text text(message, font, 15);
 	text.setFillColor(sf::Color::Black);
-	text.setPosition(20, 80);
+	text.setPosition(10, 10);
 
 	while (window.isOpen()) {
 		sf::Event event;
