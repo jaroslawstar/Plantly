@@ -339,7 +339,6 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 						window.close();
 					//Close button service
 					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
-						//----------Logged_OUT_Buttons----------
 						sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 						std::cout << "Mouse clicked at: ("
 							<< mousePosition.x << ", "
@@ -381,15 +380,53 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 						for (size_t i = 0; i < plants_number(); ++i) {
 							if (TargetsObjects[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
-								// Rectangle 'i' was clicked
-								std::cout << "Rectangle " << i << " was clicked!\n";
+								std::cout << "Plant #" << i << " was clicked!\n";
+								
+								if ((i >= 0 && i <= 2) || (i >= 5 && i <= 7)) {
+									TargetX.setPosition((i * 195) + 605, 150);
+									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], (i * 195) + 145, 140, font);
 
-								// Example: Change only the clicked rectangle's color
-								TargetX.setPosition(605, 150);
-								TargetX.setFillColor(sf::Color(0, 0, 0, 75));
-								usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font);
+								}
+								else if ((i >= 3 && i <= 4) || (i >= 8 && i <= 9)) {
+									TargetX.setPosition(605, 150);
+									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font);
+
+								}
+
+
+
 								window.draw(TargetX);
 								window.display();
+
+								//HERE TO BUILD BLOCK'S TARGETS
+								//
+								//
+
+								bool inBlock = true;
+								while (inBlock){
+									while (window.pollEvent(event)) {
+										if (event.type == sf::Event::Closed)
+											window.close();
+										//Close button service
+										if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+											sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+											std::cout << "Mouse clicked at: ("
+												<< mousePosition.x << ", "
+												<< mousePosition.y << ")" << std::endl;
+											//HERE TORUN TARGETS
+											//if(){}
+											//if(){}
+											//if(){}
+											if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+												std::cout << "Click at 'X' button" << std::endl;
+												inBlock = false;
+											}
+
+										}
+									}
+								}
 
 								break; // Exit the loop once a rectangle is found
 							}
