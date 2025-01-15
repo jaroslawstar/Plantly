@@ -59,6 +59,10 @@ int main() {
    */
     //Window creation
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
+    sf::Image LogoIcon;
+    LogoIcon.loadFromFile("Resources/images/Logo.png");
+    window.setIcon(LogoIcon.getSize().x, LogoIcon.getSize().y, LogoIcon.getPixelsPtr());
+
     UserData User_Data;
 
 

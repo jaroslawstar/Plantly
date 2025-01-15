@@ -2511,7 +2511,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	return;
 }
 
-void Plant::insertCurrentDateTime(const std::string& dbFile) {
+void Plant::insertCurrentDateTime(const std::string& dbFile)  {
 	sqlite3* db = nullptr;
 	sqlite3_stmt* stmt = nullptr;
 	char* errorMessage = nullptr;
@@ -2650,15 +2650,19 @@ std::string generate_username(std::string email) {
 }
 
 void showErrorDialog(const std::string& title, const std::string& message) {
-	sf::RenderWindow window(sf::VideoMode(400, 200), title);
+	// Window size
+	int x = 400;
+	int y = 200;
+	sf::RenderWindow window(sf::VideoMode(x, y), title);
 	sf::Font font;
-	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-SemiBold.ttf")) {
+	if (!font.loadFromFile("Resources/Fonts/Instrument_Sans/static/InstrumentSans-Regular.ttf")) {
 		return;  // Error loading font
 	}
 
 	sf::Text text(message, font, 15);
 	text.setFillColor(sf::Color::Black);
-	text.setPosition(10, 10);
+	auto center = text.getGlobalBounds().getSize() / 2.f;
+	text.setPosition(x/2 - center.x, y/2 - center.y);
 
 	while (window.isOpen()) {
 		sf::Event event;
