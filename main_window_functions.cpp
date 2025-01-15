@@ -348,7 +348,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 							std::cout << "Click at 'X' button" << std::endl;
 							inHomeScreen = false;
 						}
-						
+						/*
 						else if (TargetsObjects[0].getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 							//plantInfo PlantInfo = plantInfo::PI0;
 							TargetX.setPosition(605, 150);
@@ -373,11 +373,27 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 							window.draw(TargetX);
 							window.display();
 						}
+						*/
 						else if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 							std::cout << "Click at 'X' button" << std::endl;
 							inHomeScreen = false;
 						}
 
+						for (size_t i = 0; i < plants_number(); ++i) {
+							if (TargetsObjects[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+								// Rectangle 'i' was clicked
+								std::cout << "Rectangle " << i << " was clicked!\n";
+
+								// Example: Change only the clicked rectangle's color
+								TargetX.setPosition(605, 150);
+								TargetX.setFillColor(sf::Color(0, 0, 0, 75));
+								usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font);
+								window.draw(TargetX);
+								window.display();
+
+								break; // Exit the loop once a rectangle is found
+							}
+						}
 
 						/*
 						else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inDaysField == true) {
