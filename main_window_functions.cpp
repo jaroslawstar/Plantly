@@ -2397,12 +2397,23 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	//Sprite.setTexture(renderTexture.getTexture(), true);
 
 
-	sf::Text NameType(name + " the " + type, Font, 25);
-	auto center = NameType.getGlobalBounds().getSize() / 2.f;
-	NameType.setPosition((posX + (195 + center.x)), (posY + (41 + center.y)));
-	NameType.setFillColor(sf::Color::Black);
+	sf::Text Name(name, Font, 25);
+	sf::Text Type("the " + type, Font, 15);
 
-	window.draw(NameType);
+	auto centerN = Name.getGlobalBounds().getSize() / 2.f;
+	auto centerT = Type.getGlobalBounds().getSize() / 2.f;
+
+	Name.setOrigin(centerN.x, centerN.y);
+	Type.setOrigin(centerT.x, centerT.y);
+
+	Name.setPosition((posX + (195 + 143)), (posY + (centerN.y + 35)));
+	Type.setPosition((posX + (195 + 143)), (posY + (centerT.y + 65)));
+
+	Name.setFillColor(sf::Color::Black);
+	Type.setFillColor(sf::Color(0, 0, 0, 90));
+
+	window.draw(Name);
+	window.draw(Type);
 
 	std::vector<std::string> dates;
 
