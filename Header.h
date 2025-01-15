@@ -67,16 +67,17 @@ public:
     std::string location;
     std::vector<uint8_t> image;
     int datetimestamp;
-    int waterDate;
+    std::string waterDate;
     //daaaaate
 
-    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp(NULL), waterDate(NULL) { // Default constructor
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp(NULL), waterDate("") { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
+    std::string fetchDateTime(const std::string& dbFile);
     void insertCurrentDateTime(const std::string& dbFile);
     void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_, int datetimestamp_, int waterDate_) { ///daaaaaate
         id = id_;
