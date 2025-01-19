@@ -18,6 +18,7 @@
 #include <SQLite/sqlite3.h>
 #include <fstream>
 #include "sqlitecloud/sqcloud.h"
+#include <chrono>
 
 AppState appState = AppState::LOGGED_OUT;
 
@@ -80,11 +81,13 @@ int main() {
     targetN.setPosition(585, 467);
     //_Logged_IN_
     sf::RectangleShape targetHB(sf::Vector2f(51, 51));
+    sf::RectangleShape targetMainScreen(sf::Vector2f(1160, 710));
     sf::RectangleShape targetMB(sf::Vector2f(51, 51));
     sf::RectangleShape targetAPB(sf::Vector2f(51, 51));
     sf::RectangleShape targetFB(sf::Vector2f(51, 51));
     sf::RectangleShape targetQMB(sf::Vector2f(51, 51));
     targetHB.setPosition(40, 40);
+    targetMainScreen.setPosition(120, 70);
     targetMB.setPosition(45, 115);
     targetAPB.setPosition(35, 200);
     targetFB.setPosition(35, 300);
@@ -127,20 +130,23 @@ int main() {
         //window.display();
 
         while (appState == AppState::LOGGED_IN) {   //Log in window loop
-            draw_main_screen(window);
+            draw_plants(window, event, false, "plantly.db");
+
             while (window.pollEvent(event)) {
                 if (event.type == sf::Event::Closed)
                     window.close();
+
                 if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
-                    //----------Logged_IN_Buttons----------
+
                     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
                     std::cout << "Mouse clicked at: ("
                         << mousePosition.x << ", "
                         << mousePosition.y << ")" << std::endl;
-                    if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                    if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || 
+                        targetMainScreen.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Home' button" << std::endl;
-                        //draw_menu(window, event, false);
-                        draw_plants(window, event, true, "plantly.db");
+                        draw_menu(window, event, false);
+                        draw_plants(window, event, true, "plantly.db", mousePosition);
                     }
                     else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
                         std::cout << "Click at 'Menu' button" << std::endl;

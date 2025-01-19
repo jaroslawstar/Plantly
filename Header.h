@@ -2,6 +2,7 @@
 #ifndef Header
 #define Header
 
+#include<chrono>
 
 enum class AppState {
     LOGGED_OUT,
@@ -18,7 +19,7 @@ void draw_clear_screen(sf::RenderWindow& window);
 void draw_main_screen(sf::RenderWindow& window);
 //void draw_logo(sf::RenderWindow& window);
 void draw_menu(sf::RenderWindow& window, sf::Event event, bool show);
-void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile);
+void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile, sf::Vector2i mousePosition = sf::Vector2i(-1, -1));
 void draw_text(sf::RenderWindow& window, bool show); 
 
 
@@ -43,6 +44,9 @@ void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image
 //bool init_sqcloud();
 int plants_number();
 
+std::string timePointToString(const std::chrono::system_clock::time_point& timePoint);
+std::chrono::system_clock::time_point parseDateTime(const std::string& datetime);   
+std::string timePointToString(const std::chrono::system_clock::time_point& timePoints);
 class UserData {
 public:
     int id;
@@ -77,7 +81,7 @@ public:
     void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
-    std::string fetchDateTime(const std::string& dbFile);
+    std::string fetchDateTime(const std::string& dbFile, bool dateAdded);
     void insertCurrentDateTime(const std::string& dbFile);
     void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_, int datetimestamp_, int waterDate_) { ///daaaaaate
         id = id_;
