@@ -2473,28 +2473,20 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	sf::Color Green = sf::Color(0xDC, 0xFF, 0xC1);
 	// Create the first circle
 	sf::CircleShape circle1(42.0f); // Radius of 40 pixels
-	circle1.setFillColor(Red);
+	circle1.setFillColor(Green);
 	circle1.setPosition(posX + 9, 619.0f); // Position it along the X-axis
 
 	// Create the rectangle
 	sf::RectangleShape rectangle(sf::Vector2f(150.0f, 82.0f)); // 105x80 pixels
-	rectangle.setFillColor(Red);
+	rectangle.setFillColor(Green);
 	rectangle.setPosition(posX + 49, 619.0f); // Position at (circle radius, 0)
 
 	
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
 	sf::Sprite frameSprite(frameTexture);
 	frameSprite.setPosition(posX - 8, posY);
-	window.draw(frameSprite);
 
 	// Get the size of the mask texture
 	sf::Vector2u maskSize = MaskTexture.getSize();
@@ -2546,13 +2538,12 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	// Draw everything to the window
 	//window.clear();
-	window.draw(Sprite);
 	//Sprite.setTexture(renderTexture.getTexture(), true);
 
 
 	sf::Text Name(name, Font, 25);
 	sf::Text Type("the " + type, Font, 15);
-	sf::Text WateringLog("Watering logged ⭐", Font, 15);
+	sf::Text WateringLog("Watering logged", Font, 15);
 
 
 
@@ -2583,33 +2574,46 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 		dates[i].setString(getDatetimeAfterDays((i + 1) * days));
 	}
 
-	//Show calculated dates
+	//Calculate dates and prepare button
 	sf::Text dateText("", Font, 20);
 	std::vector<sf::Text> datesText;
 	for (size_t i = 0; i < 4; i++) {
 		datesText.push_back(dateText);
 		datesText[i].setString(dates[i].getString());
 		//std::cout << "Watering date #" << i << " " << datesText[i].getString() << std::endl;
-		auto centerD = datesText[i].getGlobalBounds().getSize() / 2.f;
+		
 		if (isDateInPast(dates[i].getString())) {
 			datesText[i].setFillColor(sf::Color::Red);
-			circle1.setFillColor(Green);
-			rectangle.setFillColor(Green);
-			WateringLog.setString("Log watering \u2B6F");
+			circle1.setFillColor(Red);
+			rectangle.setFillColor(Red);
+			WateringLog.setString("Log watering now");
 			WateringLog.setPosition(393, 651);
 
 		}
 		else
 			datesText[i].setFillColor(sf::Color::Black);
+		
+	}
+
+	//__________DRAWING__________
+	//Object undere the mask
+	window.draw(Sprite);
+
+	window.draw(circle1);
+	window.draw(rectangle);
+
+	window.draw(frameSprite);
+
+
+	//Draw dates
+	for (size_t i = 0; i < 4; i++) {
+		auto centerD = datesText[i].getGlobalBounds().getSize() / 2.f;
 		datesText[i].setOrigin(centerD.x, centerD.y);
 		datesText[i].setPosition(posX + 103, posY + ((i * 54) + 279));
 		window.draw(datesText[i]);
 	}
 
 
-
-	window.draw(circle1);
-	window.draw(rectangle);
 
 	window.draw(Name);
 	window.draw(Type);
