@@ -35,8 +35,7 @@ Wazne parametry:
 #include "sqlitecloud/sqcloud.h"
 #include "sqlitecloud/lz4.h"
 #include <chrono>
-#include <iomanip>
-#include <sstream>
+#include <ctime>
 
 
 
@@ -418,16 +417,16 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 						
 						sf::Vector2i mousePositionLocal;
 						if (mousePosition != sf::Vector2i(-1, -1)){
-							mousePositionLocal = mousePositionLocal;
+							mousePositionLocal = mousePosition;
 						}
 						else {
-							sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+							sf::Vector2i mousePositionLocal = sf::Mouse::getPosition(window);
 						}
 						
 						std::cout << "Mouse clicked at: ("
-							<< mousePosition.x << ", "
-							<< mousePosition.y << ")" << std::endl;
-						if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+							<< mousePositionLocal.x << ", "
+							<< mousePositionLocal.y << ")" << std::endl;
+						if (targetMainBs.getGlobalBounds().contains(mousePositionLocal.x, mousePositionLocal.y)) {
 							std::cout << "Click at 'X' button" << std::endl;
 							inHomeScreen = false;
 						}
@@ -457,13 +456,13 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 							window.display();
 						}
 						*/
-						else if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+						else if (TargetX.getGlobalBounds().contains(mousePositionLocal.x, mousePositionLocal.y)) {
 							std::cout << "Click at 'X' button" << std::endl;
 							inHomeScreen = false;
 						}
 
 						for (size_t i = 0; i < plants_number(); ++i) {
-							if (TargetsObjects[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePosition))) {
+							if (TargetsObjects[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePositionLocal))) {
 								std::cout << "Plant #" << i << " was clicked!\n";
 								
 								if ((i >= 0 && i <= 2) || (i >= 5 && i <= 7)) {
@@ -2500,14 +2499,13 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	window.draw(Type);
 
 	//Calculating the next watering dates
-	std::array<std::chrono::system_clock::time_point, 3> dates;
+	std::array<sf::Text, 3> dates;
 
-	std::chrono::system_clock::time_point lastWaterDate = parseDateTime(fetchDateTime("plantly.db", false));
-	std::cout << "Last watering date: " << timePointToString(lastWaterDate) << std::endl;
-	std::chrono::system_clock::time_point date;
+	std::tm lastWaterDate = waterDate;
+	std::cout << "Last watering date: " << formatDatetime(lastWaterDate) << std::endl;
 	
 	for (size_t i = 0; i < 2; i++){
-		dates[i] = lastWaterDate + std::chrono::hours(24 * days * (i + 1));
+		dates[i].setString(getDatetimeAfterSeconds(i * days));
 	}
 
 	//Show calculated dates
@@ -2515,8 +2513,8 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	std::vector<sf::Text> datesText;
 	for (size_t i = 0; i < 2; i++) {
 		datesText.push_back(dateText);
-		datesText[i].setString(timePointToString(dates[i]));
-		std::cout << "Watering date #" << i << " " << timePointToString(dates[i]) << std::endl;
+		datesText[i].setString(dates[i].getString());
+		//std::cout << "Watering date #" << i << " " << datesText[i].getString() << std::endl;
 		auto centerD = datesText[i].getGlobalBounds().getSize() / 2.f;
 		datesText[i].setFillColor(sf::Color::Black);
 		datesText[i].setOrigin(centerD.x, centerD.y);
@@ -2637,8 +2635,10 @@ void Plant::insertCurrentDateTime(const std::string& dbFile)  {
 }
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
-	for (size_t i = 0; i < plantsnum; i++){
-		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) }, NULL, NULL);
+	for (size_t i = 0; i < plantsnum; i++) {
+		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) });
+		usersPlants[i].datetimestamp = {};
+		usersPlants[i].waterDate = {};
 	}
 
 	sqlite3* db;
@@ -2681,12 +2681,21 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 			image.assign(static_cast<const uint8_t*>(blobData), static_cast<const uint8_t*>(blobData) + blobSize);
 		}
 
-		int datetimestamp = sqlite3_column_int(stmt, 7);
-		int waterDate = sqlite3_column_int(stmt, 8);
+		const char* datetimestamp = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
+		const char* waterDate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
+
+		if (!parseDateTimeStamp(datetimestamp)) {
+			std::cerr << "Failed to parse dateAdded: " << datetimestamp << std::endl;
+		}
+		if (!parseWaterDateTime(waterDate)) {
+			std::cerr << "Failed to parse waterDate: " << waterDate << std::endl;
+		}
+
+
 		std::cout << "datetimestamp: " << datetimestamp << std::endl;
 		std::cout << "waterDate:" << waterDate << std::endl;
 		// Populate the array with the object
-		usersPlants[i].populate(id, userid, days, name, type, location, image, datetimestamp, waterDate);
+		usersPlants[i].populate(id, userid, days, name, type, location, image);
 		++i;
 	}
 	/*
@@ -2910,16 +2919,7 @@ void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image
 	window.draw(sprite);
 }
 
-std::string Plant::fetchDateTime(const std::string& dbFile, bool dateAdded) {
-	sqlite3* db = nullptr;
-	sqlite3_stmt* stmt = nullptr;
-
-	// Open SQLite database
-	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
-		std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
-		return "";
-	}
-
+bool Plant::fetchDateTime(const std::string& dbFile, bool dateAdded) {
 	// SQL query to fetch DATETIME
 	std::string query = "";
 	if(dateAdded)
@@ -2927,45 +2927,50 @@ std::string Plant::fetchDateTime(const std::string& dbFile, bool dateAdded) {
 	if(!dateAdded)
 		std::string query = "SELECT waterDate FROM Plants WHERE id = ?;";
 
-	// Bind values to the query
-	sqlite3_bind_int(stmt, 1, id);
+	const std::string dbName = dbFile; // Database definition
 
-	// Prepare the SQL statement
-	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-		std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
-		sqlite3_close(db);
-		return "";
+	sqlite3* db;
+	sqlite3_stmt* stmt;
+	int rc = sqlite3_open(dbName.c_str(), &db);
+
+	if (rc != SQLITE_OK) {
+		std::cerr << "Cannot open database: " << sqlite3_errmsg(db) << std::endl;
+		return false;
 	}
 
-	// Execute the query
+	rc = sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr);
+	if (rc != SQLITE_OK) {
+		std::cerr << "Failed to execute query: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return false;
+	}
+
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		const unsigned char* dateTimeText = sqlite3_column_text(stmt, 0); // Fetch DATETIME as text
-		if (dateTimeText) {
-			std::string datetime(reinterpret_cast<const char*>(dateTimeText));
-			std::cout << "Fetched DATETIME: " << datetime << std::endl;
-			return waterDate = datetime;
-		}
-		else {
-			std::cerr << "DATETIME value is NULL." << std::endl;
-			return "";
+		const char* datetime = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+		if (datetime != NULL && dateAdded == true) {
+			if (!parseDateTimeStamp(datetime)) {
+				std::cerr << "Failed to parse dateAdded: " << datetime << std::endl;
+			}
+		}else if (datetime != NULL && dateAdded == true) {
+			if (!parseWaterDateTime(datetime)) {
+				std::cerr << "Failed to parse waterDate: " << datetime << std::endl;
+			}
+		} else {
+			std::cerr << "Datetime value is null." << std::endl;
 		}
 	}
 	else {
-		std::cerr << "No data found." << std::endl;
-		return "";
+		std::cerr << "No rows found." << std::endl;
 	}
 
-	// Clean up
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
+	return true;
 }
 
-std::chrono::system_clock::time_point parseDateTime(const std::string& datetime) {
-	std::tm tm = {};
-	std::istringstream ss(datetime);
-	ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-	return std::chrono::system_clock::from_time_t(std::mktime(&tm));
-} 
+
+
+
 
 std::string timePointToString(const std::chrono::system_clock::time_point& timePoints) {
 	// Convert to time_t, which represents time in seconds since epoch

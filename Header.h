@@ -45,7 +45,7 @@ void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image
 int plants_number();
 
 std::string timePointToString(const std::chrono::system_clock::time_point& timePoint);
-std::chrono::system_clock::time_point parseDateTime(const std::string& datetime);   
+//std::chrono::system_clock::time_point parseDateTime(const std::string& datetime);   
 std::string timePointToString(const std::chrono::system_clock::time_point& timePoints);
 class UserData {
 public:
@@ -55,10 +55,18 @@ public:
     std::string password;
     std::string pstatus;
     std::vector<uint8_t> image;
-    int datetimestamp;
+    std::tm datetimestamp = {};
+
 
     void saveToDatabase(const std::string& dbFile); // Function declaration
     void set_image(const std::string& dbFile);
+
+private:
+    bool parseDateTimeStamp(const std::string& datetime) {
+        std::istringstream ss(datetime);
+        ss >> std::get_time(&datetimestamp, "%Y-%m-%d %H:%M:%S");
+        return !ss.fail();
+    }
 };
 
 class Plant {
@@ -70,20 +78,20 @@ public:
     std::string type;
     std::string location;
     std::vector<uint8_t> image;
-    int datetimestamp;
-    std::string waterDate;
+    std::tm datetimestamp = {};
+    std::tm waterDate = {};
     //daaaaate
 
-    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp(NULL), waterDate("") { // Default constructor
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp({}), waterDate({}) { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
-    std::string fetchDateTime(const std::string& dbFile, bool dateAdded);
+    bool fetchDateTime(const std::string& dbFile, bool dateAdded);
     void insertCurrentDateTime(const std::string& dbFile);
-    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_, int datetimestamp_, int waterDate_) { ///daaaaaate
+    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) { ///daaaaaate
         id = id_;
         userid = userid_;
         days = days_;
@@ -91,8 +99,53 @@ public:
         type = type_;
         location = location_;
         image = image_;
-        datetimestamp = datetimestamp_;
-        waterDate = waterDate_;
+    };
+    void displayDatetime() const {
+        std::cout << "Stored DateTimeStamp: " << std::put_time(&datetimestamp, "%Y-%m-%d %H:%M:%S") << std::endl;
+        std::cout << "Stored WaterDate: " << std::put_time(&waterDate, "%Y-%m-%d %H:%M:%S") << std::endl;
+    };
+
+    // Method to add seconds and return resulting datetime as a string
+    std::string getDatetimeAfterSeconds(int seconds) const {
+        std::tm tempDatetime = waterDate; // Create a temporary copy
+        time_t time = std::mktime(&tempDatetime);
+        time += seconds;
+
+        // Create a temporary std::tm object to store the result
+        std::tm resultDatetime;
+        localtime_s(&resultDatetime, &time); // Use localtime_s to safely convert time_t to std::tm
+
+        return formatDatetime(resultDatetime);
+    }
+
+    // Method to add days and return resulting datetime as a string
+    std::string getDatetimeAfterDays(int days) const {
+        return getDatetimeAfterSeconds(days * 24 * 3600); // Delegate to seconds
+    }
+
+    // Method to set the current datetime
+    void setCurrentDatetime() {
+        std::time_t now = std::time(nullptr);  // Get current time as time_t
+        localtime_s(&waterDate, &now);     // Use localtime_s for safer conversion
+    }
+
+private:
+    // Method to parse a datetime string into std::tm
+    bool parseDateTimeStamp(const std::string& datetime) {
+        std::istringstream ss(datetime);
+        ss >> std::get_time(&datetimestamp, "%Y-%m-%d %H:%M:%S");
+        return !ss.fail();
+    };
+    bool parseWaterDateTime(const std::string& datetime) {
+        std::istringstream ss(datetime);
+        ss >> std::get_time(&waterDate, "%Y-%m-%d %H:%M:%S");
+        return !ss.fail();
+    };
+    // Helper method to format a std::tm object as a string
+    std::string formatDatetime(const std::tm& datetime) const {
+        std::ostringstream oss;
+        oss << std::put_time(&datetime, "%Y-%m-%d %H:%M:%S");
+        return oss.str();
     }
 };
 
