@@ -144,7 +144,7 @@ private:
     // Helper method to format a std::tm object as a string
     std::string formatDatetime(const std::tm& datetime) const {
         std::ostringstream oss;
-        oss << std::put_time(&datetime, "%Y-%m-%d %H:%M:%S");
+        oss << std::put_time(&datetime, "%d.%m.%Y"); // Here to change appearance
         return oss.str();
     }
 };

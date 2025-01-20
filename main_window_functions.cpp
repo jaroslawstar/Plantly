@@ -2499,26 +2499,26 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	window.draw(Type);
 
 	//Calculating the next watering dates
-	std::array<sf::Text, 3> dates;
+	std::array<sf::Text, 4> dates;
 
 	std::tm lastWaterDate = waterDate;
 	std::cout << "Last watering date: " << formatDatetime(lastWaterDate) << std::endl;
 	
-	for (size_t i = 0; i < 2; i++){
-		dates[i].setString(getDatetimeAfterDays((i+1) * days));
+	for (size_t i = 0; i < 4; i++){
+		dates[i].setString(getDatetimeAfterDays((i + 1) * days));
 	}
 
 	//Show calculated dates
 	sf::Text dateText("", Font, 20);
 	std::vector<sf::Text> datesText;
-	for (size_t i = 0; i < 2; i++) {
+	for (size_t i = 0; i < 4; i++) {
 		datesText.push_back(dateText);
 		datesText[i].setString(dates[i].getString());
 		//std::cout << "Watering date #" << i << " " << datesText[i].getString() << std::endl;
 		auto centerD = datesText[i].getGlobalBounds().getSize() / 2.f;
 		datesText[i].setFillColor(sf::Color::Black);
 		datesText[i].setOrigin(centerD.x, centerD.y);
-		datesText[i].setPosition(posX + 103, posY + ((i * 34) + 279));
+		datesText[i].setPosition(posX + 103, posY + ((i * 54) + 279));
 		window.draw(datesText[i]);
 	}
 
