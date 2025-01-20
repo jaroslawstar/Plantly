@@ -154,11 +154,17 @@ void draw_logo(sf::RenderWindow& window) {
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile, sf::Vector2i mousePosition) {
 	usersPlants->fetch_plants_from_db("plantly.db");
 	sf::Texture AddFirstPlant;
+
 	sf::Texture WaterToday;
+	sf::Texture WTTFrame;
+	sf::Texture WTTMask;
+
 	sf::Texture PlantFrame;
 	sf::Texture PlantInfoBlock;
 	sf::Texture PlantImageMask;
 	sf::Texture PlantImageMaskInfoBlock;
+
+	
 
 	sf::Sprite AFPS;
 	sf::Sprite WaterTodayS;
@@ -168,12 +174,15 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	std::vector<sf::RectangleShape> TargetsObjects;
 
 	sf::RectangleShape TargetX(sf::Vector2f(80, 80));
-
+	TargetX.setPosition(800, 150);
+	TargetX.setFillColor(sf::Color(0, 0, 0, 50));
 
 	sf::Sprite PlantFrames;
 	std::vector<sf::Sprite> PlantFrameS;
 	sf::Sprite PlantInfoBlocks;
 	std::vector<sf::Sprite> PlantInfoBlockS;
+	sf::Sprite WTT;
+	std::vector<sf::Sprite> WTTs;
 	//sf::Texture PlantImageT;
 	//std::vector<sf::Texture> PlantImageTVector;
 
@@ -185,6 +194,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	}
 	for (size_t i = 0; i < plants_number(); i++) {
 		PlantInfoBlockS.push_back(PlantInfoBlocks);
+	}
+	for (size_t i = 0; i < plants_number(); i++) {
+		WTTs.push_back(WTT);
 	}
 	//for (size_t i = 0; i < plants_number(); i++) {
 	//	PlantImageTVector.push_back(PlantImageT);
@@ -199,7 +211,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 		std::cout << "Failed to load font";
 
 	if (!show){
-		draw_main_screen(window);
+		//draw_main_screen(window);
 
 		if (plants_number() == 0) {
 			if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
@@ -207,10 +219,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				return;
 			}
 			AFPS.setTexture(AddFirstPlant);
-			AFPS.setPosition(223, 126);
+			AFPS.setPosition(145, 140);
 			//window.clear();
 			window.draw(AFPS);
-			window.display();
+			//window.display();
 		}
 		else {
 			if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
@@ -218,8 +230,28 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				return;
 			}
 			WaterTodayS.setTexture(WaterToday);
+
 			WaterTodayS.setPosition(1111, 140);
+			window.draw(WaterTodayS);
 			//window.display();
+
+			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrame.png")) {
+				std::cout << "Failed to load WTTFrame.png!" << std::endl;
+				return;
+			}
+			if (!WTTMask.loadFromFile("Resources/images/PlantsList/WTTMask.png")) {
+				std::cout << "Failed to load WTTMask.png!" << std::endl;
+				return;
+			}
+
+			int showed = 0;
+			for (size_t i = 0; i < plants_number(); i++) {
+				if (isDateInPast(usersPlants[i].getDatetimeAfterDays(usersPlants[i].days))) {
+					usersPlants[i].showWTTObject(window, WTTFrame, WTTMask, WTTs[i], 1130, 230 + (showed * 60), font);
+					showed++;
+				}
+
+			}
 
 			if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
 				std::cout << "Failed to load plant block background!" << std::endl;
@@ -246,10 +278,119 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			//PlantInfoBlockS[0].setTexture(PlantInfoBlock);
 
 			//window.clear();
-			window.draw(WaterTodayS);
 
 			//
 			//window.display();
+
+			// Building Objects:
+			if (plants_number() <= 5) {
+				for (size_t i = 0; i < plants_number(); i++) {
+					usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
+				}
+			}
+			else if (plants_number() > 5) {
+				int showeditems = 0;
+				for (size_t j = 0; j < 2; j++) {
+					for (size_t i = 0; i < 5; i++) {
+						std::cout << "I value: " << i << std::endl;
+						int ti = i + (j * 5);
+						std::cout << "Ti value: " << ti << std::endl;
+						usersPlants[ti].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
+
+						showeditems++;
+						if (showeditems == plants_number()) {
+							i = 5;
+						}
+					}
+				}
+			}
+			
+		}
+		window.display();
+	}
+	else if (show) {
+		if (plants_number() == 0) {
+			if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
+				std::cout << "Failed to load plant block background!" << std::endl;
+				return;
+			}
+			AFPS.setTexture(AddFirstPlant);
+			AFPS.setPosition(145, 140);
+			//window.draw(AFPS);
+			window.display();
+			bool inHomeScreen = true;
+
+			while (inHomeScreen) {
+				while (window.pollEvent(event)) {
+					if (event.type == sf::Event::Closed)
+						window.close();
+					//Close button service
+					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+						//----------Logged_OUT_Buttons----------
+						sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+						std::cout << "Mouse clicked at: ("
+							<< mousePosition.x << ", "
+							<< mousePosition.y << ")" << std::endl;
+						if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+							std::cout << "Click at 'X' button" << std::endl;
+							inHomeScreen = false;
+						}
+					}
+
+					if (inHomeScreen == false)
+						break;
+				}
+
+
+
+			}
+			window.display();
+		}
+		else {
+			if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
+				std::cout << "Failed to load WaterToday block!" << std::endl;
+				return;
+			}
+			WaterTodayS.setTexture(WaterToday);
+			WaterTodayS.setPosition(1111, 140);
+
+			window.draw(WaterTodayS);
+			//window.display();
+
+			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrame.png")) {
+				std::cout << "Failed to load WTTFrame.png!" << std::endl;
+				return;
+			}
+			if (!WTTMask.loadFromFile("Resources/images/PlantsList/WTTMask.png")) {
+				std::cout << "Failed to load WTTMask.png!" << std::endl;
+				return;
+			}
+
+			int showed = 0;
+			for (size_t i = 0; i < plants_number(); i++) {
+				if (isDateInPast(usersPlants[i].getDatetimeAfterDays(usersPlants[i].days))) {
+					usersPlants[i].showWTTObject(window, WTTFrame, WTTMask, WTTs[i], 1130, 230 + (showed * 60), font);
+					showed++;
+				}
+
+			}
+
+			if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
+				std::cout << "Failed to load PlantFrame.png!" << std::endl;
+				return;
+			}
+			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
+				std::cout << "Failed to load PlantInfoBlock.png!" << std::endl;
+				return;
+			}
+			if (!PlantImageMask.loadFromFile("Resources/images/PlantsList/ImageMask.png")) {
+				std::cout << "Failed to load ImageMask.png!" << std::endl;
+				return;
+			}
+			if (!PlantImageMaskInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoMask.png")) {
+				std::cout << "Failed to load PlantInfoMask.png!" << std::endl;
+				return;
+			}
 
 			// Building Targets & Objects:
 			if (plants_number() <= 5) {
@@ -282,116 +423,6 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 						//}
 						//usersPlants[ti].showObject(window, PlantImageTVector[ti], PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
 						usersPlants[ti].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
-
-						showeditems++;
-						if (showeditems == plants_number()) {
-							i = 5;
-						}
-					}
-				}
-			}
-			
-			window.display();
-		}
-
-
-	}
-	else if (show) {
-		if (plants_number() == 0) {
-			if (!AddFirstPlant.loadFromFile("Resources/images/PlantsList/AddFirstPlant.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-			AFPS.setTexture(AddFirstPlant);
-			AFPS.setPosition(223, 126);
-			window.draw(AFPS);
-			window.display();
-			bool inHomeScreen = true;
-
-			while (inHomeScreen) {
-				while (window.pollEvent(event)) {
-					if (event.type == sf::Event::Closed)
-						window.close();
-					//Close button service
-					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
-						//----------Logged_OUT_Buttons----------
-						sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-						std::cout << "Mouse clicked at: ("
-							<< mousePosition.x << ", "
-							<< mousePosition.y << ")" << std::endl;
-						if (targetMainBs.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-							std::cout << "Click at 'X' button" << std::endl;
-							inHomeScreen = false;
-						}
-					}
-
-					if (inHomeScreen == false)
-						break;
-				}
-
-
-
-			}
-			window.display();
-		}
-		else {
-			if (!WaterToday.loadFromFile("Resources/images/PlantsList/WaterToday.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-			WaterTodayS.setTexture(WaterToday);
-			WaterTodayS.setPosition(1111, 140);
-			//window.draw(WaterTodayS);
-			//window.display();
-
-			if (!PlantFrame.loadFromFile("Resources/images/PlantsList/PlantFrame.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-			if (!PlantImageMask.loadFromFile("Resources/images/PlantsList/ImageMask.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-			if (!PlantImageMaskInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoMask.png")) {
-				std::cout << "Failed to load plant block background!" << std::endl;
-				return;
-			}
-
-			// Building Targets & Objects:
-			if (plants_number() <= 5) {
-				for (size_t i = 0; i < plants_number(); i++) {
-					//Target for object
-					TargetsObjects[i].setPosition(145 + (i * 195), 140);
-					//Object
-					//if (!PlantImageTVector[i].loadFromMemory(usersPlants[i].image.data(), usersPlants[i].image.size())) {
-					//	std::cout << "Failed to load plant image into texture\n" << std::endl;
-						//return;
-					//}
-					//usersPlants[i].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[i], 145 + (i * 195), 140, font);
-				}
-			}
-			else if (plants_number() > 5) {
-				int showeditems = 0;
-				for (size_t j = 0; j < 2; j++) {
-					for (size_t i = 0; i < 5; i++) {
-						//Target for object
-						std::cout << "I value: " << i << std::endl;
-						int ti = i + (j * 5);
-						std::cout << "Ti value: " << ti << std::endl;
-						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
-						//TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
-						//window.draw(TargetsObjects[ti]);
-						//Object
-						//if (!PlantImageTVector[ti].loadFromMemory(usersPlants[ti].image.data(), usersPlants[ti].image.size())) {
-						//	std::cout << "Failed to load plant image into texture\n" << std::endl;
-							//return;
-						//}
-						//usersPlants[ti].showObject(window, PlantImageTVector[ti], PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
-						//usersPlants[ti].showObject(window, PlantFrame, PlantImageMask, PlantFrameS[ti], 145 + (i * 195), 140 + (j * 320), font);
 
 						showeditems++;
 						if (showeditems == plants_number()) {
@@ -464,20 +495,33 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 						for (size_t i = 0; i < plants_number(); ++i) {
 							if (TargetsObjects[i].getGlobalBounds().contains(static_cast<sf::Vector2f>(mousePositionLocal))) {
 								std::cout << "Plant #" << i << " was clicked!\n";
-								
-								if ((i >= 0 && i <= 2) || (i >= 5 && i <= 7)) {
+								/*
+								if ((i >= 0 && i <= 2)) {
 									TargetX.setPosition((i * 195) + 605, 150);
 									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
 									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], (i * 195) + 145, 140, font, true);
 
 								}
-								else if ((i >= 3 && i <= 4) || (i >= 8 && i <= 9)) {
-									TargetX.setPosition(605, 150);
+								else if ((i >= 5 && i <= 7)) {
+									TargetX.setPosition((i * 195) + 605, 150);
 									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
-									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font, true);
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], ((i - 5) * 195) + 145, 140, font, true);
 
 								}
+								else if ((i >= 3 && i <= 4)) {
+									TargetX.setPosition(605, 150);
+									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 390 + ((i - 3) * 195), 140, font, true);
 
+								}
+								else if ((i >= 8 && i <= 9)) {
+									TargetX.setPosition(605, 150);
+									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 390 + ((i - 8) * 195), 140, font, true);
+
+								}
+								*/
+								usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, true);
 
 
 								window.draw(TargetX);
@@ -504,6 +548,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 											//if(){}
 											if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 												std::cout << "Click at 'X' button" << std::endl;
+												inHomeScreen = false;
 												inBlock = false;
 											}
 
@@ -2422,6 +2467,31 @@ void Plant::showObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::
 }
 
 void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font, bool show) {
+	
+	
+	sf::Color Red = sf::Color(0xFF, 0xC1, 0xC1);
+	sf::Color Green = sf::Color(0xDC, 0xFF, 0xC1);
+	// Create the first circle
+	sf::CircleShape circle1(42.0f); // Radius of 40 pixels
+	circle1.setFillColor(Red);
+	circle1.setPosition(posX + 9, 619.0f); // Position it along the X-axis
+
+	// Create the rectangle
+	sf::RectangleShape rectangle(sf::Vector2f(150.0f, 82.0f)); // 105x80 pixels
+	rectangle.setFillColor(Red);
+	rectangle.setPosition(posX + 49, 619.0f); // Position at (circle radius, 0)
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	sf::Sprite frameSprite(frameTexture);
 	frameSprite.setPosition(posX - 8, posY);
 	window.draw(frameSprite);
@@ -2482,6 +2552,9 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	sf::Text Name(name, Font, 25);
 	sf::Text Type("the " + type, Font, 15);
+	sf::Text WateringLog("Watering logged ⭐", Font, 15);
+
+
 
 	auto centerN = Name.getGlobalBounds().getSize() / 2.f;
 	auto centerT = Type.getGlobalBounds().getSize() / 2.f;
@@ -2491,12 +2564,14 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	Name.setPosition((posX + (195 + 143)), (posY + (centerN.y + 35)));
 	Type.setPosition((posX + (195 + 143)), (posY + (centerT.y + 65)));
+	WateringLog.setPosition(377, 651);
 
 	Name.setFillColor(sf::Color::Black);
 	Type.setFillColor(sf::Color(0, 0, 0, 90));
+	WateringLog.setFillColor(sf::Color::Black);
 
-	window.draw(Name);
-	window.draw(Type);
+	
+
 
 	//Calculating the next watering dates
 	std::array<sf::Text, 4> dates;
@@ -2516,7 +2591,16 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 		datesText[i].setString(dates[i].getString());
 		//std::cout << "Watering date #" << i << " " << datesText[i].getString() << std::endl;
 		auto centerD = datesText[i].getGlobalBounds().getSize() / 2.f;
-		datesText[i].setFillColor(sf::Color::Black);
+		if (isDateInPast(dates[i].getString())) {
+			datesText[i].setFillColor(sf::Color::Red);
+			circle1.setFillColor(Green);
+			rectangle.setFillColor(Green);
+			WateringLog.setString("Log watering \u2B6F");
+			WateringLog.setPosition(393, 651);
+
+		}
+		else
+			datesText[i].setFillColor(sf::Color::Black);
 		datesText[i].setOrigin(centerD.x, centerD.y);
 		datesText[i].setPosition(posX + 103, posY + ((i * 54) + 279));
 		window.draw(datesText[i]);
@@ -2524,6 +2608,84 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 
 
+	window.draw(circle1);
+	window.draw(rectangle);
+
+	window.draw(Name);
+	window.draw(Type);
+	window.draw(WateringLog);
+
+}
+
+void Plant::showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
+	sf::Sprite frameSprite(frameTexture);
+	frameSprite.setPosition(posX, posY);
+	window.draw(frameSprite);
+
+	// Get the size of the mask texture
+	sf::Vector2u maskSize = MaskTexture.getSize();
+
+	// Create a render texture with the size of the mask
+	sf::RenderTexture renderTexture;
+	if (!renderTexture.create(maskSize.x, maskSize.y)) {
+		std::cerr << "Error: Unable to create render texture." << std::endl;
+		return;
+	}
+
+	sf::Texture Texture;
+	if (!Texture.loadFromMemory(image.data(), image.size())) {
+		std::cerr << "Error: Unable to create texture." << std::endl;
+		return;
+	}
+	// Create sprites for the textures
+	sf::Sprite imageSprite(Texture);
+	sf::Sprite maskSprite(MaskTexture);
+
+	// Scale ImageTexture to match the size of MaskTexture
+	sf::Vector2u imageSize = Texture.getSize();
+	imageSprite.setScale(
+		static_cast<float>(maskSize.x) / imageSize.x,
+		static_cast<float>(maskSize.y) / imageSize.y
+	);
+
+	// Clear the render texture
+	renderTexture.clear(sf::Color::Transparent);
+
+	// Render the ImageTexture first
+	renderTexture.draw(imageSprite);
+
+	// Apply the mask by setting blend mode to sf::BlendMultiply
+	sf::RenderStates states;
+	states.blendMode = sf::BlendMultiply;
+	renderTexture.draw(maskSprite, states);
+
+	// Display the result on the render texture
+	renderTexture.display();
+
+	// Get the combined texture
+	const sf::Texture& combinedTexture = renderTexture.getTexture();
+
+	// Update the sprite to use the combined texture
+	Sprite.setTexture(combinedTexture);
+	Sprite.setPosition(posX + 7, posY + 6);
+
+	// Draw everything to the window
+	//window.clear();
+	window.draw(Sprite);
+	//Sprite.setTexture(renderTexture.getTexture(), true);
+
+
+
+
+
+	sf::Text Name(name, Font, 15);
+	Name.setPosition((posX + 50), (posY + 15));
+	Name.setFillColor(sf::Color::Black);
+
+	window.draw(Name);
+
+
+	
 
 }
 
@@ -3008,3 +3170,28 @@ bool init_sqcloud() {
 
 }
 */
+
+bool isDateInPast(const std::string& dateStr, const std::string& format) {
+	std::tm inputDate = {};
+
+	// Parse the input date string
+	std::istringstream ss(dateStr);
+	ss >> std::get_time(&inputDate, format.c_str());
+	if (ss.fail()) {
+		throw std::invalid_argument("Invalid date format: " + dateStr);
+	}
+
+	// Convert the parsed date to time_t
+	time_t inputTime = std::mktime(&inputDate);
+	if (inputTime == -1) {
+		throw std::runtime_error("Failed to convert input date to time_t");
+	}
+
+	// Get the current time
+	time_t currentTime = std::time(nullptr);
+
+	// Compare the input date with the current date
+	return inputTime < currentTime;
+}
+
+

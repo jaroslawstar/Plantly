@@ -126,57 +126,64 @@ int main() {
             }
         }
         window.display();
-        //window.clear();
+        window.clear();
         //window.display();
+        
 
-        while (appState == AppState::LOGGED_IN) {   //Log in window loop
+        if (appState == AppState::LOGGED_IN)
+        {
+            draw_main_screen(window);
             draw_plants(window, event, false, "plantly.db");
 
-            while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed)
-                    window.close();
+            while (appState == AppState::LOGGED_IN) {   //Log in window loop
+                draw_main_screen(window);
+                //draw_plants(window, event, false, "plantly.db");
 
-                if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+                while (window.pollEvent(event)) {
+                    if (event.type == sf::Event::Closed)
+                        window.close();
+                    if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 
-                    sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-                    std::cout << "Mouse clicked at: ("
-                        << mousePosition.x << ", "
-                        << mousePosition.y << ")" << std::endl;
-                    if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || 
-                        targetMainScreen.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Home' button" << std::endl;
-                        draw_menu(window, event, false);
-                        draw_plants(window, event, true, "plantly.db", mousePosition);
-                    }
-                    else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Menu' button" << std::endl;
-
-                        draw_menu(window, event, true);
-
-                    }
-                    else if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Add Plant' button" << std::endl;
-                        draw_menu(window, event, false);
-                        //draw_main_screen(window);
-                        //auto blob = GetFileBlobDialog();
-                        /*
-                        if (!blob.empty()) {
-                            std::cout << "File loaded successfully with size: " << blob.size() << " bytes." << std::endl;
+                        sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+                        std::cout << "Mouse clicked at: ("
+                            << mousePosition.x << ", "
+                            << mousePosition.y << ")" << std::endl;
+                        if (targetHB.getGlobalBounds().contains(mousePosition.x, mousePosition.y) ||
+                            targetMainScreen.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                            std::cout << "Click at 'Home' button" << std::endl;
+                            draw_menu(window, event, false);
+                            draw_plants(window, event, true, "plantly.db", mousePosition);
                         }
-                        else {
-                            std::cout << "No file loaded or operation failed." << std::endl;
-                        }
-                        */
-                        draw_AP_screen(window, event, true);
-                    }
-                    else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Feed' button" << std::endl;
-                        draw_text(window, true);
-                    }
-                    else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-                        std::cout << "Click at 'Question Mark' button" << std::endl;
-                        system(op.c_str());
+                        else if (targetMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                            std::cout << "Click at 'Menu' button" << std::endl;
 
+                            draw_menu(window, event, true);
+
+                        }
+                        else if (targetAPB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                            std::cout << "Click at 'Add Plant' button" << std::endl;
+                            draw_menu(window, event, false);
+                            //draw_main_screen(window);
+                            //auto blob = GetFileBlobDialog();
+                            /*
+                            if (!blob.empty()) {
+                                std::cout << "File loaded successfully with size: " << blob.size() << " bytes." << std::endl;
+                            }
+                            else {
+                                std::cout << "No file loaded or operation failed." << std::endl;
+                            }
+                            */
+                            draw_AP_screen(window, event, true);
+                        }
+                        else if (targetFB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                            std::cout << "Click at 'Feed' button" << std::endl;
+                            draw_text(window, true);
+                        }
+                        else if (targetQMB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                            std::cout << "Click at 'Question Mark' button" << std::endl;
+                            system(op.c_str());
+
+                        }
                     }
                 }
             }

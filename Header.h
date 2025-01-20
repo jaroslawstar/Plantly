@@ -47,6 +47,8 @@ int plants_number();
 std::string timePointToString(const std::chrono::system_clock::time_point& timePoint);
 //std::chrono::system_clock::time_point parseDateTime(const std::string& datetime);   
 std::string timePointToString(const std::chrono::system_clock::time_point& timePoints);
+
+bool isDateInPast(const std::string& dateStr, const std::string& format = "%d.%m.%Y");
 class UserData {
 public:
     int id;
@@ -87,6 +89,7 @@ public:
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font, bool show);
+    void showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
     bool fetchDateTime(const std::string& dbFile, bool dateAdded);
@@ -128,6 +131,12 @@ public:
         std::time_t now = std::time(nullptr);  // Get current time as time_t
         localtime_s(&waterDate, &now);     // Use localtime_s for safer conversion
     }
+    // Helper method to format a std::tm object as a string
+    std::string formatDatetime(const std::tm& datetime) const {
+        std::ostringstream oss;
+        oss << std::put_time(&datetime, "%d.%m.%Y"); // Here to change appearance
+        return oss.str();
+    }
 
 private:
     // Method to parse a datetime string into std::tm
@@ -140,12 +149,6 @@ private:
         std::istringstream ss(datetime);
         ss >> std::get_time(&waterDate, "%Y-%m-%d %H:%M:%S");
         return !ss.fail();
-    };
-    // Helper method to format a std::tm object as a string
-    std::string formatDatetime(const std::tm& datetime) const {
-        std::ostringstream oss;
-        oss << std::put_time(&datetime, "%d.%m.%Y"); // Here to change appearance
-        return oss.str();
     }
 };
 
