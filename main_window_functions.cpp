@@ -468,13 +468,13 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								if ((i >= 0 && i <= 2) || (i >= 5 && i <= 7)) {
 									TargetX.setPosition((i * 195) + 605, 150);
 									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
-									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], (i * 195) + 145, 140, font);
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], (i * 195) + 145, 140, font, true);
 
 								}
 								else if ((i >= 3 && i <= 4) || (i >= 8 && i <= 9)) {
 									TargetX.setPosition(605, 150);
 									TargetX.setFillColor(sf::Color(0, 0, 0, 75));
-									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font);
+									usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 145, 140, font, true);
 
 								}
 
@@ -2421,7 +2421,7 @@ void Plant::showObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::
 	
 }
 
-void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
+void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font, bool show) {
 	sf::Sprite frameSprite(frameTexture);
 	frameSprite.setPosition(posX - 8, posY);
 	window.draw(frameSprite);
@@ -2505,7 +2505,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	std::cout << "Last watering date: " << formatDatetime(lastWaterDate) << std::endl;
 	
 	for (size_t i = 0; i < 2; i++){
-		dates[i].setString(getDatetimeAfterSeconds(i * days));
+		dates[i].setString(getDatetimeAfterDays((i+1) * days));
 	}
 
 	//Show calculated dates
@@ -2684,10 +2684,10 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		const char* datetimestamp = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
 		const char* waterDate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
 
-		if (!parseDateTimeStamp(datetimestamp)) {
+		if (!usersPlants[i].parseDateTimeStamp(datetimestamp)) {
 			std::cerr << "Failed to parse dateAdded: " << datetimestamp << std::endl;
 		}
-		if (!parseWaterDateTime(waterDate)) {
+		if (!usersPlants[i].parseWaterDateTime(waterDate)) {
 			std::cerr << "Failed to parse waterDate: " << waterDate << std::endl;
 		}
 

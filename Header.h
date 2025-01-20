@@ -86,7 +86,7 @@ public:
         std::cout << "Plant default constructor called." << std::endl;
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
-    void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
+    void showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font, bool show);
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
     bool fetchDateTime(const std::string& dbFile, bool dateAdded);
