@@ -94,6 +94,7 @@ public:
     void fetch_plants_from_db(const std::string& dbFile);
     bool fetchDateTime(const std::string& dbFile, bool dateAdded);
     void insertCurrentDateTime(const std::string& dbFile);
+    void insertWaterLog(const std::string& dbFile);
     void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) { ///daaaaaate
         id = id_;
         userid = userid_;
@@ -156,4 +157,10 @@ private:
 extern UserData User;
 extern Plant usersPlants[];
 
+
+
+
+int callAddNumbers(int a, int b);
+std::string callGeneratePlantInfo(const std::string& subject);
+std::string callGenerateHello(const std::string& subject);
 #endif 

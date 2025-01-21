@@ -30,6 +30,9 @@
     <ClCompile Include="include\SQLite\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ai.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Text.txt" />
@@ -46,5 +49,10 @@
     <ClInclude Include="include\SQLite\sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Release\ai.py">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

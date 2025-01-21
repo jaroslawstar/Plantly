@@ -177,6 +177,14 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	TargetX.setPosition(800, 150);
 	TargetX.setFillColor(sf::Color(0, 0, 0, 50));
 
+	sf::RectangleShape TargetImage(sf::Vector2f(185, 240));
+	TargetImage.setPosition(350, 150);
+	TargetImage.setFillColor(sf::Color(0, 0, 0, 50));
+
+	sf::RectangleShape TargetWateringLog(sf::Vector2f(185, 80));
+	TargetWateringLog.setPosition(350, 620);
+	TargetWateringLog.setFillColor(sf::Color(0, 0, 0, 50));
+
 	sf::Sprite PlantFrames;
 	std::vector<sf::Sprite> PlantFrameS;
 	sf::Sprite PlantInfoBlocks;
@@ -524,12 +532,15 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, true);
 
 
-								window.draw(TargetX);
+								//window.draw(TargetImage);
+								//window.draw(TargetWateringLog);
+								//window.draw(TargetX);
 								window.display();
-
+								
 								//HERE TO BUILD BLOCK'S TARGETS
-								//
-								//
+								
+								//sf::RectangleShape Target
+								
 
 								bool inBlock = true;
 								while (inBlock){
@@ -551,6 +562,16 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 												inHomeScreen = false;
 												inBlock = false;
 											}
+											else if (TargetImage.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+												std::cout << "Click at 'Image' button" << std::endl;
+												inHomeScreen = false;
+												inBlock = false;
+											}
+											else if (TargetWateringLog.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+												std::cout << "Click at 'Watering Log' button" << std::endl;
+												usersPlants[i].setCurrentDatetime();
+												usersPlants[i].insertWaterLog("plantly.db");
+											}
 
 										}
 									}
@@ -559,6 +580,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								break; // Exit the loop once a rectangle is found
 							}
 						}
+
+						inHomeScreen = false;
 
 						/*
 						else if (targetFieldDays.getGlobalBounds().contains(mousePosition.x, mousePosition.y) || inDaysField == true) {
@@ -1079,6 +1102,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			}
 			window.display();
 		}
+		//window.clear();
+		//window.display();
+
 	}
 	
 
@@ -3199,3 +3225,38 @@ bool isDateInPast(const std::string& dateStr, const std::string& format) {
 }
 
 
+void Plant::insertWaterLog(const std::string& dbFile) {
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	char* errorMessage = nullptr;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	// Construct the SQL query
+	std::string insertQuery = "UPDATE Plants SET waterDate = DATETIME('now') WHERE id = ?;";
+
+	// Prepare the SQL statement
+	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return;
+	}
+	//Binding
+	sqlite3_bind_int(stmt, 1, id);
+
+	// Execute the SQL statement
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+	}
+	else {
+		std::cout << "Inserted current DATETIME successfully." << std::endl;
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+}

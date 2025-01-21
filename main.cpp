@@ -96,6 +96,13 @@ int main() {
     //Open database (check if works)
     open_plants_db();
 
+    std::cout << "Test ai generating for Dracaena: " << callGenerateHello("") << std::endl;
+
+    int a = 5, b = 10;
+
+    // Call the function that interacts with Python
+    int sum = callAddNumbers(a, b);
+    std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
     //Main loop
 
     while (window.isOpen()) {
