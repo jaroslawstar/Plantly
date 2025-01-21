@@ -88,14 +88,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python313.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python39.lib;python3.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -114,8 +114,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python313.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system.lib;sfml-network.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python39.lib;python3.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system.lib;sfml-network.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,14 +126,14 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python313.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft Visual Studio\Shared\Python39_64\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python39.lib;python3.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,7 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalUsingDirectories>
       </AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python39\include;D:\Plantly\Plantly\libressl\include;D:\Plantly\Plantly\sqlitecloud;D:\Plantly\Plantly\include\sqlitecloud;D:\Plantly\Plantly\sqlitecloud\cli;D:\Plantly\Plantly\include\sqlitecloud\cli;D:\Plantly\Plantly\sqlitecloud\SSL\include;$(SolutionDir)\include;$(SolutionDir)\SFML\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -154,8 +154,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python313\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>python313.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system.lib;sfml-network.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\barab\AppData\Local\Programs\Python\Python39\libs;D:\Plantly\Plantly\libressl\x64;D:\Plantly\Plantly\include\libressl\x64;$(SolutionDir)\lib;$(SolutionDir)\SFML\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>python39.lib;python3.lib;sqlite3.lib;openssl.lib;libssl.lib;libcrypto.lib;sfml-system.lib;sfml-network.lib;sfml-window.lib;sfml-graphics.lib;sfml-audio.lib;%(AdditionalDependencies);Shell32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
