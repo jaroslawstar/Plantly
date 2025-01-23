@@ -96,7 +96,7 @@ int main() {
     //Open database (check if works)
     open_plants_db();
 
-    //std::cout << "Test ai generating for Dracaena: " << callGenerateHello("") << std::endl;
+    std::cout << "Test ai Hello: " << callPythonHelloFunction() << std::endl;
 
     int a = 5, b = 10;
 

@@ -163,4 +163,5 @@ extern Plant usersPlants[];
 int callAddNumbers(int a, int b);
 std::string callGeneratePlantInfo(const std::string& subject);
 std::string callGenerateHello(const std::string& subject);
+std::string callPythonHelloFunction();
 #endif 

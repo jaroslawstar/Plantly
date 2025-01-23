@@ -1,7 +1,7 @@
 #include <Python.h>
 #include <iostream>
 #include <string>
-
+#include <stdexcept>
 
 int callAddNumbers(int a, int b) {
     int result = -1; // Default result in case of error
@@ -148,3 +148,70 @@ std::string callGenerateHello(const std::string& subject) {
 
     return result;
 }
+
+std::string callPythonHelloFunction() {
+    std::cout << "Initializing Python interpreter..." << std::endl;
+    if (!Py_IsInitialized()) {
+        Py_Initialize();
+    }
+
+    std::cout << "Setting Python path to include current directory..." << std::endl;
+    PyRun_SimpleString("import sys; sys.path.append('.')");
+
+    std::cout << "Importing Python module 'ai'..." << std::endl;
+    PyObject* pName = PyUnicode_DecodeFSDefault("ai"); // 'ai' is the module containing hello function
+    PyObject* pModule = PyImport_Import(pName);
+    Py_DECREF(pName);
+
+    if (!pModule) {
+        PyErr_Print();
+        Py_FinalizeEx();
+        throw std::runtime_error("Failed to load Python module 'ai'.");
+    }
+
+    std::cout << "Getting 'hello' function from module 'ai'..." << std::endl;
+    PyObject* pFunc = PyObject_GetAttrString(pModule, "hello");
+    if (!pFunc || !PyCallable_Check(pFunc)) {
+        PyErr_Print();
+        Py_DECREF(pModule);
+        Py_FinalizeEx();
+        throw std::runtime_error("Function 'hello' not found or not callable.");
+    }
+
+    std::cout << "Calling 'hello' function..." << std::endl;
+    PyObject* pValue = PyObject_CallObject(pFunc, nullptr);
+    if (!pValue) {
+        PyErr_Print();
+        Py_DECREF(pFunc);
+        Py_DECREF(pModule);
+        Py_FinalizeEx();
+        throw std::runtime_error("Function call to 'hello' failed.");
+    }
+
+    std::cout << "Converting Python result to string..." << std::endl;
+    const char* resultCStr = PyUnicode_AsUTF8(pValue);
+    if (!resultCStr) {
+        PyErr_Print();
+        Py_DECREF(pValue);
+        Py_DECREF(pFunc);
+        Py_DECREF(pModule);
+        Py_FinalizeEx();
+        throw std::runtime_error("Failed to convert Python result to string.");
+    }
+
+    std::string result(resultCStr);
+
+    // Clean up
+    std::cout << "Cleaning up Python objects..." << std::endl;
+    Py_DECREF(pValue);
+    Py_DECREF(pFunc);
+    Py_DECREF(pModule);
+
+    std::cout << "Finalizing Python interpreter..." << std::endl;
+    if (Py_FinalizeEx() < 0) {
+        throw std::runtime_error("Failed to finalize Python interpreter.");
+    }
+
+    return result;
+}
+
