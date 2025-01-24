@@ -82,9 +82,10 @@ public:
     std::vector<uint8_t> image;
     std::tm datetimestamp = {};
     std::tm waterDate = {};
+    std::string info;
     //daaaaate
 
-    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp({}), waterDate({}) { // Default constructor
+    Plant() : id(NULL), userid(NULL), days(NULL), name(""), type(""), location(""), image(NULL), datetimestamp({}), waterDate({}), info("") { // Default constructor
         std::cout << "Plant default constructor called." << std::endl;
     }
     void showObject(sf::RenderWindow& Window, sf::Texture& frameTexture, sf::Texture& maskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font);
@@ -93,9 +94,10 @@ public:
     void saveToDatabase(const std::string& dbFile);
     void fetch_plants_from_db(const std::string& dbFile);
     bool fetchDateTime(const std::string& dbFile, bool dateAdded);
+    void GenerateAndInsertInfo(const std::string& dbFile);
     void insertCurrentDateTime(const std::string& dbFile);
     void insertWaterLog(const std::string& dbFile);
-    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_) { ///daaaaaate
+    void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, std::vector<uint8_t> image_, const std::string& info_ ) { ///daaaaaate
         id = id_;
         userid = userid_;
         days = days_;
@@ -103,6 +105,7 @@ public:
         type = type_;
         location = location_;
         image = image_;
+        info = info_;
     };
     void displayDatetime() const {
         std::cout << "Stored DateTimeStamp: " << std::put_time(&datetimestamp, "%Y-%m-%d %H:%M:%S") << std::endl;
@@ -163,4 +166,6 @@ extern Plant usersPlants[];
 int callAddNumbers(int a, int b);
 std::string callGeneratePlantInfo(const std::string& subject);
 std::string callGenerateHello(const std::string& subject);
+std::string callPythonFunctionHello();
+void ExecutePy_FinalizeEx();
 #endif 

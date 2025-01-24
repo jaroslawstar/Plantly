@@ -59,6 +59,28 @@ int main() {
     }
    */
     //Window creation
+
+
+
+
+    int a = 5, b = 10;
+
+    int sum = callAddNumbers(a, b);
+    std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
+
+
+    a = 10; b = 10;
+    sum = callAddNumbers(a, b);
+    // Call the function that interacts with Python
+    std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
+
+
+    //std::cout << "Test ai Hello: " << callPythonFunctionHello() << std::endl;
+
+
+    sum = callAddNumbers(a, b);
+    std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
+
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
     sf::Image LogoIcon;
     LogoIcon.loadFromFile("Resources/images/Logo.png");
@@ -96,13 +118,7 @@ int main() {
     //Open database (check if works)
     open_plants_db();
 
-    std::cout << "Test ai generating for Dracaena: " << callGenerateHello("") << std::endl;
-
-    int a = 5, b = 10;
-
-    // Call the function that interacts with Python
-    int sum = callAddNumbers(a, b);
-    std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
+    
     //Main loop
 
     while (window.isOpen()) {
@@ -111,8 +127,11 @@ int main() {
         while (appState == AppState::LOGGED_OUT) {  //Log out window loop (window.display() is unneseccary when defined in draw window functions)
             //draw_clear_screen(window);
             while (window.pollEvent(event)) {
-                if (event.type == sf::Event::Closed)
+                if (event.type == sf::Event::Closed) {
+                    ExecutePy_FinalizeEx();
                     window.close();
+                }
+
                 if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
                     //----------Logged_OUT_Buttons----------
                     sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
@@ -147,8 +166,10 @@ int main() {
                 //draw_plants(window, event, false, "plantly.db");
 
                 while (window.pollEvent(event)) {
-                    if (event.type == sf::Event::Closed)
+                    if (event.type == sf::Event::Closed) {
+                        ExecutePy_FinalizeEx();
                         window.close();
+                    }
                     if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 
                         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);

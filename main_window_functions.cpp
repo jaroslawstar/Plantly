@@ -243,7 +243,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			window.draw(WaterTodayS);
 			//window.display();
 
-			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrame.png")) {
+			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrameNew.png")) {
 				std::cout << "Failed to load WTTFrame.png!" << std::endl;
 				return;
 			}
@@ -266,7 +266,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				return;
 			}
 
-			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
+			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlockNew.png")) {
 				std::cout << "Failed to load plant block background!" << std::endl;
 				return;
 			}
@@ -330,8 +330,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 			while (inHomeScreen) {
 				while (window.pollEvent(event)) {
-					if (event.type == sf::Event::Closed)
+					if (event.type == sf::Event::Closed) {
+						ExecutePy_FinalizeEx();
 						window.close();
+					}
 					//Close button service
 					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 						//----------Logged_OUT_Buttons----------
@@ -365,7 +367,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			window.draw(WaterTodayS);
 			//window.display();
 
-			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrame.png")) {
+			if (!WTTFrame.loadFromFile("Resources/images/PlantsList/WTTFrameNew.png")) {
 				std::cout << "Failed to load WTTFrame.png!" << std::endl;
 				return;
 			}
@@ -387,7 +389,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				std::cout << "Failed to load PlantFrame.png!" << std::endl;
 				return;
 			}
-			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlock.png")) {
+			if (!PlantInfoBlock.loadFromFile("Resources/images/PlantsList/PlantInfoBlockNew.png")) {
 				std::cout << "Failed to load PlantInfoBlock.png!" << std::endl;
 				return;
 			}
@@ -449,8 +451,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			int objectPlant;
 			while (inHomeScreen) {
 				while (window.pollEvent(event)) {
-					if (event.type == sf::Event::Closed)
+					if (event.type == sf::Event::Closed) {
+						ExecutePy_FinalizeEx();
 						window.close();
+					}
 					//Close button service
 					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left) || mousePosition != sf::Vector2i(-1, -1)) {
 						
@@ -545,8 +549,10 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								bool inBlock = true;
 								while (inBlock){
 									while (window.pollEvent(event)) {
-										if (event.type == sf::Event::Closed)
+										if (event.type == sf::Event::Closed) {
+											ExecutePy_FinalizeEx();
 											window.close();
+										}
 										//Close button service
 										if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 											sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
@@ -1386,8 +1392,10 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 
 		while (!MainBs) {
 			while (window.pollEvent(event)) {
-				if (event.type == sf::Event::Closed)
+				if (event.type == sf::Event::Closed) {
+					ExecutePy_FinalizeEx();
 					window.close();
+				}
 				//Close button service
 				if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 					//----------Logged_OUT_Buttons----------
@@ -1636,8 +1644,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 
 		while (!added_plant) {
 			while (window.pollEvent(event)) {
-				if (event.type == sf::Event::Closed)
+				if (event.type == sf::Event::Closed) {
+					ExecutePy_FinalizeEx();
 					window.close();
+				}
 				//Close button service
 				if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 					//----------Logged_OUT_Buttons----------
@@ -1654,8 +1664,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						inNameField = true;
 						while (inNameField) {
 							while (window.pollEvent(event)) {
-								if (event.type == sf::Event::Closed)
+								if (event.type == sf::Event::Closed) {
+									ExecutePy_FinalizeEx();
 									window.close();
+								}
 								nameText.setString(nameInput + "|");
 								if (event.type == sf::Event::TextEntered)
 								{
@@ -1776,8 +1788,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						inDaysField = true;
 						while (inDaysField) {
 							while (window.pollEvent(event)) {
-								if (event.type == sf::Event::Closed)
+								if (event.type == sf::Event::Closed) {
+									ExecutePy_FinalizeEx();
 									window.close();
+								}
 								daysText.setString(daysInput + "|");
 								if (event.type == sf::Event::TextEntered)
 								{
@@ -1897,8 +1911,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						inLocaField = true;
 						while (inLocaField) {
 							while (window.pollEvent(event)) {
-								if (event.type == sf::Event::Closed)
+								if (event.type == sf::Event::Closed) {
+									ExecutePy_FinalizeEx();
 									window.close();
+								}
 								locaText.setString(locaInput + "|");
 								if (event.type == sf::Event::TextEntered)
 								{
@@ -2015,8 +2031,10 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 						inTypeField = true;
 						while (inTypeField) {
 							while (window.pollEvent(event)) {
-								if (event.type == sf::Event::Closed)
+								if (event.type == sf::Event::Closed) {
+									ExecutePy_FinalizeEx();
 									window.close();
+								}
 								typeText.setString(typeInput + "|");
 								if (event.type == sf::Event::TextEntered)
 								{
@@ -2512,7 +2530,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	
 	
 	sf::Sprite frameSprite(frameTexture);
-	frameSprite.setPosition(posX - 8, posY);
+	frameSprite.setPosition(posX - 4, posY + 1);
 
 	// Get the size of the mask texture
 	sf::Vector2u maskSize = MaskTexture.getSize();
@@ -2649,8 +2667,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 void Plant::showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
 	sf::Sprite frameSprite(frameTexture);
-	frameSprite.setPosition(posX, posY);
-	window.draw(frameSprite);
+	frameSprite.setPosition(posX - 4, posY - 2);
 
 	// Get the size of the mask texture
 	sf::Vector2u maskSize = MaskTexture.getSize();
@@ -2701,7 +2718,6 @@ void Plant::showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, s
 
 	// Draw everything to the window
 	//window.clear();
-	window.draw(Sprite);
 	//Sprite.setTexture(renderTexture.getTexture(), true);
 
 
@@ -2711,6 +2727,10 @@ void Plant::showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, s
 	sf::Text Name(name, Font, 15);
 	Name.setPosition((posX + 50), (posY + 15));
 	Name.setFillColor(sf::Color::Black);
+
+
+	window.draw(Sprite);
+	window.draw(frameSprite);
 
 	window.draw(Name);
 
@@ -2742,7 +2762,8 @@ void Plant::saveToDatabase(const std::string& dbFile) {
                 Location TEXT NOT NULL,
                 Image BLOP,
                 Datetimestamp DATETIME,
-                waterDate DATETIME DEFAULT CURRENT_TIMESTAMP
+                waterDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+                Info MEDIUMTEXT
             );
         )";
 
@@ -2790,6 +2811,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	return;
 }
 
+
 void Plant::insertCurrentDateTime(const std::string& dbFile)  {
 	sqlite3* db = nullptr;
 	sqlite3_stmt* stmt = nullptr;
@@ -2828,7 +2850,7 @@ void Plant::insertCurrentDateTime(const std::string& dbFile)  {
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	for (size_t i = 0; i < plantsnum; i++) {
-		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) });
+		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) }, "");
 		usersPlants[i].datetimestamp = {};
 		usersPlants[i].waterDate = {};
 	}
@@ -2843,7 +2865,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		showErrorDialog("Database error", sqlite3_errmsg(db));
 	}
 	// Construct the SQL query
-	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate FROM Plants WHERE userid = ? LIMIT 10;";
+	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate, info FROM Plants WHERE userid = ? LIMIT 10;";
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -2876,6 +2898,8 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		const char* datetimestamp = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
 		const char* waterDate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
 
+		std::string info = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
+
 		if (!usersPlants[i].parseDateTimeStamp(datetimestamp)) {
 			std::cerr << "Failed to parse dateAdded: " << datetimestamp << std::endl;
 		}
@@ -2887,7 +2911,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		std::cout << "datetimestamp: " << datetimestamp << std::endl;
 		std::cout << "waterDate:" << waterDate << std::endl;
 		// Populate the array with the object
-		usersPlants[i].populate(id, userid, days, name, type, location, image);
+		usersPlants[i].populate(id, userid, days, name, type, location, image, info);
 		++i;
 	}
 	/*
@@ -2964,6 +2988,7 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
+				ExecutePy_FinalizeEx();
 				window.close();
 			}
 		}
@@ -3238,6 +3263,56 @@ void Plant::insertWaterLog(const std::string& dbFile) {
 
 	// Construct the SQL query
 	std::string insertQuery = "UPDATE Plants SET waterDate = DATETIME('now') WHERE id = ?;";
+
+	// Prepare the SQL statement
+	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+		sqlite3_close(db);
+		return;
+	}
+	//Binding
+	sqlite3_bind_int(stmt, 1, id);
+
+	// Execute the SQL statement
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+	}
+	else {
+		std::cout << "Inserted current DATETIME successfully." << std::endl;
+	}
+
+	// Clean up
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+}
+
+void Plant::GenerateAndInsertInfo(const std::string& dbFile) {
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	sqlite3* db = nullptr;
+	sqlite3_stmt* stmt = nullptr;
+	char* errorMessage = nullptr;
+
+	// Open SQLite database
+	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+		std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
+		return;
+	}
+
+	// Construct the SQL query
+	std::string insertQuery = "UPDATE Plants SET Datetmestamp = DATETIME('now') WHERE id = ?;";
 
 	// Prepare the SQL statement
 	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {

@@ -314,13 +314,95 @@ ________________________________________________________________________________
               
               
               
-              
-              
-              
-              
-              
-              
-              
-              
-              
-              */
+          
+
+
+
+
+
+    std::string callPythonFunction() {
+    // Initialize the Python interpreter
+    std::cout << "Initializing Python interpreter..." << std::endl;
+    if (!Py_IsInitialized()) {
+        Py_Initialize();
+    }
+
+    std::cout << "Setting Python path..." << std::endl;
+    PyRun_SimpleString("import sys; sys.path.append('.')");
+
+    std::cout << "Importing Python module 'ai'..." << std::endl;
+    PyObject* pName = PyUnicode_DecodeFSDefault("ai");
+    PyObject* pModule = PyImport_Import(pName);
+    Py_DECREF(pName);
+
+    if (!pModule) {
+        std::cerr << "Failed to load Python module 'ai'." << std::endl;
+        PyErr_Print();
+        Py_FinalizeEx();
+        throw std::runtime_error("Failed to load Python module 'ai'.");
+    }
+
+    std::cout << "Looking for function 'hello' in module 'ai'..." << std::endl;
+    PyObject* pFunc = PyObject_GetAttrString(pModule, "hello");
+    if (!pFunc || !PyCallable_Check(pFunc)) {
+        std::cerr << "Function 'hello' not found or not callable." << std::endl;
+        Py_DECREF(pModule);
+        Py_FinalizeEx();
+        throw std::runtime_error("Function 'hello' not found in module 'ai'.");
+    }
+
+    std::cout << "Calling Python function 'hello'..." << std::endl;
+    PyObject* pValue = PyObject_CallObject(pFunc, nullptr);
+    if (!pValue) {
+        std::cerr << "Call to Python function 'hello' failed." << std::endl;
+        PyErr_Print();
+        Py_DECREF(pFunc);
+        Py_DECREF(pModule);
+        Py_FinalizeEx();
+        throw std::runtime_error("Python function call failed.");
+    }
+
+    std::cout << "Converting Python result to std::string..." << std::endl;
+    const char* resultCStr = PyUnicode_AsUTF8(pValue);
+    std::string result = resultCStr ? resultCStr : "";
+
+    std::cout << "Cleaning up Python objects..." << std::endl;
+    Py_DECREF(pValue);
+    Py_DECREF(pFunc);
+    Py_DECREF(pModule);
+
+    std::cout << "Finalizing Python interpreter..." << std::endl;
+    if (Py_FinalizeEx() < 0) {
+        std::cerr << "Error finalizing Python interpreter." << std::endl;
+        throw std::runtime_error("Failed to finalize Python interpreter.");
+    }
+
+    return result;
+}
+
+
+
+//int result = -1; // Default result in case of error
+    Py_Initialize();
+
+    PyObject* pName, * pModule, * pFunc, * pArgs, * pValue;
+    pName = PyUnicode_FromString((char*)"ai");
+    pModule = PyImport_Import(pName);
+    pArgs = PyTuple_Pack(2, PyLong_FromLong(a), PyLong_FromLong(b));
+    pFunc = PyObject_GetAttrString(pModule, (char*)"add_numbers");
+    pValue = PyObject_CallObject(pFunc, pArgs);
+    auto result = PyLong_AsLong(pValue);
+    std::cout << result << std::endl;
+    Py_Finalize();
+    return result;
+
+
+
+
+
+    sum = add_numbers(5, 2)
+print(sum)
+
+hello()
+*/
+
