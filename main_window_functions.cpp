@@ -2511,8 +2511,14 @@ void Plant::showObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::
 }
 
 void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font, bool show) {
-	
-	
+	std::cout << "Stored text data: " << info << std::endl;
+	if (info != "") {
+		std::cout << "Stored text data: " << info << std::endl;
+	}
+	else if (info == "") {
+		GenerateAndInsertInfo("plantly.db");
+	}
+	//fetch_plants_from_db("plantly.db");
 	sf::Color Red = sf::Color(0xFF, 0xC1, 0xC1);
 	sf::Color Green = sf::Color(0xDC, 0xFF, 0xC1);
 	// Create the first circle
@@ -2588,6 +2594,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	sf::Text Name(name, Font, 25);
 	sf::Text Type("the " + type, Font, 15);
 	sf::Text WateringLog("Watering logged", Font, 15);
+	sf::Text Info(info, Font, 15);
 
 
 
@@ -2596,13 +2603,16 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	Name.setOrigin(centerN.x, centerN.y);
 	Type.setOrigin(centerT.x, centerT.y);
+	Info.setOrigin(centerT.x, centerT.y);
 
 	Name.setPosition((posX + (195 + 143)), (posY + (centerN.y + 35)));
 	Type.setPosition((posX + (195 + 143)), (posY + (centerT.y + 65)));
+	Info.setPosition((posX + 205), (posY + 100));
 	WateringLog.setPosition(377, 651);
 
 	Name.setFillColor(sf::Color::Black);
 	Type.setFillColor(sf::Color(0, 0, 0, 90));
+	Info.setFillColor(sf::Color(0, 0, 0, 98));
 	WateringLog.setFillColor(sf::Color::Black);
 
 	
@@ -2661,6 +2671,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	window.draw(Name);
 	window.draw(Type);
+	window.draw(Info);
 	window.draw(WateringLog);
 
 }
@@ -2850,7 +2861,7 @@ void Plant::insertCurrentDateTime(const std::string& dbFile)  {
 //____________________________________________
 void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	for (size_t i = 0; i < plantsnum; i++) {
-		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", { static_cast<uint8_t>(NULL) }, "");
+		usersPlants[i].populate(NULL, NULL, NULL, "", "", "", "", { static_cast<uint8_t>(NULL) });
 		usersPlants[i].datetimestamp = {};
 		usersPlants[i].waterDate = {};
 	}
@@ -2865,7 +2876,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		showErrorDialog("Database error", sqlite3_errmsg(db));
 	}
 	// Construct the SQL query
-	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate, info FROM Plants WHERE userid = ? LIMIT 10;";
+	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate, info FROM Plants WHERE userid = ? LIMIT 15;";
 
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
@@ -2897,9 +2908,15 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 
 		const char* datetimestamp = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 7));
 		const char* waterDate = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 8));
-
-		std::string info = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
-
+		std::string info = "";
+		if (sqlite3_column_type(stmt, 9) != SQLITE_NULL) {
+		info = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 9));
+		std::cout << "Fetch: info: " << info << std::endl;
+		}
+		else {
+		std::cout << "Text is null" << std::endl;
+		} 
+		
 		if (!usersPlants[i].parseDateTimeStamp(datetimestamp)) {
 			std::cerr << "Failed to parse dateAdded: " << datetimestamp << std::endl;
 		}
@@ -2911,7 +2928,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 		std::cout << "datetimestamp: " << datetimestamp << std::endl;
 		std::cout << "waterDate:" << waterDate << std::endl;
 		// Populate the array with the object
-		usersPlants[i].populate(id, userid, days, name, type, location, image, info);
+		usersPlants[i].populate(id, userid, days, name, type, location, info, image);
 		++i;
 	}
 	/*
@@ -3286,52 +3303,85 @@ void Plant::insertWaterLog(const std::string& dbFile) {
 	sqlite3_close(db);
 }
 
+
 void Plant::GenerateAndInsertInfo(const std::string& dbFile) {
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	sqlite3* db = nullptr;
-	sqlite3_stmt* stmt = nullptr;
-	char* errorMessage = nullptr;
-
-	// Open SQLite database
-	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
-		std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
+	usersPlants->fetch_plants_from_db("plantly.db");
+	std::cout << "Info after fetching before generating attempt: " << info << std::endl;
+	if (info != "") {
 		return;
 	}
+	else if (info == "") {
+		std::string informationText = callGeneratePlantInfo(type);
 
-	// Construct the SQL query
-	std::string insertQuery = "UPDATE Plants SET Datetmestamp = DATETIME('now') WHERE id = ?;";
+		std::cout << "Plant info for " << type << ": " << informationText << std::endl;
 
-	// Prepare the SQL statement
-	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
-		std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+
+		sqlite3* db = nullptr;
+		sqlite3_stmt* stmt = nullptr;
+		char* errorMessage = nullptr;
+
+		// Open SQLite database
+		if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
+			std::cerr << "Failed to open database: " << sqlite3_errmsg(db) << std::endl;
+			return;
+		}
+
+		// Construct the SQL query
+		std::string insertQuery = "UPDATE Plants SET Info = ? WHERE id = ?;";
+
+		// Prepare the SQL statement
+		if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+			std::cerr << "Error preparing statement: " << sqlite3_errmsg(db) << std::endl;
+			sqlite3_close(db);
+			return;
+		}
+		//Binding
+		sqlite3_bind_text(stmt, 1, informationText.c_str(), -1, SQLITE_STATIC);
+		sqlite3_bind_int(stmt, 2, id);
+
+		// Execute the SQL statement
+		if (sqlite3_step(stmt) != SQLITE_DONE) {
+			std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
+		}
+		else {
+			std::cout << "Generated and inserted plant's INFO successfully." << std::endl;
+		}
+
+		// Clean up
+		sqlite3_finalize(stmt);
 		sqlite3_close(db);
-		return;
 	}
-	//Binding
-	sqlite3_bind_int(stmt, 1, id);
+}
 
-	// Execute the SQL statement
-	if (sqlite3_step(stmt) != SQLITE_DONE) {
-		std::cerr << "Error executing statement: " << sqlite3_errmsg(db) << std::endl;
-	}
-	else {
-		std::cout << "Inserted current DATETIME successfully." << std::endl;
+void MakeText(sf::Text* sfText, const std::string& text, float maxWidth) {
+	std::istringstream wordStream(text);
+	std::string word;
+	std::string wrappedText;
+	std::string currentLine;
+
+	// Iterate through each word in the text
+	while (wordStream >> word) {
+		// Test adding the word to the current line
+		std::string testLine = currentLine + (currentLine.empty() ? "" : " ") + word;
+		sfText->setString(testLine); // Update the SFML Text object to calculate bounds
+
+		// Check if the line width exceeds the maximum width
+		if (sfText->getGlobalBounds().width > maxWidth) {
+			// Add the current line to wrapped text and start a new line
+			wrappedText += currentLine + "\n";
+			currentLine = word; // Start the new line with the current word
+		}
+		else {
+			// Add the word to the current line
+			currentLine = testLine;
+		}
 	}
 
-	// Clean up
-	sqlite3_finalize(stmt);
-	sqlite3_close(db);
+	// Add the last line to the wrapped text
+	if (!currentLine.empty()) {
+		wrappedText += currentLine;
+	}
+
+	// Set the final wrapped text to the SFML Text object
+	sfText->setString(wrappedText);
 }
