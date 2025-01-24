@@ -2518,7 +2518,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	else if (info == "") {
 		GenerateAndInsertInfo("plantly.db");
 	}
-	//fetch_plants_from_db("plantly.db");
+	usersPlants->fetch_plants_from_db("plantly.db");
 	sf::Color Red = sf::Color(0xFF, 0xC1, 0xC1);
 	sf::Color Green = sf::Color(0xDC, 0xFF, 0xC1);
 	// Create the first circle
@@ -2594,9 +2594,9 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	sf::Text Name(name, Font, 25);
 	sf::Text Type("the " + type, Font, 15);
 	sf::Text WateringLog("Watering logged", Font, 15);
-	sf::Text Info(info, Font, 15);
+	sf::Text Info(info, Font, 14);
 
-
+	MakeText(&Info, info, 330);
 
 	auto centerN = Name.getGlobalBounds().getSize() / 2.f;
 	auto centerT = Type.getGlobalBounds().getSize() / 2.f;
@@ -2607,12 +2607,12 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	Name.setPosition((posX + (195 + 143)), (posY + (centerN.y + 35)));
 	Type.setPosition((posX + (195 + 143)), (posY + (centerT.y + 65)));
-	Info.setPosition((posX + 205), (posY + 100));
+	Info.setPosition((posX + 265), (posY + 100));
 	WateringLog.setPosition(377, 651);
 
 	Name.setFillColor(sf::Color::Black);
 	Type.setFillColor(sf::Color(0, 0, 0, 90));
-	Info.setFillColor(sf::Color(0, 0, 0, 98));
+	Info.setFillColor(sf::Color(0, 0, 0));
 	WateringLog.setFillColor(sf::Color::Black);
 
 	

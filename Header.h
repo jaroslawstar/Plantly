@@ -172,4 +172,5 @@ std::string callGeneratePlantInfo(const std::string& subject);
 std::string callGenerateHello(const std::string& subject);
 std::string callPythonFunctionHello();
 void ExecutePy_FinalizeEx();
+void MakeText(sf::Text* sfText, const std::string& text, float maxWidth);
 #endif 
