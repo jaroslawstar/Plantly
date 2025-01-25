@@ -30,23 +30,6 @@ int callAddNumbers(int a, int b) {
     PyObject* pName = nullptr, * pModule = nullptr, * pFunc = nullptr, * pArgs = nullptr, * pValue = nullptr;
 
     try {
-        // Set the path to the Python module (2 folders up)
-        std::string path = "..\\..";  // Modify this path as needed to go two folders up
-        PyObject* sysPath = PyImport_ImportModule("sys");
-        if (sysPath) {
-            PyObject* pathObj = PyObject_GetAttrString(sysPath, "path");
-            if (pathObj) {
-                PyList_Append(pathObj, PyUnicode_FromString(path.c_str()));  // Add the directory to sys.path
-                Py_DECREF(pathObj);
-            }
-            else {
-                throw std::runtime_error("Failed to access sys.path.");
-            }
-            Py_DECREF(sysPath);
-        }
-        else {
-            throw std::runtime_error("Failed to import sys module.");
-        }
         // Import the Python module
         pName = PyUnicode_FromString("ai");
         if (!pName) throw std::runtime_error("Failed to create Python string for module name.");
