@@ -355,6 +355,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 					if (event.type == sf::Event::Closed) {
 						ExecutePy_FinalizeEx();
 						window.close();
+						return;
 					}
 					//Close button service
 					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
@@ -482,6 +483,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 					if (event.type == sf::Event::Closed) {
 						ExecutePy_FinalizeEx();
 						window.close();
+						return;
 					}
 					//Close button service
 					if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left) || mousePosition != sf::Vector2i(-1, -1)) {
@@ -562,6 +564,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 										if (event.type == sf::Event::Closed) {
 											ExecutePy_FinalizeEx();
 											window.close();
+											return;
 										}
 										//Close button service
 										if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
@@ -615,8 +618,11 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 												
 												while (inPromptField) {
 													while (window.pollEvent(event)) {
-														if (event.type == sf::Event::Closed)
+														if (event.type == sf::Event::Closed) {
+															ExecutePy_FinalizeEx();
 															window.close();
+															return;
+														}
 														promptText.setString(promptInput + "|");
 														if (event.type == sf::Event::TextEntered)
 														{
@@ -999,6 +1005,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 				if (event.type == sf::Event::Closed) {
 					ExecutePy_FinalizeEx();
 					window.close();
+					return;
 				}
 				//Close button service
 				if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
@@ -1260,6 +1267,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 				if (event.type == sf::Event::Closed) {
 					ExecutePy_FinalizeEx();
 					window.close();
+					return;
 				}
 				//Close button service
 				if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
@@ -1280,6 +1288,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								if (event.type == sf::Event::Closed) {
 									ExecutePy_FinalizeEx();
 									window.close();
+									return;
 								}
 								nameText.setString(nameInput + "|");
 								if (event.type == sf::Event::TextEntered)
@@ -1404,6 +1413,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								if (event.type == sf::Event::Closed) {
 									ExecutePy_FinalizeEx();
 									window.close();
+									return;
 								}
 								daysText.setString(daysInput + "|");
 								if (event.type == sf::Event::TextEntered)
@@ -1527,6 +1537,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								if (event.type == sf::Event::Closed) {
 									ExecutePy_FinalizeEx();
 									window.close();
+									return;
 								}
 								locaText.setString(locaInput + "|");
 								if (event.type == sf::Event::TextEntered)
@@ -1647,6 +1658,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 								if (event.type == sf::Event::Closed) {
 									ExecutePy_FinalizeEx();
 									window.close();
+									return;
 								}
 								typeText.setString(typeInput + "|");
 								if (event.type == sf::Event::TextEntered)
@@ -2623,6 +2635,7 @@ void showErrorDialog(const std::string& title, const std::string& message) {
 			if (event.type == sf::Event::Closed) {
 				ExecutePy_FinalizeEx();
 				window.close();
+				return;
 			}
 		}
 

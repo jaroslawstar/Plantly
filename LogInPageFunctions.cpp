@@ -104,8 +104,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 	
 	while (!userDataEntered) {
 		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
+				ExecutePy_FinalizeEx();
 				window.close();
+				return;
+			}
 			//Close button service
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 				//----------Logged_OUT_Buttons----------
@@ -129,8 +132,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 					inNameField = true;
 					while (inNameField) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							nameText.setString(nameInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
@@ -212,8 +218,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 					inEmailField = true;
 					while (inEmailField) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							emailText.setString(emailInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
@@ -297,8 +306,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 					inPass1Field = true;
 					while (inPass1Field) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							pass1Text.setString(pass1Stars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
@@ -385,8 +397,11 @@ void draw_signup_screen(sf::RenderWindow& window, sf::Event event) {
 					inPass2Field = true;
 					while (inPass2Field) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							pass2Text.setString(pass2Stars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
@@ -528,8 +543,11 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 	
 	while (!userDataEntered) {
 		while (window.pollEvent(event)) {
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed) {
+				ExecutePy_FinalizeEx();
 				window.close();
+				return;
+			}
 			//Close button service
 			if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 				//----------Logged_OUT_Buttons----------
@@ -551,8 +569,11 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 					inEmailField = true;
 					while (inEmailField) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							emailText.setString(emailInput + "|");
 							if (event.type == sf::Event::TextEntered)
 							{
@@ -619,8 +640,11 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 					inPassField = true;
 					while (inPassField) {
 						while (window.pollEvent(event)) {
-							if (event.type == sf::Event::Closed)
+							if (event.type == sf::Event::Closed) {
+								ExecutePy_FinalizeEx();
 								window.close();
+								return;
+							}
 							passText.setString(passStars + "|");
 							if (event.type == sf::Event::TextEntered)
 							{

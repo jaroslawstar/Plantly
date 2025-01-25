@@ -130,6 +130,7 @@ int main() {
                 if (event.type == sf::Event::Closed) {
                     ExecutePy_FinalizeEx();
                     window.close();
+                    return 0;
                 }
 
                 if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
@@ -169,6 +170,7 @@ int main() {
                     if (event.type == sf::Event::Closed) {
                         ExecutePy_FinalizeEx();
                         window.close();
+                        return 0;
                     }
                     if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 
