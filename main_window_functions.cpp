@@ -153,6 +153,11 @@ void draw_logo(sf::RenderWindow& window) {
 
 void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std::string& dbFile, sf::Vector2i mousePosition) {
 	usersPlants->fetch_plants_from_db("plantly.db");
+
+	sf::Font font;
+	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
+		std::cout << "Failed to load font";
+
 	sf::Texture AddFirstPlant;
 
 	sf::Texture WaterToday;
@@ -174,7 +179,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	std::vector<sf::RectangleShape> TargetsObjects;
 
 	sf::RectangleShape TargetX(sf::Vector2f(80, 80));
-	TargetX.setPosition(800, 150);
+	TargetX.setPosition(810, 150);
 	TargetX.setFillColor(sf::Color(0, 0, 0, 50));
 
 	sf::RectangleShape TargetImage(sf::Vector2f(185, 240));
@@ -184,6 +189,25 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	sf::RectangleShape TargetWateringLog(sf::Vector2f(185, 80));
 	TargetWateringLog.setPosition(350, 620);
 	TargetWateringLog.setFillColor(sf::Color(0, 0, 0, 50));
+
+	sf::RectangleShape TargetPrompt(sf::Vector2f(275, 28));
+	TargetPrompt.setPosition(600, 658);
+	TargetPrompt.setFillColor(sf::Color(0, 0, 0, 50));
+
+	std::string promptInput = "";
+	sf::Text promptText(promptInput, font, 15);
+	promptText.setPosition(610, 664);
+	promptText.setFillColor(sf::Color::Black);
+
+	std::string ResponseOutput = "Powered by ChatGPT";
+	sf::Text ResponseText(ResponseOutput, font, 15);
+	ResponseText.setPosition(647, 443);
+	ResponseText.setFillColor(sf::Color(0, 0, 0, 95));
+	//window.display();
+
+	sf::RectangleShape grayrectangle(sf::Vector2f(235, 28));
+	grayrectangle.setPosition(620, 658);
+	grayrectangle.setFillColor(sf::Color(0xF0, 0xF0, 0xF0));  // Set color to #F0F0F0
 
 	sf::Sprite PlantFrames;
 	std::vector<sf::Sprite> PlantFrameS;
@@ -214,9 +238,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 	targetMainBs.setPosition(40, 40);
 	targetMainBs.setFillColor(sf::Color(0, 0, 0, 50));
 
-	sf::Font font;
-	if (!font.loadFromFile("Resources/Fonts/Inria_Serif/InriaSerif-LightItalic.ttf"))
-		std::cout << "Failed to load font";
+	
 
 	if (!show){
 		//draw_main_screen(window);
@@ -420,9 +442,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 				for (size_t j = 0; j < 2; j++) {
 					for (size_t i = 0; i < 5; i++) {
 						//Target for object
-						std::cout << "I value: " << i << std::endl;
+						//std::cout << "I value: " << i << std::endl;
 						int ti = i + (j * 5);
-						std::cout << "Ti value: " << ti << std::endl;
+						//std::cout << "Ti value: " << ti << std::endl;
 						TargetsObjects[ti].setPosition(145 + (i * 195), 140 + (j * 320));
 						//TargetsObjects[ti].setFillColor(sf::Color(0, 0, 0, 50));
 						//window.draw(TargetsObjects[ti]);
@@ -533,12 +555,18 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 								}
 								*/
+								//window.clear();
+								//draw_main_screen(window);
+								//draw_plants(window, event, false, "plantly.db");
 								usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, true);
 
 
 								//window.draw(TargetImage);
 								//window.draw(TargetWateringLog);
 								//window.draw(TargetX);
+								//window.draw(TargetPrompt);
+								window.draw(ResponseText);
+
 								window.display();
 								
 								//HERE TO BUILD BLOCK'S TARGETS
@@ -547,6 +575,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								
 
 								bool inBlock = true;
+								bool inPromptField = false;
 								while (inBlock){
 									while (window.pollEvent(event)) {
 										if (event.type == sf::Event::Closed) {
@@ -578,6 +607,82 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 												usersPlants[i].setCurrentDatetime();
 												usersPlants[i].insertWaterLog("plantly.db");
 											}
+											else if (TargetPrompt.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+												std::cout << "Click at 'Prompt' field" << std::endl;
+												inPromptField = true;
+												
+												while (inPromptField) {
+													while (window.pollEvent(event)) {
+														if (event.type == sf::Event::Closed)
+															window.close();
+														promptText.setString(promptInput + "|");
+														if (event.type == sf::Event::TextEntered)
+														{
+															if (event.text.unicode == 8 && !promptInput.empty()) { // Handle backspace
+																//promptText.setPosition(2000, 2000);
+																//window.draw(promptText);
+																promptInput.pop_back();
+															}
+															else if (event.text.unicode >= 32 && event.text.unicode < 128) { // Handle printable characters
+																//.setPosition(2000, 2000);
+																//window.draw(promptText);
+																promptInput += static_cast<char>(event.text.unicode);
+															}
+															promptText.setString(promptInput + "|");
+															//promptText.setPosition(610, 664);
+															std::cout << promptInput << std::endl;
+															//window.draw(promptText);
+															//promptText.setString("");
+															//window.draw(promptText);
+															//window.draw(emailText);
+														}
+														if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+															std::cout << "Key pressed 'Enter'" << std::endl;
+															sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+															promptText.setString(promptInput);
+															ResponseText.setString(L"Generating response... ⦿");
+															ResponseText.setFillColor(sf::Color::Black);
+															ResponseText.setPosition(565, 424);
+															window.clear();
+															draw_main_screen(window);
+															draw_plants(window, event, false, "plantly.db");
+															usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, false);
+															window.draw(ResponseText);
+															window.draw(promptText);
+															window.display();
+
+															ResponseOutput = callGenerateResponseToQuestion(usersPlants[i].type, promptInput);
+															MakeText(&ResponseText, ResponseOutput, 270);
+															window.clear();
+															draw_main_screen(window);
+															draw_plants(window, event, false, "plantly.db");
+															usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, false);
+															
+															window.draw(ResponseText);
+															window.draw(promptText);
+															window.display();
+
+															if (!TargetPrompt.getGlobalBounds().contains(mousePosition.x, mousePosition.y) && !TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+																inPromptField = false;
+																break;
+															}
+															else if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+																std::cout << "Click at 'X' button" << std::endl;
+																inHomeScreen = false;
+																inBlock = false;
+																inPromptField = false;
+																//draw_signup_screen(window, event);
+																break;
+															}
+
+															
+														}
+													}
+												}
+													//window.display();
+												
+											}
+											//window.display();
 
 										}
 									}
@@ -1108,8 +1213,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 			}
 			window.display();
 		}
-		//window.clear();
-		//window.display();
+		
 
 	}
 	
@@ -1458,7 +1562,7 @@ void draw_text(sf::RenderWindow& window, bool show) { //, bool show
 	}
 	sf::Text text;
 	text.setFont(text_font);
-	text.setString("The app Plantly is developed by\nJarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski.\nThis is NOT the final look or the final platform.\nThis look was only created to present the idea and show what it is about.\n\nThe app is going to be developed for Windowsand MacOS, using programming language C++,\nwith small design changes (to make it usable on horizontal screens).\n\nIt is NO estimated date for final developed version for smartphones, yet.");
+	text.setString(L"The app Plantly is developed by\nJarosław Szekuła for the subject of Projekt C++ on Uniwersytet Wrocławski.\nThis is NOT the final look or the final platform.\nThis look was only created to present the idea and show what it is about.\n\nThe app is going to be developed for Windowsand MacOS, using programming language C++,\nwith small design changes (to make it usable on horizontal screens).\n\nIt is NO estimated date for final developed version for smartphones, yet.");
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Black);
 	text.setPosition(200, 160);
@@ -2674,6 +2778,7 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 	window.draw(Info);
 	window.draw(WateringLog);
 
+
 }
 
 void Plant::showWTTObject(sf::RenderWindow& window, sf::Texture& frameTexture, sf::Texture& MaskTexture, sf::Sprite& Sprite, float posX, float posY, sf::Font& Font) {
@@ -3123,13 +3228,13 @@ int plants_number() {
 	for (int i = 0; i < plantsnum; i++){
 		if (usersPlants[i].id != NULL){
 			ans++;
-			std::cout << "Ans: " << ans << std::endl;
+			//std::cout << "Ans: " << ans << std::endl;
 		}
 		else {
 			i = plantsnum;
 		}
 	}
-	std::cout << "Final ans: " << ans << std::endl;
+	//std::cout << "Final ans: " << ans << std::endl;
 	return ans;
 }
 

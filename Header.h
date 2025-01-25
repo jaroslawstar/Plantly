@@ -171,6 +171,7 @@ int callAddNumbers(int a, int b);
 std::string callGeneratePlantInfo(const std::string& subject);
 std::string callGenerateHello(const std::string& subject);
 std::string callPythonFunctionHello();
+std::string callGenerateResponseToQuestion(const std::string& type, const std::string& message);
 void ExecutePy_FinalizeEx();
 void MakeText(sf::Text* sfText, const std::string& text, float maxWidth);
 #endif 
