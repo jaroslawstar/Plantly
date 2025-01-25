@@ -580,7 +580,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 											}
 											else if (BinS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 												std::cout << "Click at 'Delete plant' button" << std::endl;
-												showErrorDialog("Deleting", "You clicked 'delete plant'.\nIt will no longer exist on your list");
+												showErrorDialog("Deleting", "You clicked 'Delete plant'.\nIt will no longer exist on your list");
 												if (deleteRowById("plantly.db", "Plants", usersPlants[i].id)) {
 													showErrorDialog("Deleting", "Deleted successfully!\nReload the list");
 												}
@@ -2213,14 +2213,16 @@ void Plant::showObjectInfo(sf::RenderWindow& window, sf::Texture& frameTexture, 
 
 	auto centerN = Name.getGlobalBounds().getSize() / 2.f;
 	auto centerT = Type.getGlobalBounds().getSize() / 2.f;
+	auto centerI = Info.getGlobalBounds().getSize() / 2.f;
+
 
 	Name.setOrigin(centerN.x, centerN.y);
 	Type.setOrigin(centerT.x, centerT.y);
-	Info.setOrigin(centerT.x, centerT.y);
+	Info.setOrigin(centerI.x, centerI.y);
 
 	Name.setPosition((posX + (195 + 143)), (posY + (centerN.y + 35)));
 	Type.setPosition((posX + (195 + 143)), (posY + (centerT.y + 65)));
-	Info.setPosition((posX + 265), (posY + 100));
+	Info.setPosition((posX + (centerI.x + 210)), (posY + (centerI.y + 100)));
 	WateringLog.setPosition(377, 651);
 
 	Name.setFillColor(sf::Color::Black);
