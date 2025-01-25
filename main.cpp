@@ -50,7 +50,7 @@ public:111
 */
 
 
-
+//int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 int main() {
     //check_user();
    /*
