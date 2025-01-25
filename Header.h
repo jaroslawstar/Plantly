@@ -101,6 +101,7 @@ public:
     void GenerateAndInsertInfo(const std::string& dbFile);
     void insertCurrentDateTime(const std::string& dbFile);
     void insertWaterLog(const std::string& dbFile);
+    void set_image(const std::string& dbFile);
     void populate(int id_, int userid_, int days_, const std::string& name_, const std::string& type_, const std::string& location_, const std::string& info_, std::vector<uint8_t> image_) { ///daaaaaate
         id = id_;
         userid = userid_;
@@ -174,4 +175,5 @@ std::string callPythonFunctionHello();
 std::string callGenerateResponseToQuestion(const std::string& type, const std::string& message);
 void ExecutePy_FinalizeEx();
 void MakeText(sf::Text* sfText, const std::string& text, float maxWidth);
+bool deleteRowById(const std::string& dbPath, const std::string& tableName, int id);
 #endif 
