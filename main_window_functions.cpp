@@ -196,7 +196,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 
 	std::string promptInput = "";
 	sf::Text promptText(promptInput, font, 15);
-	promptText.setPosition(610, 664);
+	promptText.setPosition(625, 664);
 	promptText.setFillColor(sf::Color::Black);
 
 	std::string ResponseOutput = "Powered by ChatGPT";
@@ -551,7 +551,7 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 								window.draw(ResponseText);
 								window.draw(BinS);
 								window.display();
-								
+
 								//HERE TO BUILD BLOCK'S TARGETS
 								
 								//sf::RectangleShape Target
@@ -566,6 +566,8 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 											window.close();
 											return;
 										}
+										//window.display();
+
 										//Close button service
 										if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
 											sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
@@ -639,13 +641,22 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 															promptText.setString(promptInput + "|");
 															//promptText.setPosition(610, 664);
 															std::cout << promptInput << std::endl;
-															//window.draw(promptText);
+															
 															//promptText.setString("");
 															//window.draw(promptText);
-															//window.draw(emailText);
 														}
-														if (event.key.code == sf::Keyboard::Enter || ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left))) {
+														//window.draw(grayrectangle);
+														//promptText.setPosition(625, 664);
+														//promptText.setPosition(promptText.getPosition().x, (promptText.getPosition().y - promptText.getLocalBounds().height));
+														//MakeText(&promptText, promptInput, grayrectangle.getSize().x);
+														//window.draw(promptText);
+
+														//window.display();///
+														else if (event.key.code == sf::Keyboard::Enter) {
 															std::cout << "Key pressed 'Enter'" << std::endl;
+															inPromptField = false;
+
+															std::cout << "TargetPrompt - TRUE" << std::endl;
 															sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
 															promptText.setString(promptInput);
 															ResponseText.setString(L"Generating response... ⦿");
@@ -656,25 +667,28 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 															draw_plants(window, event, false, "plantly.db");
 															usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, false);
 															window.draw(ResponseText);
+															MakeText(&promptText, promptInput, 235);
 															window.draw(promptText);
 															window.display();
 
 															ResponseOutput = callGenerateResponseToQuestion(usersPlants[i].type, promptInput);
-															MakeText(&ResponseText, ResponseOutput, 270);
+															MakeText(&ResponseText, ResponseOutput, grayrectangle.getSize().x);
 															window.clear();
 															draw_main_screen(window);
 															draw_plants(window, event, false, "plantly.db");
 															usersPlants[i].showObjectInfo(window, PlantInfoBlock, PlantImageMaskInfoBlock, PlantInfoBlockS[i], 340, 140, font, false);
-															
+
 															window.draw(ResponseText);
+															MakeText(&promptText, promptInput, grayrectangle.getSize().x);
 															window.draw(promptText);
+
 															window.display();
 
-															if (!TargetPrompt.getGlobalBounds().contains(mousePosition.x, mousePosition.y) && !TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
-																inPromptField = false;
-																break;
-															}
-															else if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+															break;
+														}
+														else if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Left)) {
+															std::cout << "Mouse pressed " << std::endl;
+															if (TargetX.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 																std::cout << "Click at 'X' button" << std::endl;
 																inHomeScreen = false;
 																inBlock = false;
@@ -683,11 +697,17 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 																break;
 															}
 
-															
+															else {
+																inPromptField = false;
+																break;
+															}
+
 														}
+														//window.display();
 													}
-												}
 													//window.display();
+												}
+													//
 												
 											}
 											//window.display();

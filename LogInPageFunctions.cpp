@@ -611,10 +611,16 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									else {
 										emailText.setFillColor(sf::Color::Red);
 										passText.setFillColor(sf::Color::Red);
+										window.clear();
+										window.draw(LogINScreenP);
+										window.draw(emailText);
+										window.draw(passText);
+										window.display();
 										userDataEntered = false;
-										//window.display();
 
 									}
+									
+
 									break;
 								}
 								else if (targetS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
@@ -684,6 +690,11 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 									else {
 										emailText.setFillColor(sf::Color::Red);
 										passText.setFillColor(sf::Color::Red);
+										window.clear();
+										window.draw(LogINScreenP);
+										window.draw(emailText);
+										window.draw(passText);
+										window.display();
 										userDataEntered = false;
 										break;
 									}
