@@ -965,7 +965,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 
 		sf::RectangleShape targetPreferences(sf::Vector2f(110, 20));
 		targetPreferences.setPosition(140, 160);
-		targetPreferences.setFillColor(sf::Color(0, 0, 0, 50));
+		//targetPreferences.setFillColor(sf::Color(0, 0, 0, 50));
 
 		sf::RectangleShape targetASB(sf::Vector2f(150, 20));
 		targetASB.setPosition(140, 190);
@@ -988,7 +988,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 		//window.draw(targetASB);
 		window.draw(PFPp);
 		window.draw(Preferences);
-		window.draw(targetPreferences);
+		//window.draw(targetPreferences);
 		window.draw(AS);
 		window.draw(RP);
 		window.draw(LogoutB);
