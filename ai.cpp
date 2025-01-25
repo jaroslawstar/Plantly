@@ -2,16 +2,19 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
+#include "api_key.h"
 
 std::string callPythonFunctionHello() {
     if (!Py_IsInitialized()) {
         Py_Initialize();
     }
 
-    PyObject* pName, * pModule, * pFunc, * pValue;
+    PyObject* pName, * pModule, * pFunc, * pArgs, * pValue;
     pName = PyUnicode_FromString((char*)"ai");
     pModule = PyImport_Import(pName);
     pFunc = PyObject_GetAttrString(pModule, (char*)"hello");
+    pArgs = PyTuple_Pack(1, PyUnicode_FromString(ReturnMyApiKeyString1().c_str()));
+
     pValue = PyObject_CallObject(pFunc, nullptr);
     auto result = PyUnicode_AsUTF8(pValue);
     std::cout << result << std::endl;
@@ -27,6 +30,23 @@ int callAddNumbers(int a, int b) {
     PyObject* pName = nullptr, * pModule = nullptr, * pFunc = nullptr, * pArgs = nullptr, * pValue = nullptr;
 
     try {
+        // Set the path to the Python module (2 folders up)
+        std::string path = "..\\..";  // Modify this path as needed to go two folders up
+        PyObject* sysPath = PyImport_ImportModule("sys");
+        if (sysPath) {
+            PyObject* pathObj = PyObject_GetAttrString(sysPath, "path");
+            if (pathObj) {
+                PyList_Append(pathObj, PyUnicode_FromString(path.c_str()));  // Add the directory to sys.path
+                Py_DECREF(pathObj);
+            }
+            else {
+                throw std::runtime_error("Failed to access sys.path.");
+            }
+            Py_DECREF(sysPath);
+        }
+        else {
+            throw std::runtime_error("Failed to import sys module.");
+        }
         // Import the Python module
         pName = PyUnicode_FromString("ai");
         if (!pName) throw std::runtime_error("Failed to create Python string for module name.");
@@ -92,7 +112,7 @@ std::string callGeneratePlantInfo(const std::string& type) {
         }
 
         // Prepare arguments (type and message)
-        pArgs = PyTuple_Pack(1, PyUnicode_FromString(type.c_str()));
+        pArgs = PyTuple_Pack(2, PyUnicode_FromString(ReturnMyApiKeyString1().c_str()), PyUnicode_FromString(type.c_str()));
         if (!pArgs) throw std::runtime_error("Failed to create arguments tuple.");
 
         // Call the Python function
@@ -148,8 +168,9 @@ std::string callGenerateResponseToQuestion(const std::string& type, const std::s
             throw std::runtime_error("Failed to load or call Python function 'generateResponse'.");
         }
 
-        // Prepare arguments (type and message)
-        pArgs = PyTuple_Pack(2, PyUnicode_FromString(type.c_str()), PyUnicode_FromString(message.c_str()));
+        // Prepare arguments (key, type and message)
+
+        pArgs = PyTuple_Pack(3, PyUnicode_FromString(ReturnMyApiKeyString1().c_str()), PyUnicode_FromString(type.c_str()), PyUnicode_FromString(message.c_str()));
         if (!pArgs) throw std::runtime_error("Failed to create arguments tuple.");
 
         // Call the Python function

@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ai.cpp" />
+    <ClCompile Include="api_key.cpp" />
     <ClCompile Include="include\SQLite\sqlite3.c" />
     <ClCompile Include="LogInPageFunctions.cpp" />
     <ClCompile Include="main.cpp" />
@@ -173,6 +174,7 @@
     <Font Include="..\..\Game Lista 8\Game Lista 8\arial.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="api_key.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="include\SQLite\sqlite3.h" />
   </ItemGroup>
