@@ -37,7 +37,7 @@ bool check_user(std::string name, std::string email, std::string password1, std:
 void check_user_in(std::string email, std::string password, const std::string& dbFile);
 
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter);
-void showErrorDialog(const std::string& title, const std::string& message);
+void showErrorDialog(const std::string& title, const std::string& message, bool sound);
 std::string generate_username(std::string email);
 
 void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image, sf::Texture& texture, sf::Sprite& sprite);

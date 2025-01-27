@@ -586,9 +586,9 @@ void draw_plants(sf::RenderWindow& window, sf::Event event, bool show, const std
 											}
 											else if (BinS.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
 												std::cout << "Click at 'Delete plant' button" << std::endl;
-												showErrorDialog("Deleting", "You clicked 'Delete plant'.\nIt will no longer exist on your list");
+												showErrorDialog("Deleting", "You clicked 'Delete plant'.\nIt will no longer exist on your list", false);
 												if (deleteRowById("plantly.db", "Plants", usersPlants[i].id)) {
-													showErrorDialog("Deleting", "Deleted successfully!\nReload the list");
+													showErrorDialog("Deleting", "Deleted successfully!\nReload the list", false);
 												}
 												inHomeScreen = false;
 												inBlock = false;
@@ -1065,7 +1065,7 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 							"\nName: " << User.name << "\nEmail: " << User.email << "\nPassword: " 
 							<< User.password << "\nStatus:" << User.pstatus << std::endl;
 						std::string messege = "Logged in User info from DataBase:\nID: " + std::to_string(User.id) + "\nName: " + User.name + "\nEmail : " + User.email + "\nPassword : " + User.password + "\nStatus:" + User.pstatus;
-						showErrorDialog("Account informaion", messege);
+						showErrorDialog("Account informaion", messege, false);
 							//<< User.password << "\nStatus:" << User.pstatus << "\nImage:" << result << std::endl;
 					}
 					if (targetLogoutB.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
@@ -1075,9 +1075,9 @@ void draw_menu(sf::RenderWindow& window, sf::Event event, bool show) {
 					}
 					if (targetPreferences.getGlobalBounds().contains(mousePosition.x, mousePosition.y)){
 						std::cout << "Click at 'Delete plant' button" << std::endl;
-						showErrorDialog("Deleting", "You clicked 'Delete account'.\nIt will no longer exist,\nall plants will be also deleted");
+						showErrorDialog("Deleting", "You clicked 'Delete account'.\nIt will no longer exist,\nall plants will be also deleted", true);
 						if (deleteRowById("plantly.db", "Users", User.id)) {
-							showErrorDialog("Deleting", "Deleted successfully!");
+							showErrorDialog("Deleting", "Deleted successfully!", false);
 						}
 						appState = AppState::LOGGED_OUT;
 						MainBs = true;
@@ -1118,7 +1118,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 	int PlantsNumber = plants_number();
 	std::wcout << "Plants number after function calling:" << PlantsNumber << std::endl;
 	if (PlantsNumber >= 10) {
-		showErrorDialog("Error adding new plant", "You reached maximum size of available\nplants, please consider buying\nPlantlyCare+ to get more spaces");
+		showErrorDialog("Error adding new plant", "You reached maximum size of available\nplants, please consider buying\nPlantlyCare+ to get more spaces", true);
 		show = false;
 	}
 
@@ -1384,13 +1384,13 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 										inTypeField = false;
 										inLocaField = false;
 										inImageField = false;
-										if ((entry.name != "") || (entry.days != NULL) || (entry.type != "") || (entry.location != "")) {
+										if (!entry.image.empty() || (entry.name != "") || (entry.days != NULL) || (entry.type != "") || (entry.location != "")) {
 											entry.saveToDatabase("plantly.db");
 											added_plant = true;
 											break;
 										}
 										else {
-											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											showErrorDialog("Error adding Plant", "All fields must be filled out", true);
 											break;
 										}
 									}
@@ -1450,7 +1450,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 									}
 									else {
 										std::cerr << "Error, this field receives only digits\n";
-										showErrorDialog("Days typo", "Error, this field receives only digits");
+										showErrorDialog("Days typo", "Error, this field receives only digits", true);
 										daysInput = "";
 									}
 								}
@@ -1513,7 +1513,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 											break;
 										}
 										else {
-											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											showErrorDialog("Error adding Plant", "All fields must be filled out", true);
 											break;
 										}
 									}
@@ -1634,7 +1634,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 											break;
 										}
 										else {
-											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											showErrorDialog("Error adding Plant", "All fields must be filled out", true);
 											break;
 										}
 									}
@@ -1755,7 +1755,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 											break;
 										}
 										else {
-											showErrorDialog("Error adding Plant", "All fields must be filled out");
+											showErrorDialog("Error adding Plant", "All fields must be filled out", true);
 											break;
 										}
 									}
@@ -1937,7 +1937,7 @@ void draw_AP_screen(sf::RenderWindow& window, sf::Event event, bool show) {
 							break;
 						}
 						else {
-							showErrorDialog("Error adding Plant", "All fields must be filled out");
+							showErrorDialog("Error adding Plant", "All fields must be filled out", true);
 							break;
 						}
 					}
@@ -2408,7 +2408,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 	// Open SQLite database
 	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
 		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		return;
 	}
 
@@ -2442,7 +2442,7 @@ void Plant::saveToDatabase(const std::string& dbFile) {
 
 	if (sqlite3_prepare_v2(db, insertQuery.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		sqlite3_close(db);
 		return;
 	}
@@ -2522,7 +2522,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	// Open SQLite database
 	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
 		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 	}
 	// Construct the SQL query
 	std::string query = "SELECT id, userid, days, name, type, location, image, datetimestamp, waterdate, info FROM Plants WHERE userid = ? LIMIT 15;";
@@ -2530,7 +2530,7 @@ void Plant::fetch_plants_from_db(const std::string& dbFile) {
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		sqlite3_close(db);
 	}
 
@@ -2630,9 +2630,24 @@ std::string generate_username(std::string email) {
 
 }
 
-void showErrorDialog(const std::string& title, const std::string& message) {
+void showErrorDialog(const std::string& title, const std::string& message, bool sound) {
+	//Error sound
+	if (sound == true) {
+		sf::SoundBuffer bufferError;
 
-	//sound
+		if (!bufferError.loadFromFile("Resources/sounds/ErrorSound.wav"))
+			std::cerr << "Error: Could not load sound file!" << std::endl;
+
+		sf::Sound soundError;
+		soundError.setBuffer(bufferError);
+		soundError.setVolume(100.0f);
+		soundError.play();
+
+		if (soundError.getStatus() == sf::Sound::Playing) {
+			std::cout << "Sound 'Error' is playing!" << std::endl;
+		}
+	}
+	
 	// Window size
 	int x = 400;
 	int y = 200;
@@ -2731,7 +2746,7 @@ std::vector<uint8_t> GetFileBlobDialog() {
 				std::streamsize fileSize = file.tellg();
 				if (fileSize > MAX_FILE_SIZE) {
 					std::cerr << "File size exceeds the 2 MB limit. File size: " << fileSize / 1024 << " kilobytes." << std::endl;
-					showErrorDialog("File size error", "File size exceeds the 2 MB limit.\nFile size: " + std::to_string(fileSize/1024) + " kilobytes.");
+					showErrorDialog("File size error", "File size exceeds the 2 MB limit.\nFile size: " + std::to_string(fileSize/1024) + " kilobytes.", true);
 					file.close();
 					CoTaskMemFree(pszFilePath);
 					pItem->Release();
