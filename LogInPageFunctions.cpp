@@ -741,15 +741,15 @@ void draw_login_screen(sf::RenderWindow& window, sf::Event event) {
 bool check_user(std::string email, std::string password, const std::string& dbFile) {
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
 		std::cerr << "Error, email must contain only eligible characters\n";
-		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
+		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters", true);
 		return false;
 	}else if (email.find_first_of("@") == std::string::npos) {
 		std::cerr << "Error, not an email\n";
-		showErrorDialog("Email address typo", "Error, not an email");
+		showErrorDialog("Email address typo", "Error, not an email", true);
 		return false;
 	}
 	else if (password == "") {
-		showErrorDialog("Passsword typo", "Error, password field is empty");
+		showErrorDialog("Passsword typo", "Error, password field is empty", true);
 		return false;
 	}
 
@@ -760,7 +760,7 @@ bool check_user(std::string email, std::string password, const std::string& dbFi
 	// Open SQLite database
 	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
 		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		return false;
 	}
 	// Construct the SQL query
@@ -769,7 +769,7 @@ bool check_user(std::string email, std::string password, const std::string& dbFi
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		sqlite3_close(db);
 		return false;
 	}
@@ -796,25 +796,25 @@ bool check_user(std::string email, std::string password, const std::string& dbFi
 bool check_user(std::string name, std::string email, std::string password1, std::string password2, const std::string& dbFile) {
 	if (email.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890_.-@") != std::string::npos) {
 		std::cerr << "Error, email must contain only eligible characters\n";
-		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters");
+		showErrorDialog("Email address typo", "Error, email must contain only\neligible characters", true);
 		return false;
 	}
 	else if (email.find_first_of("@") == std::string::npos) {
 		std::cerr << "Error, not an email\n";
-		showErrorDialog("Email address typo", "Error, not an email");
+		showErrorDialog("Email address typo", "Error, not an email", true);
 		return false;
 	}
 	else if (password1 == "" || password2 == "") {
-		showErrorDialog("Passsword typo", "Error, password field is empty");
+		showErrorDialog("Passsword typo", "Error, password field is empty", true);
 		return false;
 	}
 	else if (password1 != password2) {
-		showErrorDialog("Passsword typo", "Error, password doesn't match");
+		showErrorDialog("Passsword typo", "Error, password doesn't match", true);
 		return false;
 	}
 
 	User.saveToDatabase("plantly.db");
-	showErrorDialog("SignUp", name + " successfully registered!");
+	showErrorDialog("SignUp", name + " successfully registered!", false);
 	return true;
 }//
 
@@ -826,7 +826,7 @@ void check_user_in(std::string email, std::string password, const std::string& d
 	// Open SQLite database
 	if (sqlite3_open(dbFile.c_str(), &db) != SQLITE_OK) {
 		std::cerr << "Error opening database for Plants: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 	}
 	// Construct the SQL query
 	std::string query = "SELECT ID, Name, Email, Password, PStatus, Image FROM Users WHERE Email = ? AND Password = ? LIMIT 1;";
@@ -834,7 +834,7 @@ void check_user_in(std::string email, std::string password, const std::string& d
 	// Prepare the query
 	if (sqlite3_prepare_v2(db, query.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		std::cerr << "Error preparing query: " << sqlite3_errmsg(db) << std::endl;
-		showErrorDialog("Database error", sqlite3_errmsg(db));
+		showErrorDialog("Database error", sqlite3_errmsg(db), true);
 		sqlite3_close(db);
 	}
 

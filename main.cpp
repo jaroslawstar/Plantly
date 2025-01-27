@@ -35,9 +35,19 @@ Plant usersPlants[plantsnum];
 
 //int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 int main() {
+    //Start sound
+    sf::SoundBuffer bufferStartUp;
+    if (!bufferStartUp.loadFromFile("Resources/sounds/StartUpSound.wav")) {
+        std::cerr << "Error: Could not load sound file!" << std::endl;
+    }
+    sf::Sound soundStartUp;
+    soundStartUp.setBuffer(bufferStartUp);
+    //soundStartUp.setVolume(100);
+    soundStartUp.play();
+
+
 
     // Test Py
-
 
 #ifdef PYTHON_INSTALLED
     std::cout << "Python is installed. Proceeding with Python integration." << std::endl;
