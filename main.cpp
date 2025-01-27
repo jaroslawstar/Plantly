@@ -15,10 +15,12 @@
 #include <sstream>
 #include <string>
 #include "Header.h"
+#include "ai.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
 #include "sqlitecloud/sqcloud.h"
 #include <chrono>
+using namespace ai;
 
 AppState appState = AppState::LOGGED_OUT;
 
@@ -30,57 +32,35 @@ const size_t plantsnum = 10;
 
 Plant usersPlants[plantsnum];
 
-/*
-class Plant {
-public:111
-    std::string name;
-    int amount;
-    std::string color;
-
-    void getInput() {
-        std::cout << "Enter object name: ";
-        std::getline(std::cin, name);
-        std::cout << "Enter amount: ";
-        std::cin >> amount;
-        std::cin.ignore(); // Clear newline from input buffer
-        std::cout << "Enter color: ";
-        std::getline(std::cin, color);
-    }
-};
-*/
-
 
 //int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 int main() {
-    //check_user();
-   /*
-    if (init_sqcloud()) {
-        std::cout << "FUCKING FINALLY" << std::endl; 
-    }
-   */
-    //Window creation
+
+    // Test Py
 
 
-
-
+#ifdef PYTHON_INSTALLED
+    std::cout << "Python is installed. Proceeding with Python integration." << std::endl;
+    Py_Initialize();
+    std::cout << "Python version: " << Py_GetVersion() << std::endl;
     int a = 5, b = 10;
-
     int sum = callAddNumbers(a, b);
     std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
-
-
     a = 10; b = 10;
     sum = callAddNumbers(a, b);
     // Call the function that interacts with Python
     std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
-
-
-    //std::cout << "Test ai Hello: " << callPythonFunctionHello() << std::endl;
-
-
     sum = callAddNumbers(a, b);
     std::cout << "The sum of " << a << " and " << b << " is: " << sum << std::endl;
+    // std::cout << "Test ai Hello: " << callPythonFunctionHello() << std::endl;   // Consumes moneymoney
+#else
+    std::cout << "Python is not installed. Using fallback logic." << std::endl;
+#endif
 
+    
+
+
+    //App
     sf::RenderWindow window(sf::VideoMode(1280, 780), "Plantly Care", sf::Style::Titlebar | sf::Style::Close);
     sf::Image LogoIcon;
     LogoIcon.loadFromFile("Resources/images/Logo.png");

@@ -26,9 +26,11 @@ Wazne parametry:
 #include <sstream>
 #include <string>
 #include "Header.h"
+#include "ai.h"
 #include <SQLite/sqlite3.h>
 #include <fstream>
 #include "sqlitecloud/sqcloud.h"
+using namespace ai;
 
 
 void draw_clear_screen(sf::RenderWindow& window) {

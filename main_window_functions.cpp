@@ -29,6 +29,7 @@ Wazne parametry:
 #include <sstream>
 #include <string>
 #include "Header.h"
+#include "ai.h"
 #include "SQLite/sqlite3.h"
 #include <fstream>
 #include <array>
@@ -37,7 +38,7 @@ Wazne parametry:
 #include <chrono>
 #include <ctime>
 
-
+using namespace ai;
 
 
 void draw_main_screen(sf::RenderWindow& window) {
@@ -2630,6 +2631,8 @@ std::string generate_username(std::string email) {
 }
 
 void showErrorDialog(const std::string& title, const std::string& message) {
+
+	//sound
 	// Window size
 	int x = 400;
 	int y = 200;
