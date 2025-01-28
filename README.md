@@ -12,3 +12,18 @@ Prototype: https://www.figma.com/proto/m4OTrDYCwLpU7Zen86sQkR/Untitled?node-id=1
 
 
 !!! This app requires Python v3.9.13 and python modules openai v1.59.9, pydantic v1.10.2 !!!
+
+
+Installation:
+
+Method #1 - Compilation:
+	This repository is complete bulk with all you need.
+ 1. Clone the repo (Win)
+ 2. Add Python3.9.13 as a main python: Copy directory to User\AppData\Local\Programs\Python (add it to the Windows PATH). This directory alredy has all necessary py moduls.
+ 3. In Visual Studio (2019 at best) open solution file.
+ 4. If you possess your own OpenAI API key, in separate cpp file, write a simple function to return the string. Not forget to #include "ai.h". Otherwise, these functions won't be available.
+ 5. Compile solution.
+ 6. In order to have clean Windows app, while compiling put under comment the "int main()" line and uncomment the one above with windows requirements. Copy compiled "release" folder ($SolutionPath$/x64/Release) to another directory, into "release" folder copy and paste resources directory.
+
+Method #2 - Download:
+	1. Ask repo owner to drop you a link :)
