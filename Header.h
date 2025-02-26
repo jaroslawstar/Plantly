@@ -37,7 +37,7 @@ bool check_user(std::string name, std::string email, std::string password1, std:
 void check_user_in(std::string email, std::string password, const std::string& dbFile);
 
 std::string join(const std::vector<std::string>& elements, const std::string& delimiter);
-void showErrorDialog(const std::string& title, const std::string& message);
+void showErrorDialog(const std::string& title, const std::string& message, bool sound);
 std::string generate_username(std::string email);
 
 void CenterBlobImage(sf::RenderWindow& window, const std::vector<uint8_t>& image, sf::Texture& texture, sf::Sprite& sprite);
@@ -168,12 +168,6 @@ extern Plant usersPlants[];
 
 
 
-int callAddNumbers(int a, int b);
-std::string callGeneratePlantInfo(const std::string& subject);
-std::string callGenerateHello(const std::string& subject);
-std::string callPythonFunctionHello();
-std::string callGenerateResponseToQuestion(const std::string& type, const std::string& message);
-void ExecutePy_FinalizeEx();
 void MakeText(sf::Text* sfText, const std::string& text, float maxWidth);
 bool deleteRowById(const std::string& dbPath, const std::string& tableName, int id);
 #endif 

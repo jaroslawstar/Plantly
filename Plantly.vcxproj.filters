@@ -30,9 +30,6 @@
     <ClCompile Include="include\SQLite\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ai.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="api_key.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,6 +51,12 @@
     </ClInclude>
     <ClInclude Include="api_key.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ai.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="no_ai.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
